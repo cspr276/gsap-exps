@@ -39,6 +39,7 @@ export default function HeroAndServicesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroTextRef = useRef<HTMLDivElement>(null);
   const imageWrapperRef = useRef<HTMLDivElement>(null);
+  const heroOverlayRef = useRef<HTMLDivElement>(null);
   const serviceCardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useGSAP(
@@ -46,36 +47,47 @@ export default function HeroAndServicesSection() {
       const container = containerRef.current;
       const heroText = heroTextRef.current;
       const imageWrapper = imageWrapperRef.current;
+      const heroOverlay = heroOverlayRef.current;
       if (!container || !heroText || !imageWrapper) return;
 
       const mm = gsap.matchMedia();
 
       mm.add('(min-width: 1024px)', () => {
-        // Initial setup
+        // Calculate exact scale factor needed to cover the entire viewport from center
+        const cardRect = imageWrapper.getBoundingClientRect();
+        const cardW = cardRect.width || Math.min(window.innerWidth * 0.46, 640);
+        const cardH = cardRect.height || Math.min(window.innerHeight * 0.58, 560);
+        const scaleX = window.innerWidth / cardW;
+        const scaleY = window.innerHeight / cardH;
+        const heroScale = Math.max(scaleX, scaleY) * 1.05;
+
+        // Initial fullscreen hero state:
+        // Image card is scaled up so it fully covers the viewport with 0 radius & 0 shadow
         gsap.set(heroText, { opacity: 1, y: 0 });
+        if (heroOverlay) gsap.set(heroOverlay, { opacity: 1 });
         gsap.set(imageWrapper, {
-          width: '100vw',
-          height: '100vh',
+          scale: heroScale,
           xPercent: 0,
           yPercent: 0,
-          borderRadius: '0px'
+          borderRadius: '0px',
+          boxShadow: 'none'
         });
 
         serviceCardsRef.current.forEach((el) => {
           if (el) {
-            gsap.set(el, { opacity: 0, y: 30 });
-            // Dim all word spans initially
+            gsap.set(el, { opacity: 0, y: 40 });
+            // Dim all words initially
             const words = el.querySelectorAll('.word');
             gsap.set(words, { opacity: 0.15 });
           }
         });
 
-        // Master Timeline pinned with generous scroll room
+        // Master Timeline pinned with generous scroll room (9500px)
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: container,
             start: 'top top',
-            end: '+=7500',
+            end: '+=9500',
             pin: true,
             scrub: 1,
             anticipatePin: 1
@@ -83,75 +95,100 @@ export default function HeroAndServicesSection() {
         });
 
         /* ========================================================================= */
-        /* STEP 1: Hero -> Service 1 (Scroll space for image transformation)          */
+        /* HERO EXIT & IMAGE SHRINK TO DOWN-RIGHT (Generous scroll room)             */
+        /* The full-bleed background smoothly pulls back and travels down-right      */
         /* ========================================================================= */
-        // Hero text fades out
-        tl.to(heroText, {
-          opacity: 0,
-          y: -70,
-          duration: 1,
-          ease: 'power2.inOut'
-        }, 'hero-to-s1');
+        tl.to(
+          heroText,
+          {
+            opacity: 0,
+            y: -60,
+            duration: 1.2,
+            ease: 'power2.inOut'
+          },
+          'hero-exit'
+        );
 
-        // Image has scroll space to shrink and travel to the RIGHT
+        // The image smoothly zooms out from full bleed to its card frame and glides down-right
         tl.to(
           imageWrapper,
           {
-            width: '45vw',
-            maxWidth: '680px',
-            height: '64vh',
-            xPercent: 50,
+            scale: 1,
+            xPercent: 52,
+            yPercent: 4,
             borderRadius: '16px',
-            duration: 2,
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)',
+            duration: 3.5,
             ease: 'power2.inOut'
           },
-          'hero-to-s1+=0.2'
+          'hero-shrink'
         );
 
-        // Service 1 fades in on the LEFT
+        // Dark overlay on hero fades to reveal the vibrant crisp image
+        if (heroOverlay) {
+          tl.to(
+            heroOverlay,
+            {
+              opacity: 0,
+              duration: 3.0,
+              ease: 'power2.inOut'
+            },
+            'hero-shrink'
+          );
+        }
+
+        // Brief breathing room so image settles in place before text enters
+        tl.to({}, { duration: 0.4 });
+
+        /* ========================================================================= */
+        /* SERVICE 1 APPEAR & TEXT HIGHLIGHT HOLD                                    */
+        /* Section holds in place while text highlights word-by-word                 */
+        /* ========================================================================= */
         const s1 = serviceCardsRef.current[0];
         if (s1) {
+          // Content slides & fades in on the LEFT
           tl.to(
             s1,
             {
               opacity: 1,
               y: 0,
-              duration: 1,
+              duration: 1.2,
               ease: 'power2.out'
             },
-            's1-appear'
+            's1-enter'
           );
 
-          /* STEP 1 HOLD: Screen holds while user scrolls to reveal text highlight */
+          // Section holds while user scrolls to highlight words
           const s1Words = s1.querySelectorAll('.word');
           tl.to(
             s1Words,
             {
               opacity: 1,
-              stagger: 0.1,
-              duration: 2.5,
+              stagger: 0.12,
+              duration: 3.2,
               ease: 'none'
             },
             's1-highlight'
           );
 
-          // Comfortable reading pause
-          tl.to({}, { duration: 1 });
+          // Reading pause
+          tl.to({}, { duration: 1.5 });
         }
 
         /* ========================================================================= */
-        /* STEP 2: Service 1 -> Service 2 (Generous scroll space to glide across)    */
+        /* SCROLL ROOM 2: TRANSITION TO SERVICE 2                                    */
+        /* Service 1 exits, image has generous scroll room to glide to LEFT          */
         /* ========================================================================= */
         if (s1) {
           tl.to(
             s1,
             {
               opacity: 0,
-              y: -30,
-              duration: 1,
+              y: -40,
+              duration: 1.2,
               ease: 'power2.in'
             },
-            's1-to-s2'
+            's1-exit'
           );
         }
 
@@ -159,57 +196,61 @@ export default function HeroAndServicesSection() {
         tl.to(
           imageWrapper,
           {
-            xPercent: -50,
-            duration: 2.5,
+            xPercent: -52,
+            duration: 3.5,
             ease: 'power2.inOut'
           },
-          's1-to-s2+=0.2'
+          's1-exit+=0.2'
         );
 
-        // Service 2 fades in on the RIGHT
+        /* ========================================================================= */
+        /* SERVICE 2 APPEAR & TEXT HIGHLIGHT HOLD                                    */
+        /* ========================================================================= */
         const s2 = serviceCardsRef.current[1];
         if (s2) {
+          // Content slides & fades in on the RIGHT
           tl.to(
             s2,
             {
               opacity: 1,
               y: 0,
-              duration: 1,
+              duration: 1.2,
               ease: 'power2.out'
             },
-            's2-appear'
+            's2-enter'
           );
 
-          /* STEP 2 HOLD: Screen holds while user scrolls to reveal text highlight */
+          // Section holds while user scrolls to highlight words
           const s2Words = s2.querySelectorAll('.word');
           tl.to(
             s2Words,
             {
               opacity: 1,
-              stagger: 0.1,
-              duration: 2.5,
+              stagger: 0.12,
+              duration: 3.2,
               ease: 'none'
             },
             's2-highlight'
           );
 
-          // Comfortable reading pause
-          tl.to({}, { duration: 1 });
+          // Reading pause
+          tl.to({}, { duration: 1.5 });
         }
 
         /* ========================================================================= */
-        /* STEP 3: Service 2 -> Service 3 (Generous scroll space to glide back)      */
+        /* SCROLL ROOM 3: TRANSITION TO SERVICE 3                                    */
+        /* Service 2 exits, image has generous scroll room to glide to RIGHT         */
         /* ========================================================================= */
         if (s2) {
           tl.to(
             s2,
             {
               opacity: 0,
-              y: -30,
-              duration: 1,
+              y: -40,
+              duration: 1.2,
               ease: 'power2.in'
             },
-            's2-to-s3'
+            's2-exit'
           );
         }
 
@@ -217,58 +258,65 @@ export default function HeroAndServicesSection() {
         tl.to(
           imageWrapper,
           {
-            xPercent: 50,
-            duration: 2.5,
+            xPercent: 52,
+            duration: 3.5,
             ease: 'power2.inOut'
           },
-          's2-to-s3+=0.2'
+          's2-exit+=0.2'
         );
 
-        // Service 3 fades in on the LEFT
+        /* ========================================================================= */
+        /* SERVICE 3 APPEAR & TEXT HIGHLIGHT HOLD                                    */
+        /* ========================================================================= */
         const s3 = serviceCardsRef.current[2];
         if (s3) {
+          // Content slides & fades in on the LEFT
           tl.to(
             s3,
             {
               opacity: 1,
               y: 0,
-              duration: 1,
+              duration: 1.2,
               ease: 'power2.out'
             },
-            's3-appear'
+            's3-enter'
           );
 
-          /* STEP 3 HOLD: Screen holds while user scrolls to reveal text highlight */
+          // Section holds while user scrolls to highlight words
           const s3Words = s3.querySelectorAll('.word');
           tl.to(
             s3Words,
             {
               opacity: 1,
-              stagger: 0.1,
-              duration: 2.5,
+              stagger: 0.12,
+              duration: 3.2,
               ease: 'none'
             },
             's3-highlight'
           );
 
-          // Comfortable reading pause
-          tl.to({}, { duration: 1 });
+          // Reading pause
+          tl.to({}, { duration: 1.5 });
         }
 
-        // Conclusion of the sequence
-        tl.to({}, { duration: 0.5 });
+        // Conclude the sequence cleanly
+        tl.to({}, { duration: 0.8 });
       });
 
-      // Mobile Layout (< 1024px)
+      // Mobile / Tablet Fallback (< 1024px)
       mm.add('(max-width: 1023px)', () => {
+        const heroOverlay = heroOverlayRef.current;
         gsap.set(imageWrapper, {
           position: 'relative',
-          width: '100%',
-          height: '420px',
-          borderRadius: '12px',
+          scale: 1,
           xPercent: 0,
-          yPercent: 0
+          yPercent: 0,
+          width: '100%',
+          height: '380px',
+          borderRadius: '12px'
         });
+
+        if (heroOverlay) gsap.set(heroOverlay, { opacity: 0 });
 
         serviceCardsRef.current.forEach((card) => {
           if (!card) return;
@@ -289,24 +337,26 @@ export default function HeroAndServicesSection() {
       {/* Pinned Stage Container */}
       <div className="relative w-full h-screen flex items-center justify-center px-6 sm:px-12 lg:px-20 overflow-hidden">
         {/* ========================================================================= */}
-        {/* THE SINGLE IMAGE CONTAINER                                                */}
+        {/* THE FLOATING HERO IMAGE                                                   */}
         {/* ========================================================================= */}
         <div
           ref={imageWrapperRef}
-          className="absolute z-10 overflow-hidden border border-neutral-800/80 shadow-2xl shadow-black/80 will-change-[transform,width,height,border-radius] pointer-events-none"
+          className="absolute z-10 w-[46vw] max-w-[640px] h-[58vh] max-h-[560px] overflow-hidden border border-neutral-800/80 shadow-2xl shadow-black/80 will-change-transform pointer-events-none"
         >
           <img
             src="/hero_placeholder.png"
             alt="Nexus Platform Core"
             className="w-full h-full object-cover object-center"
           />
-          {/* Subtle dark film to guarantee readability */}
-          <div className="absolute inset-0 bg-black/40 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/60 via-transparent to-neutral-950/60 pointer-events-none" />
+          {/* Subtle dark film to guarantee readability in full-bleed hero state */}
+          <div
+            ref={heroOverlayRef}
+            className="absolute inset-0 bg-black/45 pointer-events-none"
+          />
         </div>
 
         {/* ========================================================================= */}
-        {/* HERO SECTION (Initially centered over full-bleed image)                   */}
+        {/* HERO SECTION (Centered initially over the full-bleed image)               */}
         {/* ========================================================================= */}
         <div
           ref={heroTextRef}
@@ -350,13 +400,15 @@ export default function HeroAndServicesSection() {
         {/* ========================================================================= */}
         {/* 3 SERVICES PANELS (Alternating Left / Right)                              */}
         {/* ========================================================================= */}
-        <div id="services" className="absolute inset-0 pointer-events-none z-20 flex items-center justify-center px-6 lg:px-20">
+        <div
+          id="services"
+          className="absolute inset-0 pointer-events-none z-20 flex items-center justify-center px-6 lg:px-20"
+        >
           {THREE_SERVICES.map((service, index) => {
             // Service 1 (index 0): Left side (Image is on Right)
             // Service 2 (index 1): Right side (Image is on Left)
             // Service 3 (index 2): Left side (Image is on Right)
             const isLeft = index % 2 === 0;
-
             const words = service.paragraph.split(' ');
 
             return (
@@ -369,11 +421,11 @@ export default function HeroAndServicesSection() {
                   isLeft ? 'lg:left-12 xl:left-20' : 'lg:right-12 xl:right-20'
                 }`}
               >
-                {/* Small Clean Heading as requested */}
-                <div className="flex items-center gap-3 text-xs font-mono text-neutral-400 tracking-wider uppercase mb-4">
+                {/* Small Clean Heading */}
+                <div className="flex items-center gap-3 text-xs font-mono text-neutral-400 tracking-wider uppercase mb-5">
                   <span className="text-neutral-500 font-semibold">{service.num}</span>
                   <span className="w-6 h-[1px] bg-neutral-800" />
-                  <span className="font-semibold text-white">{service.heading}</span>
+                  <span className="font-semibold text-white tracking-widest">{service.heading}</span>
                 </div>
 
                 {/* Paragraph with word-by-word scroll illumination */}
@@ -388,7 +440,7 @@ export default function HeroAndServicesSection() {
                   ))}
                 </p>
 
-                {/* Minimal Sub-spec */}
+                {/* Minimal Sub-spec line */}
                 <div className="pt-4 border-t border-neutral-800/80 text-xs font-mono text-neutral-500">
                   <span>{service.spec}</span>
                 </div>
