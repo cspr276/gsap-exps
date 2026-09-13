@@ -3,128 +3,278 @@
 import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Flip } from 'gsap/Flip';
 import { useGSAP } from '@gsap/react';
-import ScrollTypography from './ScrollTypography';
-import { ArrowDown, ArrowUpRight } from 'lucide-react';
+import { ArrowDown } from 'lucide-react';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger, Flip);
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const THREE_SERVICES = [
   {
     id: 1,
     num: '01',
-    category: 'RECURSIVE INTELLIGENCE',
-    title: 'Autonomous Swarms That Reason, Adapt, And Self-Heal',
-    description:
-      'Orchestrating multi-agent consensus protocols with zero-latency RPCs to execute complex distributed workflows with persistent memory and autonomous fault tolerance.',
-    specs: ['0.4ms Consensus', 'Zero Context Drift', 'Byzantine Fault Tolerant'],
-    metric: '14.2x Throughput'
+    heading: 'AUTONOMOUS SWARMS',
+    paragraph:
+      'Self-coordinating agent clusters communicating over zero-latency RPCs to execute recursive complex tasks, maintain state memory, and auto-recover from runtime failures.',
+    spec: '0.4ms Consensus • Zero Context Drift'
   },
   {
     id: 2,
     num: '02',
-    category: 'NEURAL PIPELINES',
-    title: 'Sub-Millisecond Execution Across Dynamic Compute Graphs',
-    description:
-      'Dynamic DAG computation compiled directly to native silicon instructions. Speculative branching and distributed caching reduce roundtrips to near-instantaneous execution.',
-    specs: ['< 1.2ms Execution', 'Direct GPU Compilation', '99.999% Determinism'],
-    metric: '180k Ops / Sec'
+    heading: 'NEURAL PIPELINES',
+    paragraph:
+      'Sub-millisecond pipeline execution with dynamic compute graphs compiled directly to native silicon instructions. Speculative branching and distributed caching eliminate roundtrips.',
+    spec: '< 1.2ms Execution • Direct GPU Compilation'
   },
   {
     id: 3,
     num: '03',
-    category: 'DISTRIBUTED MESH',
-    title: 'Petabyte Semantic Memory Across Global Edge Partitions',
-    description:
-      'A decentralized high-dimensional vector fabric synchronizing billions of embeddings across 80+ global nodes with cryptographic integrity and sub-5ms recall.',
-    specs: ['10B+ Vectors', 'Sub-5ms Recall', 'Zk-Attested Proofs'],
-    metric: '< 5ms Recall'
+    heading: 'DISTRIBUTED MESH',
+    paragraph:
+      'Petabyte-scale semantic memory fabric indexing billions of high-dimensional embeddings across distributed edge nodes with cryptographic integrity and sub-5ms recall.',
+    spec: '10B+ Vectors • Sub-5ms Recall'
   }
 ];
 
 export default function HeroAndServicesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const heroSectionRef = useRef<HTMLDivElement>(null);
-  const oneImageRef = useRef<HTMLDivElement>(null);
   const heroTextRef = useRef<HTMLDivElement>(null);
-
-  // References to the 3 step target slots in the services sections
-  const slotRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const imageWrapperRef = useRef<HTMLDivElement>(null);
+  const serviceCardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useGSAP(
     () => {
-      const oneEl = oneImageRef.current;
-      const heroSec = heroSectionRef.current;
-      if (!oneEl || !heroSec) return;
+      const container = containerRef.current;
+      const heroText = heroTextRef.current;
+      const imageWrapper = imageWrapperRef.current;
+      if (!container || !heroText || !imageWrapper) return;
 
       const mm = gsap.matchMedia();
 
       mm.add('(min-width: 1024px)', () => {
-        const stepElements = slotRefs.current.filter(Boolean) as HTMLElement[];
-        if (stepElements.length === 0) return;
+        // Initial setup
+        gsap.set(heroText, { opacity: 1, y: 0 });
+        gsap.set(imageWrapper, {
+          width: '100vw',
+          height: '100vh',
+          xPercent: 0,
+          yPercent: 0,
+          borderRadius: '0px'
+        });
 
-        // Hero text fades out on initial scroll
-        gsap.to(heroTextRef.current, {
-          opacity: 0,
-          y: -100,
-          ease: 'power2.inOut',
-          scrollTrigger: {
-            trigger: heroSec,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: true
+        serviceCardsRef.current.forEach((el) => {
+          if (el) {
+            gsap.set(el, { opacity: 0, y: 30 });
+            // Dim all word spans initially
+            const words = el.querySelectorAll('.word');
+            gsap.set(words, { opacity: 0.15 });
           }
         });
 
-        // Capture Flip states for each step target slot
-        const states = stepElements.map((el) =>
-          Flip.getState(el, { props: 'borderRadius' })
-        );
-
-        // Timeline linked to scroll from the Hero all the way down through the 3 services
+        // Master Timeline pinned with generous scroll room
         const tl = gsap.timeline({
           scrollTrigger: {
-            trigger: heroSec,
+            trigger: container,
             start: 'top top',
-            endTrigger: stepElements[stepElements.length - 1],
-            end: 'center center',
+            end: '+=7500',
+            pin: true,
             scrub: 1,
-            immediateRender: false
+            anticipatePin: 1
           }
         });
 
-        const flipConfig = {
+        /* ========================================================================= */
+        /* STEP 1: Hero -> Service 1 (Scroll space for image transformation)          */
+        /* ========================================================================= */
+        // Hero text fades out
+        tl.to(heroText, {
+          opacity: 0,
+          y: -70,
           duration: 1,
-          ease: 'sine.inOut',
-          props: 'borderRadius'
-        };
+          ease: 'power2.inOut'
+        }, 'hero-to-s1');
 
-        states.forEach((state, idx) => {
-          const fitTween = Flip.fit(oneEl, state, {
-            ...flipConfig,
-            ease: idx === 0 ? 'power1.inOut' : flipConfig.ease
-          });
-          if (fitTween) {
-            tl.add(fitTween as any, idx ? '+=0.4' : 0);
-          }
-        });
+        // Image has scroll space to shrink and travel to the RIGHT
+        tl.to(
+          imageWrapper,
+          {
+            width: '45vw',
+            maxWidth: '680px',
+            height: '64vh',
+            xPercent: 50,
+            borderRadius: '16px',
+            duration: 2,
+            ease: 'power2.inOut'
+          },
+          'hero-to-s1+=0.2'
+        );
 
-        // Recalculate on window resize
-        const handleResize = () => {
-          ScrollTrigger.refresh();
-        };
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        // Service 1 fades in on the LEFT
+        const s1 = serviceCardsRef.current[0];
+        if (s1) {
+          tl.to(
+            s1,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 1,
+              ease: 'power2.out'
+            },
+            's1-appear'
+          );
+
+          /* STEP 1 HOLD: Screen holds while user scrolls to reveal text highlight */
+          const s1Words = s1.querySelectorAll('.word');
+          tl.to(
+            s1Words,
+            {
+              opacity: 1,
+              stagger: 0.1,
+              duration: 2.5,
+              ease: 'none'
+            },
+            's1-highlight'
+          );
+
+          // Comfortable reading pause
+          tl.to({}, { duration: 1 });
+        }
+
+        /* ========================================================================= */
+        /* STEP 2: Service 1 -> Service 2 (Generous scroll space to glide across)    */
+        /* ========================================================================= */
+        if (s1) {
+          tl.to(
+            s1,
+            {
+              opacity: 0,
+              y: -30,
+              duration: 1,
+              ease: 'power2.in'
+            },
+            's1-to-s2'
+          );
+        }
+
+        // Image glides smoothly across from Right to the LEFT
+        tl.to(
+          imageWrapper,
+          {
+            xPercent: -50,
+            duration: 2.5,
+            ease: 'power2.inOut'
+          },
+          's1-to-s2+=0.2'
+        );
+
+        // Service 2 fades in on the RIGHT
+        const s2 = serviceCardsRef.current[1];
+        if (s2) {
+          tl.to(
+            s2,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 1,
+              ease: 'power2.out'
+            },
+            's2-appear'
+          );
+
+          /* STEP 2 HOLD: Screen holds while user scrolls to reveal text highlight */
+          const s2Words = s2.querySelectorAll('.word');
+          tl.to(
+            s2Words,
+            {
+              opacity: 1,
+              stagger: 0.1,
+              duration: 2.5,
+              ease: 'none'
+            },
+            's2-highlight'
+          );
+
+          // Comfortable reading pause
+          tl.to({}, { duration: 1 });
+        }
+
+        /* ========================================================================= */
+        /* STEP 3: Service 2 -> Service 3 (Generous scroll space to glide back)      */
+        /* ========================================================================= */
+        if (s2) {
+          tl.to(
+            s2,
+            {
+              opacity: 0,
+              y: -30,
+              duration: 1,
+              ease: 'power2.in'
+            },
+            's2-to-s3'
+          );
+        }
+
+        // Image glides smoothly back from Left to the RIGHT
+        tl.to(
+          imageWrapper,
+          {
+            xPercent: 50,
+            duration: 2.5,
+            ease: 'power2.inOut'
+          },
+          's2-to-s3+=0.2'
+        );
+
+        // Service 3 fades in on the LEFT
+        const s3 = serviceCardsRef.current[2];
+        if (s3) {
+          tl.to(
+            s3,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 1,
+              ease: 'power2.out'
+            },
+            's3-appear'
+          );
+
+          /* STEP 3 HOLD: Screen holds while user scrolls to reveal text highlight */
+          const s3Words = s3.querySelectorAll('.word');
+          tl.to(
+            s3Words,
+            {
+              opacity: 1,
+              stagger: 0.1,
+              duration: 2.5,
+              ease: 'none'
+            },
+            's3-highlight'
+          );
+
+          // Comfortable reading pause
+          tl.to({}, { duration: 1 });
+        }
+
+        // Conclusion of the sequence
+        tl.to({}, { duration: 0.5 });
       });
 
-      // Mobile layout fallback (< 1024px)
+      // Mobile Layout (< 1024px)
       mm.add('(max-width: 1023px)', () => {
-        gsap.set(oneEl, {
+        gsap.set(imageWrapper, {
           position: 'relative',
           width: '100%',
-          height: '400px',
-          borderRadius: '8px'
+          height: '420px',
+          borderRadius: '12px',
+          xPercent: 0,
+          yPercent: 0
+        });
+
+        serviceCardsRef.current.forEach((card) => {
+          if (!card) return;
+          gsap.set(card, { opacity: 1, y: 0 });
+          const words = card.querySelectorAll('.word');
+          gsap.set(words, { opacity: 1 });
         });
       });
     },
@@ -132,36 +282,36 @@ export default function HeroAndServicesSection() {
   );
 
   return (
-    <div ref={containerRef} className="relative w-full bg-neutral-950 text-white">
-      {/* ========================================================================= */}
-      {/* THE SINGLE IMAGE ELEMENT (Starts covering Hero, then travels to slots)     */}
-      {/* ========================================================================= */}
-      <div
-        ref={oneImageRef}
-        className="absolute top-0 left-0 w-full h-screen z-10 overflow-hidden pointer-events-none will-change-[transform,width,height]"
-        style={{
-          borderRadius: '0px'
-        }}
-      >
-        <img
-          src="/hero_placeholder.png"
-          alt="Nexus Platform Core"
-          className="w-full h-full object-cover object-center"
-        />
-        {/* Subtle dark gradient overlay to ensure hero text contrast */}
-        <div className="absolute inset-0 bg-neutral-950/45 mix-blend-multiply pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-neutral-950/70 pointer-events-none" />
-      </div>
+    <div
+      ref={containerRef}
+      className="relative w-full min-h-screen bg-neutral-950 text-white overflow-hidden"
+    >
+      {/* Pinned Stage Container */}
+      <div className="relative w-full h-screen flex items-center justify-center px-6 sm:px-12 lg:px-20 overflow-hidden">
+        {/* ========================================================================= */}
+        {/* THE SINGLE IMAGE CONTAINER                                                */}
+        {/* ========================================================================= */}
+        <div
+          ref={imageWrapperRef}
+          className="absolute z-10 overflow-hidden border border-neutral-800/80 shadow-2xl shadow-black/80 will-change-[transform,width,height,border-radius] pointer-events-none"
+        >
+          <img
+            src="/hero_placeholder.png"
+            alt="Nexus Platform Core"
+            className="w-full h-full object-cover object-center"
+          />
+          {/* Subtle dark film to guarantee readability */}
+          <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/60 via-transparent to-neutral-950/60 pointer-events-none" />
+        </div>
 
-      {/* ========================================================================= */}
-      {/* HERO SECTION                                                              */}
-      {/* ========================================================================= */}
-      <section
-        id="hero"
-        ref={heroSectionRef}
-        className="relative w-full h-screen flex flex-col items-center justify-center text-center px-6 z-20"
-      >
-        <div ref={heroTextRef} className="max-w-5xl flex flex-col items-center">
+        {/* ========================================================================= */}
+        {/* HERO SECTION (Initially centered over full-bleed image)                   */}
+        {/* ========================================================================= */}
+        <div
+          ref={heroTextRef}
+          className="relative z-20 flex flex-col items-center text-center max-w-4xl px-4 pointer-events-auto"
+        >
           <span className="font-mono text-xs uppercase tracking-[0.3em] text-neutral-400 mb-6 block">
             THE AUTONOMOUS OPERATING CORE
           </span>
@@ -184,139 +334,68 @@ export default function HeroAndServicesSection() {
               <ArrowDown className="w-3.5 h-3.5" />
             </a>
             <a
-              href="#manifesto"
+              href="#capabilities"
               className="px-6 py-3 rounded-md border border-neutral-700 bg-neutral-900/60 hover:border-white text-neutral-300 hover:text-white transition-colors"
             >
-              <span>Read Manifesto</span>
+              <span>View Capabilities</span>
             </a>
+          </div>
+
+          <div className="mt-14 flex flex-col items-center gap-2 font-mono text-[10px] text-neutral-400 tracking-[0.2em] uppercase">
+            <span>SCROLL TO UNPACK</span>
+            <div className="w-[1px] h-6 bg-neutral-600 animate-pulse" />
           </div>
         </div>
 
-        {/* Minimal Editorial Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 font-mono text-[10px] text-neutral-400 tracking-[0.2em] uppercase">
-          <span>SCROLL DOWN</span>
-          <div className="w-[1px] h-8 bg-neutral-600 animate-pulse" />
-        </div>
-      </section>
+        {/* ========================================================================= */}
+        {/* 3 SERVICES PANELS (Alternating Left / Right)                              */}
+        {/* ========================================================================= */}
+        <div id="services" className="absolute inset-0 pointer-events-none z-20 flex items-center justify-center px-6 lg:px-20">
+          {THREE_SERVICES.map((service, index) => {
+            // Service 1 (index 0): Left side (Image is on Right)
+            // Service 2 (index 1): Right side (Image is on Left)
+            // Service 3 (index 2): Left side (Image is on Right)
+            const isLeft = index % 2 === 0;
 
-      {/* ========================================================================= */}
-      {/* 3 SERVICES SECTIONS (Left / Right Alternating Flow)                       */}
-      {/* ========================================================================= */}
-      <div id="services" className="relative w-full z-20">
-        {THREE_SERVICES.map((service, index) => {
-          // Service 1 (index 0): Text on Left, Image Slot on Right
-          // Service 2 (index 1): Image Slot on Left, Text on Right
-          // Service 3 (index 2): Text on Left, Image Slot on Right
-          const isTextLeft = index % 2 === 0;
+            const words = service.paragraph.split(' ');
 
-          return (
-            <section
-              key={service.id}
-              className="relative w-full min-h-screen flex items-center py-28 px-6 sm:px-12 lg:px-20 border-t border-neutral-900"
-            >
-              <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-                {/* When Text is on Left: Columns 1-6 are Text, Columns 7-12 are Slot */}
-                {/* When Text is on Right: Columns 1-6 are Slot, Columns 7-12 are Text */}
+            return (
+              <div
+                key={service.id}
+                ref={(el) => {
+                  serviceCardsRef.current[index] = el;
+                }}
+                className={`absolute w-full max-w-lg xl:max-w-xl pointer-events-auto p-6 sm:p-8 transition-all duration-300 ${
+                  isLeft ? 'lg:left-12 xl:left-20' : 'lg:right-12 xl:right-20'
+                }`}
+              >
+                {/* Small Clean Heading as requested */}
+                <div className="flex items-center gap-3 text-xs font-mono text-neutral-400 tracking-wider uppercase mb-4">
+                  <span className="text-neutral-500 font-semibold">{service.num}</span>
+                  <span className="w-6 h-[1px] bg-neutral-800" />
+                  <span className="font-semibold text-white">{service.heading}</span>
+                </div>
 
-                {isTextLeft ? (
-                  <>
-                    {/* LEFT TEXT COLUMN */}
-                    <div className="lg:col-span-6 flex flex-col justify-center">
-                      <div className="flex items-center gap-3 text-xs font-mono text-neutral-500 tracking-wider uppercase mb-6">
-                        <span>{service.num}</span>
-                        <span className="w-8 h-[1px] bg-neutral-800" />
-                        <span className="text-neutral-300 font-semibold">{service.category}</span>
-                      </div>
+                {/* Paragraph with word-by-word scroll illumination */}
+                <p className="text-lg sm:text-xl xl:text-2xl font-normal leading-relaxed text-white mb-6">
+                  {words.map((w, wIdx) => (
+                    <span
+                      key={wIdx}
+                      className="word inline-block mr-[0.25em] will-change-opacity"
+                    >
+                      {w}
+                    </span>
+                  ))}
+                </p>
 
-                      {/* Headline with fx16 scroll typography scrub */}
-                      <ScrollTypography
-                        tag="h2"
-                        text={service.title}
-                        tilt={true}
-                        className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white uppercase tracking-tight mb-6"
-                      />
-
-                      {/* Paragraph with fx16 scroll typography scrub */}
-                      <ScrollTypography
-                        tag="p"
-                        text={service.description}
-                        tilt={false}
-                        className="text-base sm:text-lg text-neutral-400 font-normal leading-relaxed mb-8"
-                      />
-
-                      {/* Technical Specs List */}
-                      <div className="border-t border-neutral-800 pt-6 flex flex-wrap gap-y-3 gap-x-6 text-xs font-mono text-neutral-400">
-                        {service.specs.map((spec) => (
-                          <div key={spec} className="flex items-center gap-2">
-                            <span className="w-1 h-1 bg-neutral-500 rounded-full" />
-                            <span>{spec}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* RIGHT IMAGE TARGET SLOT */}
-                    <div className="lg:col-span-6 flex justify-end">
-                      <div
-                        ref={(el) => {
-                          slotRefs.current[index] = el;
-                        }}
-                        className="w-full max-w-lg lg:max-w-xl h-[480px] sm:h-[540px] lg:h-[620px] rounded-lg border border-neutral-800/60 bg-neutral-900/10 overflow-hidden"
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {/* LEFT IMAGE TARGET SLOT */}
-                    <div className="lg:col-span-6 flex justify-start order-2 lg:order-1">
-                      <div
-                        ref={(el) => {
-                          slotRefs.current[index] = el;
-                        }}
-                        className="w-full max-w-lg lg:max-w-xl h-[480px] sm:h-[540px] lg:h-[620px] rounded-lg border border-neutral-800/60 bg-neutral-900/10 overflow-hidden"
-                      />
-                    </div>
-
-                    {/* RIGHT TEXT COLUMN */}
-                    <div className="lg:col-span-6 flex flex-col justify-center order-1 lg:order-2">
-                      <div className="flex items-center gap-3 text-xs font-mono text-neutral-500 tracking-wider uppercase mb-6">
-                        <span>{service.num}</span>
-                        <span className="w-8 h-[1px] bg-neutral-800" />
-                        <span className="text-neutral-300 font-semibold">{service.category}</span>
-                      </div>
-
-                      {/* Headline with fx16 scroll typography scrub */}
-                      <ScrollTypography
-                        tag="h2"
-                        text={service.title}
-                        tilt={true}
-                        className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white uppercase tracking-tight mb-6"
-                      />
-
-                      {/* Paragraph with fx16 scroll typography scrub */}
-                      <ScrollTypography
-                        tag="p"
-                        text={service.description}
-                        tilt={false}
-                        className="text-base sm:text-lg text-neutral-400 font-normal leading-relaxed mb-8"
-                      />
-
-                      {/* Technical Specs List */}
-                      <div className="border-t border-neutral-800 pt-6 flex flex-wrap gap-y-3 gap-x-6 text-xs font-mono text-neutral-400">
-                        {service.specs.map((spec) => (
-                          <div key={spec} className="flex items-center gap-2">
-                            <span className="w-1 h-1 bg-neutral-500 rounded-full" />
-                            <span>{spec}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                )}
+                {/* Minimal Sub-spec */}
+                <div className="pt-4 border-t border-neutral-800/80 text-xs font-mono text-neutral-500">
+                  <span>{service.spec}</span>
+                </div>
               </div>
-            </section>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
