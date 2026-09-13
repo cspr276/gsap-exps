@@ -1,7 +1,7 @@
 import SmoothScroll from '@/components/SmoothScroll';
 import DynamicIslandNav from '@/components/DynamicIslandNav';
 import HeroAndServicesSection from '@/components/HeroAndServicesSection';
-import ExtendedServicesSection from '@/components/ExtendedServicesSection';
+import HorizontalServicesSection from '@/components/HorizontalServicesSection';
 import ManifestoSection from '@/components/ManifestoSection';
 import Footer from '@/components/Footer';
 
@@ -12,16 +12,16 @@ export default function Home() {
         {/* Crisp Architectural Glass Nav */}
         <DynamicIslandNav />
 
-        {/* Hero & 3 Services Downward Image Scroll (OneElementScroll inspired + OnScrollTypography) */}
+        {/* Hero & 3 Services Scroll Flow with generous scroll room, text hold, and image gliding */}
         <HeroAndServicesSection />
 
-        {/* Remaining Services at Bottom with React Bits TiltedCard & SpotlightCard */}
-        <ExtendedServicesSection />
+        {/* Remaining Services arranged horizontally in one line, pinned while cards scroll on scroll */}
+        <HorizontalServicesSection />
 
-        {/* Editorial Manifesto Section with Scroll Typography Scrub */}
+        {/* Editorial Manifesto Section with word-by-word scroll scrub */}
         <ManifestoSection />
 
-        {/* Clean Monospace Editorial Footer */}
+        {/* Footer matching uploaded reference design */}
         <Footer />
       </main>
     </SmoothScroll>
