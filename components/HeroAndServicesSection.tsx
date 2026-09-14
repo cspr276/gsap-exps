@@ -388,7 +388,7 @@ export default function HeroAndServicesSection() {
             THE AUTONOMOUS OPERATING CORE
           </span>
 
-          <h1 className="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white uppercase leading-[0.98] mb-6">
+          <h1 className="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.04em] text-white uppercase leading-[1.0] mb-6">
             ENGINEERED <br />
             FOR THE NEXT ERA
           </h1>
@@ -400,10 +400,10 @@ export default function HeroAndServicesSection() {
           <div className="flex items-center gap-5 text-xs font-mono tracking-wider uppercase">
             <a
               href="#services"
-              className="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all inline-flex items-center gap-2 shadow-lg shadow-blue-600/25"
+              className="px-6 py-3 rounded-md bg-white hover:bg-neutral-200 text-neutral-950 font-semibold transition-all inline-flex items-center gap-2 shadow-lg shadow-black/20"
             >
               <span>Explore Architecture</span>
-              <ArrowDown className="w-3.5 h-3.5" />
+              <ArrowDown className="w-3.5 h-3.5 text-neutral-950" />
             </a>
             <a
               href="#capabilities"
@@ -438,9 +438,9 @@ export default function HeroAndServicesSection() {
                   isLeft ? 'lg:left-12 xl:left-20' : 'lg:right-12 xl:right-20'
                 }`}
               >
-                {/* Small Clean Heading with Blue Accent Num */}
+                {/* Small Clean Heading without pills or blue */}
                 <div className="flex items-center gap-3 text-xs font-mono tracking-wider uppercase mb-5">
-                  <span className="text-blue-600 font-bold">{service.num}</span>
+                  <span className="text-neutral-950 font-bold">{service.num}</span>
                   <span className="w-6 h-px bg-neutral-300" />
                   <span className="font-semibold text-neutral-900 tracking-wider font-mono">{service.heading}</span>
                 </div>
@@ -457,9 +457,8 @@ export default function HeroAndServicesSection() {
                   ))}
                 </p>
 
-                {/* Minimal Sub-spec line with Blue Accent Indicator */}
-                <div className="pt-4 border-t border-neutral-200 text-xs font-mono text-neutral-500 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block" />
+                {/* Minimal Sub-spec line without pill dots */}
+                <div className="pt-4 border-t border-neutral-200 text-xs font-mono text-neutral-500">
                   <span>{service.spec}</span>
                 </div>
               </div>
