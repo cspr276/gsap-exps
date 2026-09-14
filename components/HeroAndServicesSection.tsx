@@ -4,7 +4,7 @@ import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { ArrowDown } from 'lucide-react';
+import { ArrowDown, ArrowRight } from 'lucide-react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -384,38 +384,31 @@ export default function HeroAndServicesSection() {
         </div>
 
         {/* ========================================================================= */}
-        {/* HERO SECTION (Centered initially over the full-bleed image)               */}
+        {/* HERO SECTION (Centered initially over the full-bleed video)               */}
         {/* ========================================================================= */}
         <div
           ref={heroTextRef}
-          className="relative z-20 flex flex-col items-center text-center max-w-4xl px-4 pointer-events-auto"
+          className="relative z-20 flex flex-col items-center text-center max-w-5xl px-4 pointer-events-auto"
         >
-          <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-300 mb-4 block">
-            THE AUTONOMOUS OPERATING CORE
-          </span>
-
-          <h1 className="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.03em] text-white uppercase leading-[1.0] mb-6">
-            ENGINEERED <br />
-            FOR THE NEXT ERA
+          <h1 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-[0.02em] text-white uppercase leading-[1.08] mb-8 sm:mb-10 select-none">
+            ENGINEERED FOR AUTONOMOUS INTELLIGENCE, <br />
+            BUILT FOR PLANETARY SCALE.
           </h1>
 
-          <p className="text-base sm:text-lg text-neutral-200 max-w-2xl font-normal leading-relaxed mb-10">
-            A deterministic execution fabric unifying self-healing agent swarms, dynamic compute graphs, and global vector consensus.
-          </p>
-
-          <div className="flex items-center gap-5 text-xs font-mono tracking-wider uppercase">
+          <div className="flex flex-col sm:flex-row items-center gap-4 text-xs font-mono tracking-wider uppercase">
             <a
               href="#services"
-              className="px-6 py-3 rounded-md bg-white hover:bg-neutral-200 text-neutral-950 font-semibold transition-all inline-flex items-center gap-2 shadow-lg shadow-black/20"
+              className="group/btn w-full sm:w-auto px-6 py-3.5 rounded-md bg-white hover:bg-neutral-100 text-neutral-950 font-semibold transition-all inline-flex items-center justify-center gap-2 shadow-xl shadow-black/30"
             >
               <span>Explore Architecture</span>
-              <ArrowDown className="w-3.5 h-3.5 text-neutral-950" />
+              <ArrowDown className="w-3.5 h-3.5 text-neutral-950 transition-transform duration-200 group-hover/btn:translate-y-0.5" />
             </a>
             <a
               href="#capabilities"
-              className="px-6 py-3 rounded-md border border-white/20 bg-white/10 hover:bg-white/20 text-white transition-colors backdrop-blur-sm"
+              className="group/btn w-full sm:w-auto px-6 py-3.5 rounded-md bg-neutral-950/80 hover:bg-neutral-900 border border-neutral-700/90 hover:border-neutral-500 text-white font-semibold transition-all backdrop-blur-md inline-flex items-center justify-center gap-2 shadow-xl shadow-black/30"
             >
               <span>View Capabilities</span>
+              <ArrowRight className="w-3.5 h-3.5 text-neutral-300 transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:text-white" />
             </a>
           </div>
         </div>
