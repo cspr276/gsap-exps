@@ -117,7 +117,7 @@ export default function HeroAndServicesSection() {
             xPercent: 0,
             yPercent: 0,
             borderRadius: '16px',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)',
+            boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.18)',
             duration: 3.5,
             ease: 'power2.inOut'
           },
@@ -354,16 +354,16 @@ export default function HeroAndServicesSection() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full min-h-screen bg-neutral-950 text-white overflow-hidden"
+      className="relative w-full min-h-screen bg-white text-neutral-900 overflow-hidden"
     >
       {/* Pinned Stage Container */}
-      <div className="relative w-full h-screen flex items-center justify-center px-6 sm:px-12 lg:px-20 overflow-hidden">
+      <div className="relative w-full h-screen flex items-center justify-center px-6 sm:px-12 lg:px-20 overflow-hidden bg-white">
         {/* ========================================================================= */}
         {/* THE FLOATING HERO IMAGE                                                   */}
         {/* ========================================================================= */}
         <div
           ref={imageWrapperRef}
-          className="absolute z-10 w-[46vw] max-w-160 h-[58vh] max-h-140 overflow-hidden border border-neutral-800/80 shadow-2xl shadow-black/80 will-change-transform pointer-events-none"
+          className="absolute z-10 w-[46vw] max-w-160 h-[58vh] max-h-140 overflow-hidden border border-neutral-200/90 shadow-2xl shadow-neutral-900/10 will-change-transform pointer-events-none"
         >
           <img
             src="/hero_placeholder.png"
@@ -373,7 +373,7 @@ export default function HeroAndServicesSection() {
           {/* Subtle dark film to guarantee readability in full-bleed hero state */}
           <div
             ref={heroOverlayRef}
-            className="absolute inset-0 bg-black/45 pointer-events-none"
+            className="absolute inset-0 bg-black/40 pointer-events-none"
           />
         </div>
 
@@ -384,32 +384,34 @@ export default function HeroAndServicesSection() {
           ref={heroTextRef}
           className="relative z-20 flex flex-col items-center text-center max-w-4xl px-4 pointer-events-auto"
         >
+          <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-300 mb-4 block">
+            THE AUTONOMOUS OPERATING CORE
+          </span>
 
-          <h1 className="font-display font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white uppercase leading-[0.95] mb-8 pt-8">
+          <h1 className="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white uppercase leading-[0.98] mb-6">
             ENGINEERED <br />
             FOR THE NEXT ERA
           </h1>
 
-          <p className="text-base sm:text-lg text-neutral-300 max-w-2xl font-normal leading-relaxed mb-10">
+          <p className="text-base sm:text-lg text-neutral-200 max-w-2xl font-normal leading-relaxed mb-10">
             A deterministic execution fabric unifying self-healing agent swarms, dynamic compute graphs, and global vector consensus.
           </p>
 
-          <div className="flex items-center gap-6 text-xs font-mono tracking-wider uppercase">
+          <div className="flex items-center gap-5 text-xs font-mono tracking-wider uppercase">
             <a
               href="#services"
-              className="px-6 py-3 rounded-md bg-white text-neutral-950 font-semibold hover:bg-neutral-200 transition-colors inline-flex items-center gap-2"
+              className="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all inline-flex items-center gap-2 shadow-lg shadow-blue-600/25"
             >
               <span>Explore Architecture</span>
               <ArrowDown className="w-3.5 h-3.5" />
             </a>
             <a
               href="#capabilities"
-              className="px-6 py-3 rounded-md border border-neutral-700 bg-neutral-900/60 hover:border-white text-neutral-300 hover:text-white transition-colors"
+              className="px-6 py-3 rounded-md border border-white/20 bg-white/10 hover:bg-white/20 text-white transition-colors backdrop-blur-sm"
             >
               <span>View Capabilities</span>
             </a>
           </div>
-
         </div>
 
         {/* ========================================================================= */}
@@ -436,27 +438,28 @@ export default function HeroAndServicesSection() {
                   isLeft ? 'lg:left-12 xl:left-20' : 'lg:right-12 xl:right-20'
                 }`}
               >
-                {/* Small Clean Heading */}
-                <div className="flex items-center gap-3 text-xs font-mono text-neutral-400 tracking-wider uppercase mb-5">
-                  <span className="text-neutral-500 font-semibold">{service.num}</span>
-                  <span className="w-6 h-px bg-neutral-800" />
-                  <span className="font-semibold text-white tracking-widest">{service.heading}</span>
+                {/* Small Clean Heading with Blue Accent Num */}
+                <div className="flex items-center gap-3 text-xs font-mono tracking-wider uppercase mb-5">
+                  <span className="text-blue-600 font-bold">{service.num}</span>
+                  <span className="w-6 h-px bg-neutral-300" />
+                  <span className="font-semibold text-neutral-900 tracking-wider font-mono">{service.heading}</span>
                 </div>
 
                 {/* Paragraph with word-by-word scroll illumination */}
-                <p className="text-lg sm:text-xl xl:text-2xl font-normal leading-relaxed text-white mb-6">
+                <p className="text-lg sm:text-xl xl:text-2xl font-normal leading-relaxed text-neutral-950 mb-6">
                   {words.map((w, wIdx) => (
                     <span
                       key={wIdx}
-                      className="word inline-block mr-[0.25em] will-change-opacity"
+                      className="word inline-block mr-[0.25em] will-change-opacity text-neutral-950 font-normal"
                     >
                       {w}
                     </span>
                   ))}
                 </p>
 
-                {/* Minimal Sub-spec line */}
-                <div className="pt-4 border-t border-neutral-800/80 text-xs font-mono text-neutral-500">
+                {/* Minimal Sub-spec line with Blue Accent Indicator */}
+                <div className="pt-4 border-t border-neutral-200 text-xs font-mono text-neutral-500 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block" />
                   <span>{service.spec}</span>
                 </div>
               </div>
