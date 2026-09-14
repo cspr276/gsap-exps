@@ -40,12 +40,12 @@ export default function CTASection() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-neutral-950 font-semibold text-sm hover:bg-neutral-200 transition-all duration-300 shadow-xl shadow-white/10 group"
           >
-            <span>Get Started with Nexus</span>
+            <span>Get Started with Evalixa</span>
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </a>
           <button className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/[0.04] border border-white/15 text-neutral-300 font-medium text-sm hover:bg-white/[0.08] hover:text-white transition-all duration-300 backdrop-blur-md">
             <Terminal className="w-4 h-4 text-emerald-400" />
-            <span>npm i @nexus/core</span>
+            <span>npm i @evalixa/core</span>
           </button>
         </div>
 

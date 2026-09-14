@@ -64,7 +64,7 @@ export default function ProductMedia({
           <div className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
           <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-          <span className="ml-2 text-[11px] font-mono text-neutral-400">nexus_core_orchestrator.env</span>
+          <span className="ml-2 text-[11px] font-mono text-neutral-400">evalixa_core_orchestrator.env</span>
         </div>
         <div className="flex items-center gap-3 text-[11px] font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-500/30 px-2.5 py-1 rounded-full">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />

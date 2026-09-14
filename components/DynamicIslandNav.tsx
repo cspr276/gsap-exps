@@ -27,7 +27,7 @@ export default function DynamicIslandNav() {
         {/* Brand Text as Logo with Refined Font Style */}
         <a href="#hero" className="flex items-center group">
           <span className="font-display font-black text-base sm:text-lg tracking-[0.25em] text-white uppercase group-hover:text-neutral-300 transition-colors">
-            NEXUS
+            EVALIXA
           </span>
         </a>
 

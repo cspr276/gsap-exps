@@ -92,7 +92,7 @@ export default function ExtendedServicesSection() {
                   <TiltedCard
                     imageSrc={item.image}
                     altText={item.title}
-                    captionText={`Nexus Module ${item.num}`}
+                    captionText={`Evalixa Module ${item.num}`}
                     containerHeight="200px"
                     containerWidth="100%"
                     imageHeight="200px"
