@@ -8,10 +8,10 @@ export default function Footer() {
     <footer className="relative w-full bg-neutral-950 pt-32 pb-16 px-4 sm:px-8 lg:px-12">
       <div className="relative max-w-7xl mx-auto">
         {/* Clean background watermark logo mark & typography aligned cleanly behind the top edge of the dock */}
-        <div className="absolute top-0 translate-y-[-50%] translate-x-[18%] pointer-events-none select-none z-0 ">
+        <div className="absolute top-0 translate-y-[-50%] translate-x-[1%] pointer-events-none select-none z-0 ">
           <svg
             viewBox="0 0 950 180"
-            className="w-[85vw] max-w-5xl h-auto text-neutral-800/90 select-none"
+            className="w-[85vw] max-w-7xl h-auto text-neutral-800/90 select-none"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -19,10 +19,10 @@ export default function Footer() {
             {/* Brand Wordmark */}
             <text
               // x="95"
-              y="130"
+              y="120"
               fill="currentColor"
               fontFamily="var(--font-display), sans-serif"
-              fontSize="148"
+              fontSize="118"
               fontWeight="800"
               letterSpacing="0.6em"
             >
