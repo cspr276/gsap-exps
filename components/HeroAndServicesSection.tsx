@@ -388,11 +388,11 @@ export default function HeroAndServicesSection() {
         {/* ========================================================================= */}
         <div
           ref={heroTextRef}
-          className="relative z-20 flex flex-col items-center text-center max-w-5xl px-4 pointer-events-auto"
+          className="relative z-20 flex flex-col items-center gap-8 text-center max-w-5xl px-4 pointer-events-auto"
         >
-          <h1 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-[0.02em] text-white uppercase leading-[1.08] mb-8 sm:mb-10 select-none">
-            ENGINEERED FOR AUTONOMOUS INTELLIGENCE, <br />
-            BUILT FOR PLANETARY SCALE.
+          <h1 className="font-display font-semibold text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-[0.02em] text-white leading-[1.08] mb-8 sm:mb-10 select-none">
+            Engineered for Autonomous Intelligence, <br />
+            Built for Planetary Scale.
           </h1>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 text-xs font-mono tracking-wider uppercase">
@@ -440,7 +440,7 @@ export default function HeroAndServicesSection() {
                 {/* Small Clean Heading without pills or blue */}
                 <div className="flex items-center gap-3 text-xs font-mono tracking-wider uppercase mb-5">
                   <span className="text-neutral-950 font-bold">{service.num}</span>
-                  <span className="w-6 h-px bg-neutral-300" />
+                  <span className="w-2 h-px bg-neutral-300" />
                   <span className="font-semibold text-neutral-900 tracking-wider font-mono">{service.heading}</span>
                 </div>
 
@@ -455,11 +455,6 @@ export default function HeroAndServicesSection() {
                     </span>
                   ))}
                 </p>
-
-                {/* Minimal Sub-spec line without pill dots */}
-                <div className="pt-4 border-t border-neutral-200 text-xs font-mono text-neutral-500">
-                  <span>{service.spec}</span>
-                </div>
               </div>
             );
           })}
