@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { ArrowDown, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -35,9 +36,15 @@ const THREE_SERVICES = [
   }
 ];
 
+const INFO_HEADING = "AI Security, Evaluation & Intelligent Systems";
+const INFO_PARAGRAPH =
+  "Nexus delivers enterprise-grade AI services across model security testing, attack detection, agent evaluation, data annotation, and intelligent system design. Our delivery approach is shaped by real case studies and proven outcomes - helping ambitious teams build secure, reliable AI systems.";
+const INFO_WORDS = INFO_PARAGRAPH.split(' ');
+
 export default function HeroAndServicesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroTextRef = useRef<HTMLDivElement>(null);
+  const infoDisplayRef = useRef<HTMLDivElement>(null);
   const imageWrapperRef = useRef<HTMLDivElement>(null);
   const heroOverlayRef = useRef<HTMLDivElement>(null);
   const serviceCardsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -48,6 +55,7 @@ export default function HeroAndServicesSection() {
       const heroText = heroTextRef.current;
       const imageWrapper = imageWrapperRef.current;
       const heroOverlay = heroOverlayRef.current;
+      const infoDisplay = infoDisplayRef.current;
       if (!container || !heroText || !imageWrapper) return;
 
       const mm = gsap.matchMedia();
@@ -64,7 +72,7 @@ export default function HeroAndServicesSection() {
         // Initial fullscreen hero state:
         // Image card is scaled up so it fully covers the viewport with 0 radius & 0 shadow
         gsap.set(heroText, { opacity: 1, y: 0 });
-        if (heroOverlay) gsap.set(heroOverlay, { opacity: 1 });
+        if (heroOverlay) gsap.set(heroOverlay, { opacity: 0.55 });
         gsap.set(imageWrapper, {
           scale: heroScale,
           xPercent: 0,
@@ -72,6 +80,12 @@ export default function HeroAndServicesSection() {
           borderRadius: '0px',
           boxShadow: 'none'
         });
+
+        if (infoDisplay) {
+          gsap.set(infoDisplay, { opacity: 0, y: 35 });
+          const infoWords = infoDisplay.querySelectorAll('.info-word');
+          gsap.set(infoWords, { opacity: 0.18 });
+        }
 
         serviceCardsRef.current.forEach((el) => {
           if (el) {
@@ -82,12 +96,12 @@ export default function HeroAndServicesSection() {
           }
         });
 
-        // Master Timeline pinned with generous scroll room (11000px + viewport height for stack slide-over)
+        // Master Timeline pinned with generous scroll room (14500px + viewport height for stack slide-over)
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: container,
             start: 'top top',
-            end: () => `+=${11000 + window.innerHeight}`,
+            end: () => `+=${14500 + window.innerHeight}`,
             pin: true,
             scrub: 1,
             anticipatePin: 1
@@ -124,17 +138,74 @@ export default function HeroAndServicesSection() {
           'hero-shrink'
         );
 
-        // Dark overlay on hero fades to reveal the vibrant crisp image
+        // Transition dark scrim to comfortable reading contrast for info display
         if (heroOverlay) {
           tl.to(
             heroOverlay,
             {
-              opacity: 0,
+              opacity: 0.75,
               duration: 3.0,
               ease: 'power2.inOut'
             },
             'hero-shrink'
           );
+        }
+
+        /* ========================================================================= */
+        /* PHASE 1.5: INFO DISPLAY (CENTERED OVER VIDEO CARD)                        */
+        /* Text highlights word-by-word on scroll before transitioning to services   */
+        /* ========================================================================= */
+        if (infoDisplay) {
+          tl.to(
+            infoDisplay,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 1.4,
+              ease: 'power2.out'
+            },
+            'info-enter'
+          );
+
+          const infoWords = infoDisplay.querySelectorAll('.info-word');
+          tl.to(
+            infoWords,
+            {
+              opacity: 1,
+              stagger: 0.08,
+              duration: 3.6,
+              ease: 'none'
+            },
+            'info-highlight'
+          );
+
+          // Comfortable reading hold
+          tl.to({}, { duration: 1.6 });
+
+          // Info exit before image glides to Service 1
+          tl.to(
+            infoDisplay,
+            {
+              opacity: 0,
+              y: -35,
+              duration: 1.2,
+              ease: 'power2.in'
+            },
+            'info-exit'
+          );
+
+          // Clear scrim so video is 100% vibrant for the services
+          if (heroOverlay) {
+            tl.to(
+              heroOverlay,
+              {
+                opacity: 0,
+                duration: 1.2,
+                ease: 'power2.inOut'
+              },
+              'info-exit'
+            );
+          }
         }
 
         // Brief breathing room in center before moving
@@ -340,6 +411,12 @@ export default function HeroAndServicesSection() {
 
         if (heroOverlay) gsap.set(heroOverlay, { opacity: 0 });
 
+        if (infoDisplayRef.current) {
+          gsap.set(infoDisplayRef.current, { opacity: 1, y: 0 });
+          const words = infoDisplayRef.current.querySelectorAll('.info-word');
+          gsap.set(words, { opacity: 1 });
+        }
+
         serviceCardsRef.current.forEach((card) => {
           if (!card) return;
           gsap.set(card, { opacity: 1, y: 0 });
@@ -376,10 +453,10 @@ export default function HeroAndServicesSection() {
           >
             <source src="/hero_video.mp4" type="video/mp4" />
           </video>
-          {/* Subtle dark film to guarantee readability in full-bleed hero state */}
+          {/* Subtle dark film to guarantee readability */}
           <div
             ref={heroOverlayRef}
-            className="absolute inset-0 bg-black/40 pointer-events-none"
+            className="absolute inset-0 bg-black/60 pointer-events-none"
           />
         </div>
 
@@ -396,21 +473,43 @@ export default function HeroAndServicesSection() {
           </h1>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 text-xs font-mono tracking-wider uppercase">
-            <a
-              href="#services"
+            <Link
+              href="/"
               className="group/btn w-full sm:w-auto px-6 py-3.5 rounded-md bg-white hover:bg-neutral-100 text-neutral-950 font-semibold transition-all inline-flex items-center justify-center gap-2 shadow-xl shadow-black/30"
             >
               <span>Explore Architecture</span>
               <ArrowDown className="w-3.5 h-3.5 text-neutral-950 transition-transform duration-200 group-hover/btn:translate-y-0.5" />
-            </a>
-            <a
-              href="#capabilities"
+            </Link>
+            <Link
+              href="/"
               className="group/btn w-full sm:w-auto px-6 py-3.5 rounded-md bg-neutral-950/80 hover:bg-neutral-900 border border-neutral-700/90 hover:border-neutral-500 text-white font-semibold transition-all backdrop-blur-md inline-flex items-center justify-center gap-2 shadow-xl shadow-black/30"
             >
-              <span>View Capabilities</span>
+              View Capabilities
               <ArrowRight className="w-3.5 h-3.5 text-neutral-300 transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:text-white" />
-            </a>
+            </Link>
           </div>
+        </div>
+
+        {/* ========================================================================= */}
+        {/* INFO DISPLAY (Centered before 3 services)                                 */}
+        {/* ========================================================================= */}
+        <div
+          ref={infoDisplayRef}
+          className="absolute z-20 flex flex-col items-center justify-center text-center max-w-xl md:max-w-2xl px-6 sm:px-10 pointer-events-none"
+        >
+          <h2 className="font-display font-semibold text-2xl sm:text-3xl md:text-4xl text-white tracking-tight mb-4 sm:mb-6 leading-tight select-none">
+            {INFO_HEADING}
+          </h2>
+          <p className="text-sm sm:text-base md:text-lg leading-relaxed font-normal text-neutral-200 select-none">
+            {INFO_WORDS.map((w, i) => (
+              <span
+                key={i}
+                className="info-word inline-block mr-[0.26em] will-change-opacity font-normal text-white"
+              >
+                {w}
+              </span>
+            ))}
+          </p>
         </div>
 
         {/* ========================================================================= */}
