@@ -89,10 +89,10 @@ export default function HorizontalServicesSection() {
     >
       {/* Section Header */}
       <div className="px-6 sm:px-12 lg:px-20 mb-12 max-w-4xl">
-        <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-400 mb-3 block">
+        <span className="font-mono text-xs uppercase tracking-[0.25em] text-blue-400 mb-3 block">
           EXTENDED SERVICES
         </span>
-        <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tight text-white mb-4">
+        <h2 className="font-display font-bold text-3xl sm:text-5xl uppercase tracking-tight text-white mb-4">
           ADDITIONAL PLATFORM MODULES
         </h2>
         <p className="text-neutral-400 text-sm sm:text-base font-normal max-w-xl">
@@ -101,7 +101,7 @@ export default function HorizontalServicesSection() {
       </div>
 
       {/* Horizontal Pinned Track: Cards arranged in the SAME horizontal line */}
-      <div className="relative w-full overflow-hidden md:overflow-visible pl-6 sm:pl-12 lg:pl-20">
+      <div className="relative w-full overflow-hidden md:overflow-visible pl-6 sm:pl-12 lg:px-20">
         <div
           ref={trackRef}
           className="flex flex-col md:flex-row items-stretch gap-6 will-change-transform w-fit pr-16"
@@ -109,13 +109,13 @@ export default function HorizontalServicesSection() {
           {HORIZONTAL_SERVICES.map((item) => (
             <SpotlightCard
               key={item.num}
-              spotlightColor="rgba(255, 255, 255, 0.08)"
+              spotlightColor="rgba(37, 99, 235, 0.12)"
               className="w-full md:w-[460px] flex-shrink-0 flex flex-col justify-between p-8 rounded-2xl border border-neutral-800 bg-[#141414] hover:border-neutral-700 transition-colors"
             >
               <div>
                 {/* Header */}
                 <div className="flex items-center justify-between text-xs font-mono text-neutral-400 mb-6 pb-4 border-b border-neutral-800">
-                  <span className="font-bold text-white">MODULE {item.num}</span>
+                  <span className="font-bold text-blue-400">MODULE {item.num}</span>
                   <span className="uppercase tracking-widest text-neutral-400">{item.category}</span>
                 </div>
 
@@ -133,7 +133,7 @@ export default function HorizontalServicesSection() {
               {/* Bottom Spec & Action */}
               <div className="pt-4 border-t border-neutral-800 flex items-center justify-between text-xs font-mono text-neutral-400">
                 <span className="text-neutral-200 font-semibold">{item.metric}</span>
-                <div className="flex items-center gap-1 text-neutral-400 hover:text-white transition-colors cursor-pointer">
+                <div className="flex items-center gap-1 text-neutral-400 hover:text-blue-400 transition-colors cursor-pointer">
                   <span>INSPECT</span>
                   <ArrowUpRight className="w-3.5 h-3.5" />
                 </div>

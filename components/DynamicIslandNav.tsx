@@ -52,14 +52,14 @@ export default function DynamicIslandNav() {
           </a>
         </div>
 
-        {/* Crisp Rectangular Action Button (Less curvy) */}
+        {/* Crisp Rectangular Action Button with Electric Blue SaaS Accent */}
         <div className="flex items-center gap-3">
           <a
             href="#contact"
-            className="inline-flex items-center gap-1.5 text-xs font-mono tracking-wider uppercase text-neutral-200 px-4 py-2 rounded-md bg-neutral-900 border border-neutral-800 hover:border-neutral-500 hover:text-white transition-all duration-200"
+            className="inline-flex items-center gap-1.5 text-xs font-mono tracking-wider uppercase text-white px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-500 border border-blue-500 shadow-sm shadow-blue-500/25 transition-all duration-200"
           >
             <span>Inquire</span>
-            <ArrowUpRight className="w-3.5 h-3.5 text-neutral-400" />
+            <ArrowUpRight className="w-3.5 h-3.5 text-white" />
           </a>
         </div>
       </nav>
