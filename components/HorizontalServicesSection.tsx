@@ -85,17 +85,17 @@ export default function HorizontalServicesSection() {
     <section
       id="capabilities"
       ref={sectionRef}
-      className="relative z-30 lg:-mt-[100vh] w-full min-h-screen bg-neutral-950 text-white py-24 flex flex-col justify-center overflow-hidden border-t border-neutral-800/80 shadow-[0_-30px_70px_rgba(0,0,0,0.95)]"
+      className="relative z-30 lg:-mt-[100vh] w-full min-h-screen bg-[#f5f5f7] text-neutral-950 py-28 flex flex-col justify-center overflow-hidden border-t border-neutral-200 shadow-[0_-30px_70px_rgba(0,0,0,0.08)]"
     >
       {/* Section Header */}
       <div className="px-6 sm:px-12 lg:px-20 mb-12 max-w-4xl">
-        <span className="font-mono text-xs uppercase tracking-[0.25em] text-blue-400 mb-3 block">
+        <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-400 mb-3 block">
           EXTENDED SERVICES
         </span>
-        <h2 className="font-display font-bold text-3xl sm:text-5xl uppercase tracking-tight text-white mb-4">
+        <h2 className="font-display font-extrabold text-3xl sm:text-5xl uppercase tracking-tight text-neutral-950 mb-4">
           ADDITIONAL PLATFORM MODULES
         </h2>
-        <p className="text-neutral-400 text-sm sm:text-base font-normal max-w-xl">
+        <p className="text-neutral-500 text-sm sm:text-base font-normal max-w-xl">
           Scroll vertically to pan through the remaining core services and capabilities in horizontal sequence.
         </p>
       </div>
@@ -104,39 +104,42 @@ export default function HorizontalServicesSection() {
       <div className="relative w-full overflow-hidden md:overflow-visible pl-6 sm:pl-12 lg:px-20">
         <div
           ref={trackRef}
-          className="flex flex-col md:flex-row items-stretch gap-6 will-change-transform w-fit pr-16"
+          className="flex flex-col md:flex-row items-stretch gap-8 will-change-transform w-fit pr-20"
         >
           {HORIZONTAL_SERVICES.map((item) => (
             <SpotlightCard
               key={item.num}
-              spotlightColor="rgba(37, 99, 235, 0.12)"
-              className="w-full md:w-[460px] flex-shrink-0 flex flex-col justify-between p-8 rounded-2xl border border-neutral-800 bg-[#141414] hover:border-neutral-700 transition-colors"
+              spotlightColor="rgba(0, 0, 0, 0.04)"
+              className="w-full md:w-[500px] lg:w-[540px] min-h-[440px] md:min-h-[480px] flex-shrink-0 flex flex-col justify-between p-8 sm:p-10 rounded-md border border-neutral-200/90 bg-white hover:border-neutral-300 shadow-sm hover:shadow-md transition-all"
             >
               <div>
-                {/* Header */}
-                <div className="flex items-center justify-between text-xs font-mono text-neutral-400 mb-6 pb-4 border-b border-neutral-800">
-                  <span className="font-bold text-blue-400">MODULE {item.num}</span>
-                  <span className="uppercase tracking-widest text-neutral-400">{item.category}</span>
+                {/* Module Tag */}
+                <div className="flex items-center gap-3 text-xs font-mono text-neutral-400 mb-6 pb-4 border-b border-neutral-100">
+                  <span className="font-semibold text-neutral-900 font-mono">MODULE {item.num}</span>
+                  <span className="w-4 h-px bg-neutral-200" />
+                  <span className="uppercase tracking-widest text-neutral-500">{item.category}</span>
                 </div>
 
                 {/* Title */}
-                <h3 className="font-display font-bold text-2xl text-white uppercase tracking-tight mb-4">
+                <h3 className="font-display font-bold text-2xl sm:text-3xl text-neutral-950 uppercase tracking-tight mb-4 leading-snug">
                   {item.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-neutral-300 text-sm leading-relaxed mb-8 font-normal">
+                <p className="text-neutral-600 text-sm sm:text-base leading-relaxed font-normal">
                   {item.desc}
                 </p>
               </div>
 
-              {/* Bottom Spec & Action */}
-              <div className="pt-4 border-t border-neutral-800 flex items-center justify-between text-xs font-mono text-neutral-400">
-                <span className="text-neutral-200 font-semibold">{item.metric}</span>
-                <div className="flex items-center gap-1 text-neutral-400 hover:text-blue-400 transition-colors cursor-pointer">
-                  <span>INSPECT</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </div>
+              {/* Simple Link with Animated Arrow on Hover */}
+              <div className="pt-6 border-t border-neutral-100">
+                <a
+                  href="/"
+                  className="group/link inline-flex items-center gap-2 text-xs font-mono tracking-wider uppercase text-neutral-900 hover:text-black font-semibold transition-colors"
+                >
+                  <span>Learn more</span>
+                  <ArrowUpRight className="w-4 h-4 text-neutral-500 transition-transform duration-300 ease-out group-hover/link:translate-x-1 group-hover/link:-translate-y-0.5 group-hover/link:text-black" />
+                </a>
               </div>
             </SpotlightCard>
           ))}

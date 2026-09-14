@@ -101,11 +101,10 @@ export default function ManifestoSection() {
       className="relative w-full bg-neutral-950 text-white py-32 px-6 sm:px-12 lg:px-20 border-t border-neutral-900 overflow-hidden"
     >
       <div className="max-w-6xl mx-auto flex flex-col items-start">
-        {/* Subtle pill badge with blue accent */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-mono tracking-widest uppercase mb-8">
-          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-          <span>SYSTEM MANIFESTO</span>
-        </div>
+        {/* Clean Typographic Label (No pills) */}
+        <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-400 mb-8 block">
+          SYSTEM MANIFESTO
+        </span>
 
         {/* Refined headline with 3D perspective fold-up scrub */}
         <div style={{ perspective: '1200px' }} className="mb-16 max-w-4xl">
@@ -124,7 +123,7 @@ export default function ManifestoSection() {
           </h2>
         </div>
 
-        {/* 3 Pillars Grid with Blue/Green Subtle SaaS Accents */}
+        {/* 3 Pillars Grid with crisp rectangular cards and clean monochrome styling */}
         <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 pt-10 border-t border-neutral-800/80">
           {PILLARS.map((item, idx) => (
             <div
@@ -132,11 +131,11 @@ export default function ManifestoSection() {
               ref={(el) => {
                 cardsRef.current[idx] = el;
               }}
-              className="p-6 rounded-xl border border-neutral-800/70 bg-neutral-900/40 hover:border-neutral-700/90 transition-all duration-300 flex flex-col justify-between"
+              className="p-6 rounded-md border border-neutral-800 bg-[#121212] hover:border-neutral-700 transition-all duration-300 flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between mb-4 text-xs font-mono">
-                  <span className="text-blue-400 font-bold">{item.num}</span>
+                  <span className="text-white font-bold">{item.num}</span>
                   <span className="text-neutral-400 uppercase tracking-wider">{item.tag}</span>
                 </div>
                 <p className="text-neutral-400 text-sm leading-relaxed font-normal">
