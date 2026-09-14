@@ -17,7 +17,7 @@ const MODULE_CARDS = [
     title: 'Custom Silicon Graph Kernels',
     desc: 'Fused CUDA and Metal shaders compiling recursive matrix calculations directly on device memory for near-zero bus transfer latency.',
     metric: '3.4x TFLOPS / Watt',
-    codeSnippet: 'nexus.compile_kernel({ fusion: "dense_sparse", precision: "fp8" })'
+    codeSnippet: 'evalixa.compile_kernel({ fusion: "dense_sparse", precision: "fp8" })'
   },
   {
     icon: Layers,

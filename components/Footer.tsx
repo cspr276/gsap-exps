@@ -26,7 +26,7 @@ export default function Footer() {
               fontWeight="800"
               letterSpacing="0.6em"
             >
-              NEXUS
+              EVALIXA
             </text>
           </svg>
         </div>
@@ -174,7 +174,7 @@ export default function Footer() {
           <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-400 font-normal">
             <div className="flex items-center gap-4">
               <span>All systems normal</span>
-              <span className="text-neutral-500">© 2026 Nexus</span>
+              <span className="text-neutral-500">© 2026 Evalixa</span>
             </div>
 
             <div className="flex items-center gap-6">

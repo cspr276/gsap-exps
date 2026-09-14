@@ -25,7 +25,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Nexus — Autonomous Intelligence Platform",
+  title: "Evalixa — Autonomous Intelligence Platform",
   description: "Deploy deterministic neural swarms, low-latency vector meshes, and self-orchestrating execution pipelines designed for scale.",
 };
 

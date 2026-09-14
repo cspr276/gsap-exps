@@ -40,7 +40,7 @@ const THREE_SERVICES = [
 
 const INFO_HEADING = "AI Security, Evaluation & Intelligent Systems";
 const INFO_PARAGRAPH =
-  "Nexus delivers enterprise-grade AI services across model security testing, attack detection, agent evaluation, data annotation, and intelligent system design. Our delivery approach is shaped by real case studies and proven outcomes - helping ambitious teams build secure, reliable AI systems.";
+  "Evalixa delivers enterprise-grade AI services across model security testing, attack detection, agent evaluation, data annotation, and intelligent system design. Our delivery approach is shaped by real case studies and proven outcomes - helping ambitious teams build secure, reliable AI systems.";
 const INFO_WORDS = INFO_PARAGRAPH.split(' ');
 
 const containerVariants: Variants = {

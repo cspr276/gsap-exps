@@ -85,7 +85,7 @@ export default function MetricsBentoSection() {
             />
           </h2>
           <p className="text-neutral-400 text-sm sm:text-base leading-relaxed">
-            Every layer of Nexus is benchmarked against real-world mission-critical workloads, ensuring absolute determinism and microsecond reliability.
+            Every layer of Evalixa is benchmarked against real-world mission-critical workloads, ensuring absolute determinism and microsecond reliability.
           </p>
         </div>
 
