@@ -85,10 +85,10 @@ export default function HorizontalServicesSection() {
     <section
       id="capabilities"
       ref={sectionRef}
-      className="relative z-30 lg:-mt-[100vh] w-full min-h-screen h-screen max-h-screen bg-neutral-950 text-white pt-20 pb-8 sm:pt-24 sm:pb-10 flex flex-col justify-between overflow-hidden border-t border-neutral-800/80 shadow-[0_-30px_70px_rgba(0,0,0,0.95)]"
+      className="relative z-30 lg:-mt-[100vh] w-full min-h-screen h-screen bg-neutral-950 text-white pt-16 sm:pt-20 lg:pt-22 pb-8 flex flex-col justify-start overflow-hidden border-t border-neutral-800/80 shadow-[0_-30px_70px_rgba(0,0,0,0.95)]"
     >
       {/* Section Header */}
-      <div className="px-6 sm:px-12 lg:px-20 max-w-4xl">
+      <div className="px-6 sm:px-12 lg:px-20 max-w-4xl flex-shrink-0">
         <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 mb-1.5 block">
           EXTENDED SERVICES
         </span>
@@ -100,8 +100,8 @@ export default function HorizontalServicesSection() {
         </p>
       </div>
 
-      {/* Horizontal Pinned Track: Cards arranged in the SAME horizontal line */}
-      <div className="relative w-full overflow-hidden md:overflow-visible pl-6 sm:pl-12 lg:px-20 pb-2">
+      {/* Horizontal Pinned Track: Cards arranged right below the header */}
+      <div className="relative w-full overflow-hidden md:overflow-visible pl-6 sm:pl-12 lg:px-20 mt-6 sm:mt-8 lg:mt-10 pb-4">
         <div
           ref={trackRef}
           className="flex flex-col md:flex-row items-stretch gap-6 sm:gap-8 will-change-transform w-fit pr-20"
@@ -110,28 +110,35 @@ export default function HorizontalServicesSection() {
             <SpotlightCard
               key={item.num}
               spotlightColor="rgba(255, 255, 255, 0.05)"
-              className="w-full md:w-[440px] lg:w-[480px] h-[300px] sm:h-[320px] flex-shrink-0 flex flex-col justify-between p-7 sm:p-8 rounded-md border border-neutral-800/90 bg-[#121212] hover:border-neutral-700 transition-all shadow-xl shadow-black/40"
+              className="w-full md:w-[460px] lg:w-[490px] h-[380px] sm:h-[420px] lg:h-[440px] flex-shrink-0 flex flex-col justify-between p-8 sm:p-9 rounded-md border border-neutral-800/90 bg-[#121212] hover:border-neutral-700 transition-all shadow-xl shadow-black/40"
             >
-              <div>
-                {/* Title */}
-                <h3 className="font-display font-bold text-lg sm:text-xl text-white uppercase tracking-tight mb-2.5 leading-snug">
+              <div className="flex flex-col">
+                {/* 1. Top Number */}
+                <div className="mb-4 sm:mb-6">
+                  <span className="font-mono text-xs sm:text-sm font-semibold tracking-widest text-neutral-400 uppercase">
+                    {item.num}
+                  </span>
+                </div>
+
+                {/* 2. Heading below number */}
+                <h3 className="font-display font-bold text-xl sm:text-2xl text-white uppercase tracking-tight mb-3 sm:mb-4 leading-snug">
                   {item.title}
                 </h3>
 
-                {/* Description */}
-                <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed font-normal">
+                {/* 3. Content below heading */}
+                <p className="text-neutral-400 text-xs sm:text-sm sm:text-[15px] leading-relaxed font-normal">
                   {item.desc}
                 </p>
               </div>
 
-              {/* Simple Link with Animated Arrow on Hover */}
-              <div className="pt-3.5 border-t border-neutral-800/80">
+              {/* 4. Link below with proper spacing */}
+              <div className="pt-5 sm:pt-6 border-t border-neutral-800/80">
                 <a
                   href="/"
-                  className="group/link inline-flex items-center gap-2 text-xs font-mono tracking-wider uppercase text-neutral-300 hover:text-white font-semibold transition-colors"
+                  className="group/link inline-flex items-center gap-2 text-xs sm:text-sm font-mono tracking-wider uppercase text-neutral-300 hover:text-white font-semibold transition-colors"
                 >
                   <span>Learn more</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-neutral-400 transition-transform duration-300 ease-out group-hover/link:translate-x-1 group-hover/link:-translate-y-0.5 group-hover/link:text-white" />
+                  <ArrowUpRight className="w-4 h-4 text-neutral-400 transition-transform duration-300 ease-out group-hover/link:translate-x-1 group-hover/link:-translate-y-0.5 group-hover/link:text-white" />
                 </a>
               </div>
             </SpotlightCard>
