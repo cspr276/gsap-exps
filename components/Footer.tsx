@@ -18,13 +18,13 @@ export default function Footer() {
 
             {/* Brand Wordmark */}
             <text
-              // x="205"
+              // x="95"
               y="130"
               fill="currentColor"
               fontFamily="var(--font-display), sans-serif"
               fontSize="148"
               fontWeight="800"
-              letterSpacing="-0.03em"
+              letterSpacing="0.6em"
             >
               NEXUS
             </text>
