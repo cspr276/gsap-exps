@@ -341,7 +341,7 @@ export default function HeroAndServicesSection() {
         {/* ========================================================================= */}
         <div
           ref={imageWrapperRef}
-          className="absolute z-10 w-[46vw] max-w-[640px] h-[58vh] max-h-[560px] overflow-hidden border border-neutral-800/80 shadow-2xl shadow-black/80 will-change-transform pointer-events-none"
+          className="absolute z-10 w-[46vw] max-w-160 h-[58vh] max-h-140 overflow-hidden border border-neutral-800/80 shadow-2xl shadow-black/80 will-change-transform pointer-events-none"
         >
           <img
             src="/hero_placeholder.png"
@@ -362,11 +362,8 @@ export default function HeroAndServicesSection() {
           ref={heroTextRef}
           className="relative z-20 flex flex-col items-center text-center max-w-4xl px-4 pointer-events-auto"
         >
-          <span className="font-mono text-xs uppercase tracking-[0.3em] text-neutral-400 mb-6 block">
-            THE AUTONOMOUS OPERATING CORE
-          </span>
 
-          <h1 className="font-display font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white uppercase leading-[0.95] mb-8">
+          <h1 className="font-display font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white uppercase leading-[0.95] mb-8 pt-8">
             ENGINEERED <br />
             FOR THE NEXT ERA
           </h1>
@@ -391,10 +388,6 @@ export default function HeroAndServicesSection() {
             </a>
           </div>
 
-          <div className="mt-14 flex flex-col items-center gap-2 font-mono text-[10px] text-neutral-400 tracking-[0.2em] uppercase">
-            <span>SCROLL TO UNPACK</span>
-            <div className="w-[1px] h-6 bg-neutral-600 animate-pulse" />
-          </div>
         </div>
 
         {/* ========================================================================= */}
@@ -424,7 +417,7 @@ export default function HeroAndServicesSection() {
                 {/* Small Clean Heading */}
                 <div className="flex items-center gap-3 text-xs font-mono text-neutral-400 tracking-wider uppercase mb-5">
                   <span className="text-neutral-500 font-semibold">{service.num}</span>
-                  <span className="w-6 h-[1px] bg-neutral-800" />
+                  <span className="w-6 h-px bg-neutral-800" />
                   <span className="font-semibold text-white tracking-widest">{service.heading}</span>
                 </div>
 
