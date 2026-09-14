@@ -15,35 +15,40 @@ const HORIZONTAL_SERVICES = [
     category: 'INTERFACE SYNTHESIS',
     title: 'Adaptive Generative UI',
     desc: 'Context-aware generative interface engine that streams responsive layouts, real-time controls, and interactive widgets directly into the client DOM.',
-    metric: '60 FPS Stream Rate'
+    metric: '60 FPS Stream Rate',
+    image: '/cards/card_04.jpg'
   },
   {
     num: '05',
     category: 'SECURITY & ATTESTATION',
     title: 'Zero-Knowledge Guardrails',
     desc: 'Cryptographically verifiable execution enclaves validating prompts, preventing memory leakage, and enforcing immutable sandbox security boundaries.',
-    metric: 'Zero Proof Verification'
+    metric: 'Zero Proof Verification',
+    image: '/cards/card_05.jpg'
   },
   {
     num: '06',
     category: 'STREAMING EVENT BUS',
     title: 'Reactive Event Fabric',
     desc: 'Ultra-low latency pub/sub bus handling millions of state transitions per second across multi-region edge clusters with backpressure safety.',
-    metric: '5M Events / Sec'
+    metric: '5M Events / Sec',
+    image: '/cards/card_06.jpg'
   },
   {
     num: '07',
     category: 'COMPUTE COMPILATION',
     title: 'Autonomous Model Distillation',
     desc: 'Dynamic weight pruning and FP8/INT4 quantization compiling inference graphs directly onto target silicon with dramatic memory reduction.',
-    metric: '74% Memory Reduction'
+    metric: '74% Memory Reduction',
+    image: '/cards/card_07.jpg'
   },
   {
     num: '08',
     category: 'ENTERPRISE GOVERNANCE',
     title: 'Cryptographic Audit Lineage',
     desc: 'Deterministic execution replays, tamper-evident action logs, and role-based capability gating satisfying stringent enterprise compliance requirements.',
-    metric: '100% Deterministic Replay'
+    metric: '100% Deterministic Replay',
+    image: '/cards/card_08.jpg'
   }
 ];
 
@@ -60,10 +65,16 @@ export default function HorizontalServicesSection() {
       const mm = gsap.matchMedia();
 
       mm.add('(min-width: 1024px)', () => {
-        // Card width is 490px. Card 04 starts centered at 50vw.
-        // Scroll distance travels from card 04 centered through card 08 centered + exit buffer.
-        const cardWidth = 490;
-        const getScrollDistance = () => track.scrollWidth - cardWidth + 240;
+        // Distance from card 04 to card 08 brings 08 to center (50vw).
+        // Adding 120px lets card 08 settle comfortably "just after middle".
+        const getScrollDistance = () => {
+          const cards = track.children;
+          if (cards.length > 1) {
+            const lastCard = cards[cards.length - 1] as HTMLElement;
+            return lastCard.offsetLeft + 120;
+          }
+          return 2200;
+        };
 
         gsap.to(track, {
           x: () => -getScrollDistance(),
@@ -111,37 +122,50 @@ export default function HorizontalServicesSection() {
           {HORIZONTAL_SERVICES.map((item) => (
             <SpotlightCard
               key={item.num}
-              spotlightColor="rgba(255, 255, 255, 0.05)"
-              className="group/card w-full md:w-[460px] lg:w-[490px] h-[380px] sm:h-[420px] lg:h-[440px] flex-shrink-0 flex flex-col justify-between p-8 sm:p-9 rounded-md border border-neutral-800/90 bg-[#121212] hover:border-neutral-700 transition-all shadow-xl shadow-black/40 cursor-default"
+              spotlightColor="rgba(255, 255, 255, 0.08)"
+              className="group/card w-full md:w-[460px] lg:w-[490px] h-[380px] sm:h-[420px] lg:h-[440px] flex-shrink-0 relative rounded-md border border-neutral-800/90 bg-[#121212] hover:border-neutral-700 transition-all shadow-xl shadow-black/50 cursor-default overflow-hidden p-8 sm:p-9"
             >
-              <div className="flex flex-col">
-                {/* 1. Top Number */}
-                <div className="mb-4 sm:mb-6">
-                  <span className="font-mono text-xs sm:text-sm font-semibold tracking-widest text-neutral-400 uppercase">
-                    {item.num}
-                  </span>
-                </div>
-
-                {/* 2. Heading below number */}
-                <h3 className="font-display font-bold text-xl sm:text-2xl text-white uppercase tracking-tight mb-3 sm:mb-4 leading-snug">
-                  {item.title}
-                </h3>
-
-                {/* 3. Content below heading */}
-                <p className="text-neutral-400 text-xs sm:text-sm sm:text-[15px] leading-relaxed font-normal">
-                  {item.desc}
-                </p>
+              {/* Background Image Layer with Dark Overlay & Subtle Zoom on Hover */}
+              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover object-center grayscale contrast-125 opacity-20 group-hover/card:scale-105 group-hover/card:opacity-30 transition-all duration-700 ease-out"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#101012] via-[#101012]/80 to-[#101012]/55" />
               </div>
 
-              {/* 4. Link below with hover rotation from 45deg to straight 0deg */}
-              <div className="pt-5 sm:pt-6 border-t border-neutral-800/80">
-                <a
-                  href="/"
-                  className="group/link inline-flex items-center gap-2 text-xs sm:text-sm font-mono tracking-wider uppercase text-neutral-300 group-hover/card:text-white font-semibold transition-colors"
-                >
-                  <span>Learn more</span>
-                  <ArrowRight className="w-4 h-4 text-neutral-400 -rotate-45 group-hover/card:rotate-0 group-hover/card:text-white group-hover/card:translate-x-0.5 transition-all duration-300 ease-out origin-center" />
-                </a>
+              {/* Foreground Card Content */}
+              <div className="relative z-10 flex flex-col justify-between h-full">
+                <div className="flex flex-col">
+                  {/* 1. Top Number */}
+                  <div className="mb-4 sm:mb-6">
+                    <span className="font-mono text-xs sm:text-sm font-semibold tracking-widest text-neutral-400 uppercase">
+                      {item.num}
+                    </span>
+                  </div>
+
+                  {/* 2. Heading below number */}
+                  <h3 className="font-display font-bold text-xl sm:text-2xl text-white uppercase tracking-tight mb-3 sm:mb-4 leading-snug">
+                    {item.title}
+                  </h3>
+
+                  {/* 3. Content below heading */}
+                  <p className="text-neutral-300 text-xs sm:text-sm sm:text-[15px] leading-relaxed font-normal">
+                    {item.desc}
+                  </p>
+                </div>
+
+                {/* 4. Link below with hover rotation from 45deg to straight 0deg */}
+                <div className="pt-5 sm:pt-6 border-t border-neutral-800/80">
+                  <a
+                    href="/"
+                    className="group/link inline-flex items-center gap-2 text-xs sm:text-sm font-mono tracking-wider uppercase text-neutral-300 group-hover/card:text-white font-semibold transition-colors"
+                  >
+                    <span>Learn more</span>
+                    <ArrowRight className="w-4 h-4 text-neutral-400 -rotate-45 group-hover/card:rotate-0 group-hover/card:text-white group-hover/card:translate-x-0.5 transition-all duration-300 ease-out origin-center" />
+                  </a>
+                </div>
               </div>
             </SpotlightCard>
           ))}
