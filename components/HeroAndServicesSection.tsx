@@ -82,12 +82,12 @@ export default function HeroAndServicesSection() {
           }
         });
 
-        // Master Timeline pinned with generous scroll room (9500px)
+        // Master Timeline pinned with generous scroll room (11000px + viewport height for stack slide-over)
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: container,
             start: 'top top',
-            end: '+=9500',
+            end: () => `+=${11000 + window.innerHeight}`,
             pin: true,
             scrub: 1,
             anticipatePin: 1
@@ -95,8 +95,8 @@ export default function HeroAndServicesSection() {
         });
 
         /* ========================================================================= */
-        /* HERO EXIT & IMAGE SHRINK TO DOWN-RIGHT (Generous scroll room)             */
-        /* The full-bleed background smoothly pulls back and travels down-right      */
+        /* PHASE 1: HERO EXIT & SHRINK FROM ALL 4 SIDES (CENTERED)                   */
+        /* The full image pulls back and shrinks inward from all 4 sides into center */
         /* ========================================================================= */
         tl.to(
           heroText,
@@ -109,13 +109,13 @@ export default function HeroAndServicesSection() {
           'hero-exit'
         );
 
-        // The image smoothly zooms out from full bleed to its card frame and glides down-right
+        // Shrink from all 4 sides inward into a centered framed card (xPercent: 0, yPercent: 0)
         tl.to(
           imageWrapper,
           {
             scale: 1,
-            xPercent: 52,
-            yPercent: 4,
+            xPercent: 0,
+            yPercent: 0,
             borderRadius: '16px',
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)',
             duration: 3.5,
@@ -137,7 +137,25 @@ export default function HeroAndServicesSection() {
           );
         }
 
-        // Brief breathing room so image settles in place before text enters
+        // Brief breathing room in center before moving
+        tl.to({}, { duration: 0.4 });
+
+        /* ========================================================================= */
+        /* PHASE 2: IMAGE TRAVELS DOWN AND TO THE RIGHT                              */
+        /* As user continues scrolling, the image glides to Service 1 down-right spot*/
+        /* ========================================================================= */
+        tl.to(
+          imageWrapper,
+          {
+            xPercent: 52,
+            yPercent: 4,
+            duration: 3.2,
+            ease: 'power2.inOut'
+          },
+          'image-to-s1'
+        );
+
+        // Settle room before Service 1 content enters
         tl.to({}, { duration: 0.4 });
 
         /* ========================================================================= */
@@ -299,8 +317,12 @@ export default function HeroAndServicesSection() {
           tl.to({}, { duration: 1.5 });
         }
 
-        // Conclude the sequence cleanly
-        tl.to({}, { duration: 0.8 });
+        /* ========================================================================= */
+        /* LOCK SERVICE 3 SECTION IN PLACE WHILE NEXT SECTION STACKS ON TOP         */
+        /* The entire section stays pinned and frozen on screen while the            */
+        /* HorizontalServicesSection slides up from the bottom directly on top of it */
+        /* ========================================================================= */
+        tl.to({}, { duration: 4.2 });
       });
 
       // Mobile / Tablet Fallback (< 1024px)

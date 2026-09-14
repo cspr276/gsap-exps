@@ -59,7 +59,7 @@ export default function HorizontalServicesSection() {
 
       const mm = gsap.matchMedia();
 
-      mm.add('(min-width: 768px)', () => {
+      mm.add('(min-width: 1024px)', () => {
         // Distance the track needs to travel horizontally
         const getScrollDistance = () => track.scrollWidth - window.innerWidth + 140;
 
@@ -85,7 +85,7 @@ export default function HorizontalServicesSection() {
     <section
       id="capabilities"
       ref={sectionRef}
-      className="relative w-full min-h-screen bg-neutral-950 text-white py-24 flex flex-col justify-center overflow-hidden border-t border-neutral-900"
+      className="relative z-30 lg:-mt-[100vh] w-full min-h-screen bg-neutral-950 text-white py-24 flex flex-col justify-center overflow-hidden border-t border-neutral-800/80 shadow-[0_-30px_70px_rgba(0,0,0,0.95)]"
     >
       {/* Section Header */}
       <div className="px-6 sm:px-12 lg:px-20 mb-12 max-w-4xl">
