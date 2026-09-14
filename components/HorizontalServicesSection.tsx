@@ -5,7 +5,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import SpotlightCard from './SpotlightCard';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -60,8 +60,10 @@ export default function HorizontalServicesSection() {
       const mm = gsap.matchMedia();
 
       mm.add('(min-width: 1024px)', () => {
-        // Distance the track needs to travel horizontally
-        const getScrollDistance = () => track.scrollWidth - window.innerWidth + 140;
+        // Card width is 490px. Card 04 starts centered at 50vw.
+        // Scroll distance travels from card 04 centered through card 08 centered + exit buffer.
+        const cardWidth = 490;
+        const getScrollDistance = () => track.scrollWidth - cardWidth + 240;
 
         gsap.to(track, {
           x: () => -getScrollDistance(),
@@ -100,8 +102,8 @@ export default function HorizontalServicesSection() {
         </p>
       </div>
 
-      {/* Horizontal Pinned Track: Cards arranged right below the header */}
-      <div className="relative w-full overflow-hidden md:overflow-visible pl-6 sm:pl-12 lg:px-20 mt-6 sm:mt-8 lg:mt-10 pb-4">
+      {/* Horizontal Pinned Track: Card 04 starts centered in viewport on desktop */}
+      <div className="relative w-full overflow-hidden md:overflow-visible pl-6 sm:pl-12 lg:pl-[calc(50vw-245px)] mt-6 sm:mt-8 lg:mt-10 pb-4">
         <div
           ref={trackRef}
           className="flex flex-col md:flex-row items-stretch gap-6 sm:gap-8 will-change-transform w-fit pr-20"
@@ -110,7 +112,7 @@ export default function HorizontalServicesSection() {
             <SpotlightCard
               key={item.num}
               spotlightColor="rgba(255, 255, 255, 0.05)"
-              className="w-full md:w-[460px] lg:w-[490px] h-[380px] sm:h-[420px] lg:h-[440px] flex-shrink-0 flex flex-col justify-between p-8 sm:p-9 rounded-md border border-neutral-800/90 bg-[#121212] hover:border-neutral-700 transition-all shadow-xl shadow-black/40"
+              className="group/card w-full md:w-[460px] lg:w-[490px] h-[380px] sm:h-[420px] lg:h-[440px] flex-shrink-0 flex flex-col justify-between p-8 sm:p-9 rounded-md border border-neutral-800/90 bg-[#121212] hover:border-neutral-700 transition-all shadow-xl shadow-black/40 cursor-default"
             >
               <div className="flex flex-col">
                 {/* 1. Top Number */}
@@ -131,14 +133,14 @@ export default function HorizontalServicesSection() {
                 </p>
               </div>
 
-              {/* 4. Link below with proper spacing */}
+              {/* 4. Link below with hover rotation from 45deg to straight 0deg */}
               <div className="pt-5 sm:pt-6 border-t border-neutral-800/80">
                 <a
                   href="/"
-                  className="group/link inline-flex items-center gap-2 text-xs sm:text-sm font-mono tracking-wider uppercase text-neutral-300 hover:text-white font-semibold transition-colors"
+                  className="group/link inline-flex items-center gap-2 text-xs sm:text-sm font-mono tracking-wider uppercase text-neutral-300 group-hover/card:text-white font-semibold transition-colors"
                 >
                   <span>Learn more</span>
-                  <ArrowUpRight className="w-4 h-4 text-neutral-400 transition-transform duration-300 ease-out group-hover/link:translate-x-1 group-hover/link:-translate-y-0.5 group-hover/link:text-white" />
+                  <ArrowRight className="w-4 h-4 text-neutral-400 -rotate-45 group-hover/card:rotate-0 group-hover/card:text-white group-hover/card:translate-x-0.5 transition-all duration-300 ease-out origin-center" />
                 </a>
               </div>
             </SpotlightCard>
