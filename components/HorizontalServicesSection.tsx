@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import SpotlightCard from './SpotlightCard';
 import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -71,7 +72,7 @@ export default function HorizontalServicesSection() {
           const cards = track.children;
           if (cards.length > 1) {
             const lastCard = cards[cards.length - 1] as HTMLElement;
-            return lastCard.offsetLeft + 120;
+            return lastCard.offsetLeft + 60;
           }
           return 2200;
         };
@@ -123,16 +124,16 @@ export default function HorizontalServicesSection() {
             <SpotlightCard
               key={item.num}
               spotlightColor="rgba(255, 255, 255, 0.08)"
-              className="group/card w-full md:w-[460px] lg:w-[490px] h-[380px] sm:h-[420px] lg:h-[440px] flex-shrink-0 relative rounded-md border border-neutral-800/90 bg-[#121212] hover:border-neutral-700 transition-all shadow-xl shadow-black/50 cursor-default overflow-hidden p-8 sm:p-9"
+              className="group/card w-full md:w-115 lg:w-[490px] h-[380px] sm:h-[420px] lg:h-[440px] flex-shrink-0 relative rounded-md border border-neutral-800/90 bg-[#121212] hover:border-neutral-700 transition-all shadow-xl shadow-black/50 cursor-default overflow-hidden p-8 sm:p-9"
             >
               {/* Background Image Layer with Dark Overlay & Subtle Zoom on Hover */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="w-full h-full object-cover object-center grayscale contrast-125 opacity-20 group-hover/card:scale-105 group-hover/card:opacity-30 transition-all duration-700 ease-out"
+                  className="w-full h-full object-cover object-center group-hover/card:scale-105 group-hover/card:opacity-30 transition-all duration-700 ease-out"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#101012] via-[#101012]/80 to-[#101012]/55" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#10101280] via-[#101012]/40 to-[#101012]/25" />
               </div>
 
               {/* Foreground Card Content */}
@@ -140,7 +141,7 @@ export default function HorizontalServicesSection() {
                 <div className="flex flex-col">
                   {/* 1. Top Number */}
                   <div className="mb-4 sm:mb-6">
-                    <span className="font-mono text-xs sm:text-sm font-semibold tracking-widest text-neutral-400 uppercase">
+                    <span className="font-mono text-xs sm:text-sm font-semibold tracking-widest text-white uppercase">
                       {item.num}
                     </span>
                   </div>
@@ -157,14 +158,14 @@ export default function HorizontalServicesSection() {
                 </div>
 
                 {/* 4. Link below with hover rotation from 45deg to straight 0deg */}
-                <div className="pt-5 sm:pt-6 border-t border-neutral-800/80">
-                  <a
+                <div className="pt-5 sm:pt-6">
+                  <Link
                     href="/"
                     className="group/link inline-flex items-center gap-2 text-xs sm:text-sm font-mono tracking-wider uppercase text-neutral-300 group-hover/card:text-white font-semibold transition-colors"
                   >
                     <span>Learn more</span>
                     <ArrowRight className="w-4 h-4 text-neutral-400 -rotate-45 group-hover/card:rotate-0 group-hover/card:text-white group-hover/card:translate-x-0.5 transition-all duration-300 ease-out origin-center" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </SpotlightCard>

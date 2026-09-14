@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function DynamicIslandNav() {
   const [scrolled, setScrolled] = useState(false);
@@ -32,35 +33,35 @@ export default function DynamicIslandNav() {
 
         {/* Minimal Navigation Links */}
         <div className="hidden md:flex items-center gap-8 text-xs font-mono tracking-wider uppercase text-neutral-400">
-          <a
-            href="#services"
+          <Link
+            href="/"
             className="hover:text-white transition-colors duration-200"
           >
             Services
-          </a>
-          <a
-            href="#capabilities"
+          </Link>
+          <Link
+            href="/"
             className="hover:text-white transition-colors duration-200"
           >
             Capabilities
-          </a>
-          <a
-            href="#manifesto"
+          </Link>
+          <Link
+            href="/"
             className="hover:text-white transition-colors duration-200"
           >
             Manifesto
-          </a>
+          </Link>
         </div>
 
         {/* Crisp Rectangular Action Button */}
         <div className="flex items-center gap-3">
-          <a
-            href="#contact"
+          <Link
+            href="/"
             className="inline-flex items-center gap-1.5 text-xs font-mono tracking-wider uppercase text-white px-4 py-2 rounded-md bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 shadow-sm transition-all duration-200"
           >
             <span>Inquire</span>
             <ArrowUpRight className="w-3.5 h-3.5 text-white" />
-          </a>
+          </Link>
         </div>
       </nav>
     </header>
