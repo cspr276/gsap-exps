@@ -13,17 +13,17 @@ const MANIFESTO_TEXT =
 const PILLARS = [
   {
     num: "01",
-    tag: "DETERMINISTIC RIGOR",
+    tag: "Deterministic Rigor",
     desc: "Zero tolerance for hallucination or context drift. Every action is cryptographically attested and verified across consensus nodes before state commits."
   },
   {
     num: "02",
-    tag: "SILICON COMPILATION",
+    tag: "Silicon Compilation",
     desc: "Bypassing heavy virtualization layers. Agent compute graphs compile directly into bare-metal GPU instructions with sub-millisecond dispatch."
   },
   {
     num: "03",
-    tag: "CONTINUOUS SCALE",
+    tag: "Continuous Scale",
     desc: "Engineered from first principles for infinite horizontal concurrency across globally partitioned edge mesh clusters with self-balancing workloads."
   }
 ];
@@ -126,9 +126,11 @@ export default function ManifestoSection() {
               className="p-6 sm:p-7 rounded-md border border-neutral-200/90 bg-white hover:border-neutral-300 hover:shadow-md transition-all duration-300 flex flex-col justify-between shadow-sm"
             >
               <div>
-                <div className="flex items-center justify-between mb-4 text-xs font-mono">
-                  <span className="text-neutral-900 font-bold">{item.num}</span>
-                  <span className="text-neutral-500 uppercase tracking-wider">{item.tag}</span>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="font-mono text-xs font-bold text-neutral-900">{item.num}</span>
+                  <span className="font-heading font-semibold text-xs sm:text-[13px] text-neutral-800 tracking-tight">
+                    {item.tag}
+                  </span>
                 </div>
                 <p className="text-neutral-600 text-sm leading-relaxed font-normal">
                   {item.desc}
