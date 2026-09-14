@@ -388,7 +388,7 @@ export default function HeroAndServicesSection() {
             THE AUTONOMOUS OPERATING CORE
           </span>
 
-          <h1 className="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.04em] text-white uppercase leading-[1.0] mb-6">
+          <h1 className="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[0.03em] text-white uppercase leading-[1.0] mb-6">
             ENGINEERED <br />
             FOR THE NEXT ERA
           </h1>
