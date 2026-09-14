@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { ArrowDown, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -41,13 +43,79 @@ const INFO_PARAGRAPH =
   "Nexus delivers enterprise-grade AI services across model security testing, attack detection, agent evaluation, data annotation, and intelligent system design. Our delivery approach is shaped by real case studies and proven outcomes - helping ambitious teams build secure, reliable AI systems.";
 const INFO_WORDS = INFO_PARAGRAPH.split(' ');
 
+const containerVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: -20,
+    transition: {
+      duration: 0.35,
+      ease: [0.25, 0.1, 0.25, 1] as const
+    }
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.16, 1, 0.3, 1] as const,
+      staggerChildren: 0.06,
+      delayChildren: 0.08
+    }
+  }
+};
+
+const headingVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 22,
+    filter: 'blur(8px)'
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: {
+      duration: 0.65,
+      ease: [0.16, 1, 0.3, 1] as const
+    }
+  }
+};
+
+const paragraphVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.015,
+      delayChildren: 0.12
+    }
+  }
+};
+
+const wordVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 12,
+    filter: 'blur(4px)'
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: {
+      duration: 0.4,
+      ease: [0.2, 0.65, 0.3, 0.9] as const
+    }
+  }
+};
+
 export default function HeroAndServicesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroTextRef = useRef<HTMLDivElement>(null);
-  const infoDisplayRef = useRef<HTMLDivElement>(null);
   const imageWrapperRef = useRef<HTMLDivElement>(null);
   const heroOverlayRef = useRef<HTMLDivElement>(null);
   const serviceCardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const [isInfoVisible, setIsInfoVisible] = useState(false);
 
   useGSAP(
     () => {
@@ -55,7 +123,6 @@ export default function HeroAndServicesSection() {
       const heroText = heroTextRef.current;
       const imageWrapper = imageWrapperRef.current;
       const heroOverlay = heroOverlayRef.current;
-      const infoDisplay = infoDisplayRef.current;
       if (!container || !heroText || !imageWrapper) return;
 
       const mm = gsap.matchMedia();
@@ -81,12 +148,6 @@ export default function HeroAndServicesSection() {
           boxShadow: 'none'
         });
 
-        if (infoDisplay) {
-          gsap.set(infoDisplay, { opacity: 0, y: 35 });
-          const infoWords = infoDisplay.querySelectorAll('.info-word');
-          gsap.set(infoWords, { opacity: 0.18 });
-        }
-
         serviceCardsRef.current.forEach((el) => {
           if (el) {
             gsap.set(el, { opacity: 0, y: 40 });
@@ -96,15 +157,32 @@ export default function HeroAndServicesSection() {
           }
         });
 
-        // Master Timeline pinned with generous scroll room (14500px + viewport height for stack slide-over)
+        // Master Timeline pinned with generous scroll room (14000px + viewport height for stack slide-over)
+        let lastVisible = false;
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: container,
             start: 'top top',
-            end: () => `+=${14500 + window.innerHeight}`,
+            end: () => `+=${14000 + window.innerHeight}`,
             pin: true,
             scrub: 1,
-            anticipatePin: 1
+            anticipatePin: 1,
+            onUpdate: (self) => {
+              const total = tl.totalDuration();
+              if (
+                total > 0 &&
+                tl.labels['info-enter'] !== undefined &&
+                tl.labels['info-exit'] !== undefined
+              ) {
+                const startP = tl.labels['info-enter'] / total;
+                const endP = tl.labels['info-exit'] / total;
+                const inWindow = self.progress >= startP - 0.005 && self.progress <= endP;
+                if (inWindow !== lastVisible) {
+                  lastVisible = inWindow;
+                  setIsInfoVisible(inWindow);
+                }
+              }
+            }
           }
         });
 
@@ -152,60 +230,27 @@ export default function HeroAndServicesSection() {
         }
 
         /* ========================================================================= */
-        /* PHASE 1.5: INFO DISPLAY (CENTERED OVER VIDEO CARD)                        */
-        /* Text highlights word-by-word on scroll before transitioning to services   */
+        /* PHASE 1.5: INFO DISPLAY (FRAMER MOTION REVEAL WINDOW)                     */
+        /* Video stays centered with dark scrim while Framer Motion reveals the text */
         /* ========================================================================= */
-        if (infoDisplay) {
-          tl.to(
-            infoDisplay,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 1.4,
-              ease: 'power2.out'
-            },
-            'info-enter'
-          );
+        tl.addLabel('info-enter');
 
-          const infoWords = infoDisplay.querySelectorAll('.info-word');
-          tl.to(
-            infoWords,
-            {
-              opacity: 1,
-              stagger: 0.08,
-              duration: 3.6,
-              ease: 'none'
-            },
-            'info-highlight'
-          );
+        // Reading window while user scrolls
+        tl.to({}, { duration: 4.2 });
 
-          // Comfortable reading hold
-          tl.to({}, { duration: 1.6 });
+        tl.addLabel('info-exit');
 
-          // Info exit before image glides to Service 1
+        // Clear scrim so video is 100% vibrant for the services
+        if (heroOverlay) {
           tl.to(
-            infoDisplay,
+            heroOverlay,
             {
               opacity: 0,
-              y: -35,
               duration: 1.2,
-              ease: 'power2.in'
+              ease: 'power2.inOut'
             },
             'info-exit'
           );
-
-          // Clear scrim so video is 100% vibrant for the services
-          if (heroOverlay) {
-            tl.to(
-              heroOverlay,
-              {
-                opacity: 0,
-                duration: 1.2,
-                ease: 'power2.inOut'
-              },
-              'info-exit'
-            );
-          }
         }
 
         // Brief breathing room in center before moving
@@ -411,11 +456,7 @@ export default function HeroAndServicesSection() {
 
         if (heroOverlay) gsap.set(heroOverlay, { opacity: 0 });
 
-        if (infoDisplayRef.current) {
-          gsap.set(infoDisplayRef.current, { opacity: 1, y: 0 });
-          const words = infoDisplayRef.current.querySelectorAll('.info-word');
-          gsap.set(words, { opacity: 1 });
-        }
+        setIsInfoVisible(true);
 
         serviceCardsRef.current.forEach((card) => {
           if (!card) return;
@@ -491,26 +532,35 @@ export default function HeroAndServicesSection() {
         </div>
 
         {/* ========================================================================= */}
-        {/* INFO DISPLAY (Centered before 3 services)                                 */}
+        {/* INFO DISPLAY (Framer Motion Text Reveal)                                  */}
         {/* ========================================================================= */}
-        <div
-          ref={infoDisplayRef}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInfoVisible ? 'visible' : 'hidden'}
           className="absolute z-20 flex flex-col items-center justify-center text-center max-w-xl md:max-w-2xl px-6 sm:px-10 pointer-events-none"
         >
-          <h2 className="font-display font-semibold text-2xl sm:text-3xl md:text-4xl text-white tracking-tight mb-4 sm:mb-6 leading-tight select-none">
+          <motion.h2
+            variants={headingVariants}
+            className="font-display font-semibold text-2xl sm:text-3xl md:text-4xl text-white tracking-tight mb-4 sm:mb-6 leading-tight select-none"
+          >
             {INFO_HEADING}
-          </h2>
-          <p className="text-sm sm:text-base md:text-lg leading-relaxed font-normal text-neutral-200 select-none">
+          </motion.h2>
+          <motion.p
+            variants={paragraphVariants}
+            className="text-sm sm:text-base md:text-lg leading-relaxed font-normal text-neutral-200 select-none"
+          >
             {INFO_WORDS.map((w, i) => (
-              <span
+              <motion.span
                 key={i}
-                className="info-word inline-block mr-[0.26em] will-change-opacity font-normal text-white"
+                variants={wordVariants}
+                className="inline-block mr-[0.26em] will-change-[transform,opacity,filter] font-normal text-white"
               >
                 {w}
-              </span>
+              </motion.span>
             ))}
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* ========================================================================= */}
         {/* 3 SERVICES PANELS (Alternating Left / Right)                              */}
