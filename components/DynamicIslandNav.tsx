@@ -32,22 +32,22 @@ export default function DynamicIslandNav() {
         </a>
 
         {/* Minimal Navigation Links */}
-        <div className="hidden md:flex items-center gap-8 text-xs font-mono tracking-wider uppercase text-neutral-400">
+        <div className="hidden md:flex items-center gap-8 text-[13px] font-sans font-medium text-neutral-300">
           <Link
-            href="/"
-            className="hover:text-white transition-colors duration-200"
+            href="#services"
+            className="hover:text-white transition-colors duration-200 tracking-normal"
           >
             Services
           </Link>
           <Link
-            href="/"
-            className="hover:text-white transition-colors duration-200"
+            href="#capabilities"
+            className="hover:text-white transition-colors duration-200 tracking-normal"
           >
             Capabilities
           </Link>
           <Link
-            href="/"
-            className="hover:text-white transition-colors duration-200"
+            href="#manifesto"
+            className="hover:text-white transition-colors duration-200 tracking-normal"
           >
             Manifesto
           </Link>
