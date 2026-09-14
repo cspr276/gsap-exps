@@ -365,11 +365,17 @@ export default function HeroAndServicesSection() {
           ref={imageWrapperRef}
           className="absolute z-10 w-[46vw] max-w-160 h-[58vh] max-h-140 overflow-hidden border border-neutral-200/90 shadow-2xl shadow-neutral-900/10 will-change-transform pointer-events-none"
         >
-          <img
-            src="/hero_placeholder.png"
-            alt="Nexus Platform Core"
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster="/hero_poster.jpg"
             className="w-full h-full object-cover object-center"
-          />
+          >
+            <source src="/hero_video.mp4" type="video/mp4" />
+          </video>
           {/* Subtle dark film to guarantee readability in full-bleed hero state */}
           <div
             ref={heroOverlayRef}
