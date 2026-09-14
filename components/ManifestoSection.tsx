@@ -42,31 +42,23 @@ export default function ManifestoSection() {
 
       const wordSpans = title.querySelectorAll('.manifesto-word');
 
-      // 3D Perspective Roll-up / Unfold Effect (inspired by OnScrollTypographyAnimations fx6/fx10)
+      // Subtle, sleek progressive illumination effect (inspired by anims-refer set 2 fx16)
       gsap.fromTo(
         wordSpans,
         {
-          opacity: 0,
-          rotateX: -65,
-          y: 30,
-          z: -100,
-          transformOrigin: '50% 100%'
+          opacity: 0.15,
+          y: 12,
         },
         {
           opacity: 1,
-          rotateX: 0,
           y: 0,
-          z: 0,
-          ease: 'power2.out',
-          stagger: {
-            each: 0.04,
-            from: 'start'
-          },
+          ease: 'none',
+          stagger: 0.04,
           scrollTrigger: {
             trigger: title,
-            start: 'top 85%',
-            end: 'bottom 45%',
-            scrub: 0.8
+            start: 'top 80%',
+            end: 'bottom 40%',
+            scrub: 0.6
           }
         }
       );
@@ -76,15 +68,15 @@ export default function ManifestoSection() {
         if (!card) return;
         gsap.fromTo(
           card,
-          { opacity: 0, y: 30 },
+          { opacity: 0, y: 25 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.8,
+            duration: 0.7,
             ease: 'power2.out',
             scrollTrigger: {
               trigger: card,
-              start: 'top 90%',
+              start: 'top 88%',
               toggleActions: 'play none none reverse'
             }
           }
@@ -98,19 +90,19 @@ export default function ManifestoSection() {
     <section
       id="manifesto"
       ref={containerRef}
-      className="relative w-full bg-neutral-950 text-white py-32 px-6 sm:px-12 lg:px-20 border-t border-neutral-900 overflow-hidden"
+      className="relative w-full bg-[#f6f6f8] text-neutral-900 py-28 sm:py-32 px-6 sm:px-12 lg:px-20 border-t border-neutral-200 overflow-hidden"
     >
       <div className="max-w-6xl mx-auto flex flex-col items-start">
         {/* Clean Typographic Label (No pills) */}
-        <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-400 mb-8 block">
+        <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 mb-6 block">
           SYSTEM MANIFESTO
         </span>
 
-        {/* Refined headline with 3D perspective fold-up scrub */}
-        <div style={{ perspective: '1200px' }} className="mb-16 max-w-4xl">
+        {/* Refined headline with elegant smooth word illumination */}
+        <div className="mb-14 max-w-4xl">
           <h2
             ref={titleRef}
-            className="font-heading font-medium text-2xl sm:text-3xl md:text-4xl lg:text-[42px] tracking-tight text-neutral-100 leading-[1.3] select-none"
+            className="font-heading font-medium text-xl sm:text-2xl md:text-3xl lg:text-[34px] tracking-tight text-neutral-900 leading-[1.35] select-none"
           >
             {words.map((word, idx) => (
               <span
@@ -124,21 +116,21 @@ export default function ManifestoSection() {
         </div>
 
         {/* 3 Pillars Grid with crisp rectangular cards and clean monochrome styling */}
-        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 pt-10 border-t border-neutral-800/80">
+        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 pt-10 border-t border-neutral-200/90">
           {PILLARS.map((item, idx) => (
             <div
               key={item.num}
               ref={(el) => {
                 cardsRef.current[idx] = el;
               }}
-              className="p-6 rounded-md border border-neutral-800 bg-[#121212] hover:border-neutral-700 transition-all duration-300 flex flex-col justify-between"
+              className="p-6 sm:p-7 rounded-md border border-neutral-200/90 bg-white hover:border-neutral-300 hover:shadow-md transition-all duration-300 flex flex-col justify-between shadow-sm"
             >
               <div>
                 <div className="flex items-center justify-between mb-4 text-xs font-mono">
-                  <span className="text-white font-bold">{item.num}</span>
-                  <span className="text-neutral-400 uppercase tracking-wider">{item.tag}</span>
+                  <span className="text-neutral-900 font-bold">{item.num}</span>
+                  <span className="text-neutral-500 uppercase tracking-wider">{item.tag}</span>
                 </div>
-                <p className="text-neutral-400 text-sm leading-relaxed font-normal">
+                <p className="text-neutral-600 text-sm leading-relaxed font-normal">
                   {item.desc}
                 </p>
               </div>
