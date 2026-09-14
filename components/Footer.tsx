@@ -56,7 +56,7 @@ export default function Footer() {
                 />
                 <button
                   type="submit"
-                  className="w-9 h-9 rounded-lg bg-white flex items-center justify-center text-black hover:bg-neutral-200 transition-colors flex-shrink-0"
+                  className="w-9 h-9 rounded-lg bg-white flex items-center justify-center text-black hover:bg-neutral-200 transition-colors shrink-0"
                   aria-label="Subscribe"
                 >
                   <ArrowRight className="w-4 h-4 text-black stroke-[2.5]" />
