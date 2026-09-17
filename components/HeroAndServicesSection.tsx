@@ -114,8 +114,8 @@ export default function HeroAndServicesSection() {
   const heroTextRef = useRef<HTMLDivElement>(null);
   const imageWrapperRef = useRef<HTMLDivElement>(null);
   const heroOverlayRef = useRef<HTMLDivElement>(null);
-  const serviceCardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const [isInfoVisible, setIsInfoVisible] = useState(false);
+  const [activeServiceIndex, setActiveServiceIndex] = useState(-1);
 
   useGSAP(
     () => {
@@ -148,14 +148,9 @@ export default function HeroAndServicesSection() {
           boxShadow: 'none'
         });
 
-        serviceCardsRef.current.forEach((el) => {
-          if (el) {
-            gsap.set(el, { opacity: 0, y: 30 });
-          }
-        });
-
         // Master Timeline pinned with snappy, responsive scroll room (4800px + viewport height for stack slide-over)
-        let lastVisible = false;
+        let lastInfoVisible = false;
+        let lastServiceIndex = -1;
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: container,
@@ -166,17 +161,40 @@ export default function HeroAndServicesSection() {
             anticipatePin: 1,
             onUpdate: (self) => {
               const total = tl.totalDuration();
-              if (
-                total > 0 &&
-                tl.labels['info-enter'] !== undefined &&
-                tl.labels['info-exit'] !== undefined
-              ) {
-                const startP = tl.labels['info-enter'] / total;
-                const endP = tl.labels['info-exit'] / total;
-                const inWindow = self.progress >= startP - 0.005 && self.progress <= endP;
-                if (inWindow !== lastVisible) {
-                  lastVisible = inWindow;
-                  setIsInfoVisible(inWindow);
+              if (total > 0) {
+                const p = self.progress;
+
+                // Info Display active window
+                if (tl.labels['info-enter'] !== undefined && tl.labels['info-exit'] !== undefined) {
+                  const sP = tl.labels['info-enter'] / total;
+                  const eP = tl.labels['info-exit'] / total;
+                  const inInfo = p >= sP - 0.005 && p <= eP;
+                  if (inInfo !== lastInfoVisible) {
+                    lastInfoVisible = inInfo;
+                    setIsInfoVisible(inInfo);
+                  }
+                }
+
+                // Services 01, 02, 03 active windows
+                let curService = -1;
+                if (tl.labels['s1-enter'] !== undefined && tl.labels['s1-exit'] !== undefined) {
+                  const s1Start = tl.labels['s1-enter'] / total;
+                  const s1End = tl.labels['s1-exit'] / total;
+                  if (p >= s1Start - 0.005 && p <= s1End) curService = 0;
+                }
+                if (tl.labels['s2-enter'] !== undefined && tl.labels['s2-exit'] !== undefined) {
+                  const s2Start = tl.labels['s2-enter'] / total;
+                  const s2End = tl.labels['s2-exit'] / total;
+                  if (p >= s2Start - 0.005 && p <= s2End) curService = 1;
+                }
+                if (tl.labels['s3-enter'] !== undefined) {
+                  const s3Start = tl.labels['s3-enter'] / total;
+                  if (p >= s3Start - 0.005) curService = 2;
+                }
+
+                if (curService !== lastServiceIndex) {
+                  lastServiceIndex = curService;
+                  setActiveServiceIndex(curService);
                 }
               }
             }
@@ -269,36 +287,11 @@ export default function HeroAndServicesSection() {
         );
 
         /* ========================================================================= */
-        /* SERVICE 1 APPEAR (Immediate clear reveal, no tedious scrub)               */
+        /* SERVICE 1 (Framer Motion on-scroll text reveal window)                    */
         /* ========================================================================= */
-        const s1 = serviceCardsRef.current[0];
-        if (s1) {
-          // Content slides & fades in on the LEFT
-          tl.to(
-            s1,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.7,
-              ease: 'power2.out'
-            },
-            's1-enter'
-          );
-
-          // Reading pause
-          tl.to({}, { duration: 1.5 });
-
-          tl.to(
-            s1,
-            {
-              opacity: 0,
-              y: -30,
-              duration: 0.6,
-              ease: 'power2.in'
-            },
-            's1-exit'
-          );
-        }
+        tl.addLabel('s1-enter');
+        tl.to({}, { duration: 1.8 });
+        tl.addLabel('s1-exit');
 
         /* ========================================================================= */
         /* SCROLL ROOM 2: TRANSITION TO SERVICE 2 (Image glides to LEFT)             */
@@ -310,40 +303,15 @@ export default function HeroAndServicesSection() {
             duration: 1.3,
             ease: 'power2.inOut'
           },
-          's1-exit+=0.1'
+          's1-exit'
         );
 
         /* ========================================================================= */
-        /* SERVICE 2 APPEAR                                                          */
+        /* SERVICE 2 (Framer Motion on-scroll text reveal window)                    */
         /* ========================================================================= */
-        const s2 = serviceCardsRef.current[1];
-        if (s2) {
-          // Content slides & fades in on the RIGHT
-          tl.to(
-            s2,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.7,
-              ease: 'power2.out'
-            },
-            's2-enter'
-          );
-
-          // Reading pause
-          tl.to({}, { duration: 1.5 });
-
-          tl.to(
-            s2,
-            {
-              opacity: 0,
-              y: -30,
-              duration: 0.6,
-              ease: 'power2.in'
-            },
-            's2-exit'
-          );
-        }
+        tl.addLabel('s2-enter');
+        tl.to({}, { duration: 1.8 });
+        tl.addLabel('s2-exit');
 
         /* ========================================================================= */
         /* SCROLL ROOM 3: TRANSITION TO SERVICE 3 (Image glides to RIGHT)            */
@@ -355,29 +323,15 @@ export default function HeroAndServicesSection() {
             duration: 1.3,
             ease: 'power2.inOut'
           },
-          's2-exit+=0.1'
+          's2-exit'
         );
 
         /* ========================================================================= */
-        /* SERVICE 3 APPEAR                                                          */
+        /* SERVICE 3 (Framer Motion on-scroll text reveal window)                    */
         /* ========================================================================= */
-        const s3 = serviceCardsRef.current[2];
-        if (s3) {
-          // Content slides & fades in on the LEFT
-          tl.to(
-            s3,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.7,
-              ease: 'power2.out'
-            },
-            's3-enter'
-          );
-
-          // Reading pause
-          tl.to({}, { duration: 1.5 });
-        }
+        tl.addLabel('s3-enter');
+        tl.to({}, { duration: 1.8 });
+        tl.addLabel('s3-exit');
 
         /* ========================================================================= */
         /* LOCK SERVICE 3 SECTION IN PLACE WHILE NEXT SECTION STACKS ON TOP         */
@@ -403,13 +357,7 @@ export default function HeroAndServicesSection() {
         if (heroOverlay) gsap.set(heroOverlay, { opacity: 0 });
 
         setIsInfoVisible(true);
-
-        serviceCardsRef.current.forEach((card) => {
-          if (!card) return;
-          gsap.set(card, { opacity: 1, y: 0 });
-          const words = card.querySelectorAll('.word');
-          gsap.set(words, { opacity: 1 });
-        });
+        setActiveServiceIndex(999);
       });
     },
     { scope: containerRef }
@@ -521,36 +469,54 @@ export default function HeroAndServicesSection() {
             // Service 3 (index 2): Left side (Image is on Right)
             const isLeft = index % 2 === 0;
             const words = service.paragraph.split(' ');
+            const isVisible = activeServiceIndex === index || activeServiceIndex === 999;
 
             return (
-              <div
+              <motion.div
                 key={service.id}
-                ref={(el) => {
-                  serviceCardsRef.current[index] = el;
-                }}
-                className={`absolute w-full max-w-lg xl:max-w-xl pointer-events-auto p-6 sm:p-8 transition-all duration-300 ${
+                variants={containerVariants}
+                initial="hidden"
+                animate={isVisible ? 'visible' : 'hidden'}
+                className={`absolute w-full max-w-lg xl:max-w-xl pointer-events-auto p-6 sm:p-8 transition-opacity duration-300 ${
                   isLeft ? 'lg:left-12 xl:left-20' : 'lg:right-12 xl:right-20'
                 }`}
               >
                 {/* Clean Section Number & Heading */}
-                <div className="flex items-center gap-3 text-xs font-mono tracking-wider uppercase mb-5">
+                <motion.div
+                  variants={headingVariants}
+                  className="flex items-center gap-3 text-xs font-mono tracking-wider uppercase mb-5"
+                >
                   <span className="text-neutral-950 font-bold">{service.num}</span>
                   <span className="w-2 h-px bg-neutral-300" />
                   <span className="font-semibold text-neutral-900 tracking-wider font-mono">{service.heading}</span>
-                </div>
+                </motion.div>
 
-                {/* Paragraph */}
-                <p className="text-base sm:text-lg xl:text-xl font-normal leading-relaxed text-neutral-800 mb-6">
-                  {service.paragraph}
-                </p>
+                {/* Staggered Word Reveal Paragraph */}
+                <motion.p
+                  variants={paragraphVariants}
+                  className="text-base sm:text-lg xl:text-xl font-normal leading-relaxed text-neutral-800 mb-6 select-none"
+                >
+                  {words.map((w, wIdx) => (
+                    <motion.span
+                      key={wIdx}
+                      variants={wordVariants}
+                      className="inline-block mr-[0.25em] will-change-[transform,opacity,filter] text-neutral-950 font-normal"
+                    >
+                      {w}
+                    </motion.span>
+                  ))}
+                </motion.p>
 
                 {/* Technical Metric / Spec Chip */}
                 {service.spec && (
-                  <div className="text-xs font-mono text-neutral-500 tracking-wider uppercase pt-4 border-t border-neutral-200">
+                  <motion.div
+                    variants={headingVariants}
+                    className="text-xs font-mono text-neutral-500 tracking-wider uppercase pt-4 border-t border-neutral-200"
+                  >
                     {service.spec}
-                  </div>
+                  </motion.div>
                 )}
-              </div>
+              </motion.div>
             );
           })}
         </div>
