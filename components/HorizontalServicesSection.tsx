@@ -13,42 +13,42 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 const HORIZONTAL_SERVICES = [
   {
     num: '04',
-    category: 'INTERFACE SYNTHESIS',
-    title: 'Adaptive Generative UI',
-    desc: 'Context-aware generative interface engine that streams responsive layouts, real-time controls, and interactive widgets directly into the client DOM.',
-    metric: '60 FPS Stream Rate',
+    category: 'DATA OPS & RLHF',
+    title: 'Data Annotation & Expert Workflows',
+    desc: 'High-quality, domain-specific data labeling, supervised fine-tuning, and human-in-the-loop preference ranking powering frontier AI systems.',
+    metric: 'Vetted Domain Experts',
     image: '/cards/card_04.jpg'
   },
   {
     num: '05',
-    category: 'SECURITY & ATTESTATION',
-    title: 'Zero-Knowledge Guardrails',
-    desc: 'Cryptographically verifiable execution enclaves validating prompts, preventing memory leakage, and enforcing immutable sandbox security boundaries.',
-    metric: 'Zero Proof Verification',
+    category: 'ENTERPRISE AUTOMATION',
+    title: 'Enterprise AI Agents & Systems',
+    desc: 'Production-minded AI workflows, autonomous agent clusters, and intelligent system design engineered for internal efficiency and operational reliability.',
+    metric: 'Zero Context Drift',
     image: '/cards/card_05.jpg'
   },
   {
     num: '06',
-    category: 'STREAMING EVENT BUS',
-    title: 'Reactive Event Fabric',
-    desc: 'Ultra-low latency pub/sub bus handling millions of state transitions per second across multi-region edge clusters with backpressure safety.',
-    metric: '5M Events / Sec',
+    category: 'GOVERNANCE & AUDIT',
+    title: 'Agent Readiness & Risk Assessment',
+    desc: 'Governance-focused architectural reviews, failure taxonomies, and adoption audits to identify critical risks before business impact.',
+    metric: 'Pre-Production Triage',
     image: '/cards/card_06.jpg'
   },
   {
     num: '07',
-    category: 'COMPUTE COMPILATION',
-    title: 'Autonomous Model Distillation',
-    desc: 'Dynamic weight pruning and FP8/INT4 quantization compiling inference graphs directly onto target silicon with dramatic memory reduction.',
-    metric: '74% Memory Reduction',
+    category: 'CONTINUOUS ASSURANCE',
+    title: 'Continuous Monitoring & Regression',
+    desc: 'Ongoing quality signals, live canary evaluations, and automated regression suites that keep complex generative systems dependable post-launch.',
+    metric: '24/7 Automated Delta Tracking',
     image: '/cards/card_07.jpg'
   },
   {
     num: '08',
-    category: 'ENTERPRISE GOVERNANCE',
-    title: 'Cryptographic Audit Lineage',
-    desc: 'Deterministic execution replays, tamper-evident action logs, and role-based capability gating satisfying stringent enterprise compliance requirements.',
-    metric: '100% Deterministic Replay',
+    category: 'MODEL ADAPTATION',
+    title: 'Supervised Fine-Tuning & Alignment',
+    desc: 'Model improvement loops calibrated by domain expectations and user experience goals, bridging foundation models to production performance.',
+    metric: 'Domain-Calibrated RLHF',
     image: '/cards/card_08.jpg'
   }
 ];
