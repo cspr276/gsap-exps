@@ -1,465 +1,393 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { ShieldAlert, Crosshair, Cpu, CheckCircle2, ArrowRight } from 'lucide-react';
-import SpotlightCard from './SpotlightCard';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-interface ThreatPoint {
-  id: string;
-  label: string;
-  x: number; // 0 - 100%
-  y: number; // 0 - 100%
-  severity: 'CRITICAL' | 'LATENT' | 'NUISANCE' | 'LOW';
-  family: string;
-  body: string;
-  mitigation: string;
-  linkedPillarIndex: number; // 0: Auditable evidence, 1: Severity-graded, 2: Calibrated experts
-}
-
-const THREAT_POINTS: ThreatPoint[] = [
-  {
-    id: 't-1',
-    label: 'Indirect Prompt Injection',
-    x: 82,
-    y: 84,
-    severity: 'CRITICAL',
-    family: 'Adversarial Exploit',
-    body: 'Hostile strings embedded in third-party retrieval data compel the agent to override instructions and execute unauthorized tool operations.',
-    mitigation: 'Pre-execution adversarial boundary filters + reproducible evaluation suites.',
-    linkedPillarIndex: 0
-  },
-  {
-    id: 't-2',
-    label: 'Tool Privilege Escalation',
-    x: 48,
-    y: 90,
-    severity: 'CRITICAL',
-    family: 'Runtime Execution',
-    body: 'Autonomous execution engine invoked with elevated administrative privileges bypassing dual-custody authorization gates.',
-    mitigation: 'Severity-banded triage rules isolating high-risk database & payment capabilities.',
-    linkedPillarIndex: 1
-  },
-  {
-    id: 't-3',
-    label: 'Multi-Turn Jailbreak Chain',
-    x: 86,
-    y: 62,
-    severity: 'CRITICAL',
-    family: 'Policy Violation',
-    body: 'Sophisticated adversarial persona adoption gradually erodes model safety refusals across an extended conversational context window.',
-    mitigation: 'Gold-standard benchmark datasets with calibrated specialist human-in-the-loop scoring.',
-    linkedPillarIndex: 2
-  },
-  {
-    id: 't-4',
-    label: 'Unbounded Context Drift',
-    x: 28,
-    y: 68,
-    severity: 'LATENT',
-    family: 'State Integrity',
-    body: 'Subtle semantic degradation across long sessions leading to cumulative factual corruption and unmonitored decision divergence.',
-    mitigation: 'Continuous canary evaluations and regression monitoring with delta tracking.',
-    linkedPillarIndex: 1
-  },
-  {
-    id: 't-5',
-    label: 'System Prompt Exfiltration',
-    x: 74,
-    y: 36,
-    severity: 'NUISANCE',
-    family: 'Information Leakage',
-    body: 'Carefully engineered probe sequences designed to extract internal governance rules and private context without direct operational compromise.',
-    mitigation: 'Output token scrubbers + adversarial red-team prompt testing.',
-    linkedPillarIndex: 0
-  },
-  {
-    id: 't-6',
-    label: 'Hallucinated Tool Call',
-    x: 22,
-    y: 28,
-    severity: 'LOW',
-    family: 'Syntactic Anomaly',
-    body: 'Model outputs non-existent API parameters or fictitious functions that fail schema validation before execution.',
-    mitigation: 'Schema validation gates and rigorous rubric definition.',
-    linkedPillarIndex: 0
-  }
-];
-
-const EVIDENCE_PILLARS = [
+const TRUST_CARDS = [
   {
     num: '01',
-    title: 'Auditable evidence, not a single score',
+    category: 'EVIDENCE & TRACE',
+    title: 'Auditable Evidence',
     desc: 'Every judgment ships with reviewer notes, agreement scores, and reproducible traces you can inspect and defend.',
-    badge: '100% REPRODUCIBLE TRACES',
-    icon: Crosshair
+    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80'
   },
   {
     num: '02',
-    title: 'Severity-graded findings',
+    category: 'RISK TRIAGE',
+    title: 'Severity-Graded Findings',
     desc: 'Failures are triaged by risk band and regression delta, so your team fixes what actually matters first.',
-    badge: '4-TIER RISK TAXONOMY',
-    icon: ShieldAlert
+    image: 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=800&q=80'
   },
   {
     num: '03',
-    title: 'Calibrated domain experts',
+    category: 'HUMAN BENCHMARK',
+    title: 'Calibrated Domain Experts',
     desc: 'Contributors are verified by expertise and calibrated against gold-standard sets before touching production work.',
-    badge: 'CALIBRATED HUMAN-IN-THE-LOOP',
-    icon: Cpu
+    image: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    num: '04',
+    category: 'STATISTICAL RIGOR',
+    title: 'Inter-Rater Agreement',
+    desc: 'Multiple experts judge each item; we report statistical agreement and adjudicate disputes so findings hold up to scrutiny.',
+    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    num: '05',
+    category: 'EXPLOIT COVERAGE',
+    title: 'Adversarial Defense',
+    desc: 'Prompt-injection, jailbreak, and data-exfiltration suites mapped to severity bands — measured, not guessed.',
+    image: 'https://images.unsplash.com/photo-1607799279861-4dd421887fb3?auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    num: '06',
+    category: 'CONTINUOUS GATES',
+    title: 'Regression Monitoring',
+    desc: 'Automated delta alerts and regression runs as your models, prompts, and tools change over time.',
+    image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80'
   }
 ];
 
 export default function WhyEvalixaSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const matrixRef = useRef<HTMLDivElement>(null);
-  const [activeThreatId, setActiveThreatId] = useState<string>('t-1');
-  const [hoveredPillar, setHoveredPillar] = useState<number | null>(0);
-
-  const activeThreat = THREAT_POINTS.find((t) => t.id === activeThreatId) || THREAT_POINTS[0];
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const descRef = useRef<HTMLParagraphElement>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useGSAP(
     () => {
       const section = sectionRef.current;
-      const matrix = matrixRef.current;
-      if (!section || !matrix) return;
+      const grid = gridRef.current;
+      const title = titleRef.current;
+      const desc = descRef.current;
+      const actions = actionsRef.current;
+      if (!section || !grid || !title || !desc || !actions) return;
 
-      // Animate matrix coordinate dots on enter
-      gsap.fromTo(
-        '.matrix-dot',
-        { scale: 0, opacity: 0 },
-        {
-          scale: 1,
-          opacity: 1,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: 'back.out(2)',
-          scrollTrigger: {
-            trigger: matrix,
-            start: 'top 80%'
+      const mm = gsap.matchMedia();
+
+      // =========================================================================
+      // Desktop: Codrops Sticky Grid Scroll Animation
+      // =========================================================================
+      mm.add('(min-width: 1024px)', () => {
+        // Group items into 3 columns (index % 3)
+        const columns: HTMLDivElement[][] = [[], [], []];
+        itemRefs.current.forEach((item, idx) => {
+          if (item) {
+            columns[idx % 3].push(item);
           }
-        }
-      );
+        });
 
-      // Animate pillars stagger
-      gsap.fromTo(
-        '.evidence-pillar-card',
-        { y: 30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.7,
-          stagger: 0.15,
-          ease: 'power3.out',
+        // Initialize content elements:
+        // Description and actions start hidden, title sits in initial rest position
+        gsap.set([desc, actions], { opacity: 0, y: 20 });
+        gsap.set(title, { opacity: 0.2, scale: 0.95 });
+
+        // Calculate offset for initial column entrance
+        const wh = window.innerHeight;
+        const dy = wh * 0.9;
+
+        // Set initial positions:
+        // Col 0 & Col 2 start above/below, Col 1 starts opposite
+        gsap.set(columns[0], { y: -dy });
+        gsap.set(columns[1], { y: dy });
+        gsap.set(columns[2], { y: -dy });
+        gsap.set(grid, { scale: 1 });
+
+        // Master ScrollTrigger Scrub Timeline
+        const tl = gsap.timeline({
           scrollTrigger: {
             trigger: section,
-            start: 'top 75%'
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 1,
+            anticipatePin: 1
           }
-        }
-      );
+        });
+
+        // Step 1: Grid items slide into view in alternating column motions
+        tl.to(
+          columns[0],
+          {
+            y: 0,
+            stagger: 0.08,
+            ease: 'power2.inOut',
+            duration: 1.2
+          },
+          'grid-reveal'
+        )
+          .to(
+            columns[1],
+            {
+              y: 0,
+              stagger: 0.08,
+              ease: 'power2.inOut',
+              duration: 1.2
+            },
+            'grid-reveal'
+          )
+          .to(
+            columns[2],
+            {
+              y: 0,
+              stagger: 0.08,
+              ease: 'power2.inOut',
+              duration: 1.2
+            },
+            'grid-reveal'
+          );
+
+        // Step 2: Grid zoom and lateral parting to open the center stage
+        tl.to(
+          grid,
+          {
+            scale: 2.1,
+            ease: 'power2.inOut',
+            duration: 1.6
+          },
+          'grid-zoom'
+        )
+          .to(
+            columns[0],
+            {
+              xPercent: -50,
+              opacity: 0.35,
+              ease: 'power2.inOut',
+              duration: 1.6
+            },
+            'grid-zoom'
+          )
+          .to(
+            columns[2],
+            {
+              xPercent: 50,
+              opacity: 0.35,
+              ease: 'power2.inOut',
+              duration: 1.6
+            },
+            'grid-zoom'
+          )
+          .to(
+            columns[1],
+            {
+              yPercent: (i) => (i === 0 ? -60 : 60),
+              opacity: 0.25,
+              ease: 'power2.inOut',
+              duration: 1.6
+            },
+            'grid-zoom'
+          );
+
+        // Step 3: Central content reveals clearly as the grid parts
+        tl.to(
+          title,
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            ease: 'power2.out'
+          },
+          'grid-zoom+=0.4'
+        )
+          .to(
+            desc,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: 'power2.out'
+            },
+            'grid-zoom+=0.6'
+          )
+          .to(
+            actions,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: 'power2.out'
+            },
+            'grid-zoom+=0.8'
+          );
+      });
+
+      // =========================================================================
+      // Mobile / Tablet: Clean Staggered Flow
+      // =========================================================================
+      mm.add('(max-width: 1023px)', () => {
+        itemRefs.current.forEach((item) => {
+          if (!item) return;
+          gsap.fromTo(
+            item,
+            { opacity: 0, y: 24 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.5,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: item,
+                start: 'top 85%'
+              }
+            }
+          );
+        });
+      });
     },
     { scope: sectionRef }
   );
-
-  // When a pillar is hovered, activate its first linked threat point
-  const handlePillarHover = (index: number) => {
-    setHoveredPillar(index);
-    const linkedThreat = THREAT_POINTS.find((t) => t.linkedPillarIndex === index);
-    if (linkedThreat) {
-      setActiveThreatId(linkedThreat.id);
-    }
-  };
 
   return (
     <section
       id="why-evalixa"
       ref={sectionRef}
-      className="relative w-full bg-neutral-950 text-white border-t border-neutral-800/80"
+      className="relative w-full bg-neutral-950 text-white border-t border-neutral-800/80 lg:h-[320vh]"
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20 py-24 lg:py-32">
-        {/* Section Header */}
-        <div className="max-w-3xl mb-16 lg:mb-20">
+      {/* Sticky Viewport Container on Desktop */}
+      <div
+        ref={wrapperRef}
+        className="lg:sticky lg:top-0 lg:h-screen w-full overflow-hidden flex flex-col items-center justify-center py-20 lg:py-0 px-6 sm:px-12 lg:px-20"
+      >
+        {/* =================================================================== */}
+        {/* BACKGROUND 3-COLUMN GALLERY GRID (Codrops Sticky Grid Mechanics)     */}
+        {/* =================================================================== */}
+        <div
+          ref={gridRef}
+          className="hidden lg:grid grid-cols-3 gap-8 w-full max-w-6xl pointer-events-none will-change-transform z-10"
+        >
+          {TRUST_CARDS.map((card, idx) => (
+            <div
+              key={card.num}
+              ref={(el) => {
+                itemRefs.current[idx] = el;
+              }}
+              className="group/card relative rounded-md border border-neutral-800/90 bg-[#121212]/95 p-7 flex flex-col justify-between h-[230px] overflow-hidden shadow-2xl shadow-black/80 transition-opacity duration-500 will-change-transform"
+            >
+              {/* Dark Unsplash Background with Overlay */}
+              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <img
+                  src={card.image}
+                  alt={card.title}
+                  className="w-full h-full object-cover object-center opacity-25"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#101012] via-[#101012]/85 to-[#101012]/60" />
+              </div>
+
+              {/* Card Foreground Content */}
+              <div className="relative z-10 flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-xs font-semibold tracking-widest text-white">
+                      {card.num}
+                    </span>
+                    <span className="font-mono text-[10px] tracking-widest text-neutral-400 uppercase">
+                      {card.category}
+                    </span>
+                  </div>
+                  <h4 className="font-display font-bold text-lg text-white uppercase tracking-tight mb-2 leading-snug">
+                    {card.title}
+                  </h4>
+                  <p className="text-neutral-300 text-xs leading-relaxed line-clamp-3">
+                    {card.desc}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* =================================================================== */}
+        {/* FOREGROUND CENTRAL CONTENT OVERLAY                                  */}
+        {/* =================================================================== */}
+        <div
+          ref={contentRef}
+          className="relative z-20 flex flex-col items-center text-center max-w-3xl mx-auto lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 px-4 pointer-events-auto"
+        >
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 mb-3 block">
             WHY EVALIXA
           </span>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-[1.15] mb-6">
-            AI security, evaluation, and intelligent system delivery — shaped by real outcomes.
+
+          <h2
+            ref={titleRef}
+            className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight uppercase leading-[1.08] mb-6"
+          >
+            Shaped by Real Outcomes
           </h2>
-          <p className="text-neutral-400 text-sm sm:text-base lg:text-lg leading-relaxed font-normal">
+
+          <p
+            ref={descRef}
+            className="text-neutral-300 text-sm sm:text-base lg:text-lg leading-relaxed font-normal mb-8 max-w-2xl"
+          >
             Evalixa AI combines adversarial testing, real-time defense, structured evaluation, and expert data annotation into a unified delivery model. We measure AI where it meets the real world.
           </p>
+
+          <div
+            ref={actionsRef}
+            className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6"
+          >
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-white text-black font-mono text-xs uppercase tracking-wider font-semibold hover:bg-neutral-200 transition-colors shadow-lg"
+            >
+              <span>Start an evaluation</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="#capabilities"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-md border border-neutral-800 bg-[#121212] text-neutral-300 font-mono text-xs uppercase tracking-wider font-semibold hover:text-white hover:border-neutral-700 transition-colors"
+            >
+              <span>Explore services</span>
+            </Link>
+          </div>
         </div>
 
-        {/* 2-Column Split: Evidence Pillars vs 2D Risk Matrix HUD */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-          {/* ================================================================= */}
-          {/* LEFT COLUMN: 3 Core Evidence Pillars                              */}
-          {/* ================================================================= */}
-          <div className="lg:col-span-5 flex flex-col space-y-5 sm:space-y-6">
-            <div className="mb-2">
-              <span className="font-mono text-xs font-semibold tracking-wider text-neutral-500 uppercase">
-                ASSURANCE ARCHITECTURE
-              </span>
-            </div>
-
-            {EVIDENCE_PILLARS.map((pillar, idx) => {
-              const isSelected = hoveredPillar === idx;
-              const Icon = pillar.icon;
-
-              return (
-                <div
-                  key={pillar.num}
-                  onMouseEnter={() => handlePillarHover(idx)}
-                  onClick={() => handlePillarHover(idx)}
-                  className={`evidence-pillar-card group relative p-6 sm:p-7 rounded-md border transition-all duration-300 cursor-pointer ${
-                    isSelected
-                      ? 'bg-[#121212] border-neutral-600 shadow-xl shadow-black/80 ring-1 ring-white/10'
-                      : 'bg-[#121212]/60 border-neutral-800/80 hover:border-neutral-700 hover:bg-[#121212]'
-                  }`}
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono text-xs font-bold text-white tracking-widest">
-                        {pillar.num}
-                      </span>
-                      <span className="w-1 h-1 rounded-full bg-neutral-700" />
-                      <span className="font-mono text-[10px] tracking-widest text-neutral-400 uppercase">
-                        {pillar.badge}
-                      </span>
-                    </div>
-                    <Icon
-                      className={`w-4 h-4 transition-colors ${
-                        isSelected ? 'text-white' : 'text-neutral-600 group-hover:text-neutral-400'
-                      }`}
-                    />
-                  </div>
-
-                  <h3 className="font-display font-bold text-lg sm:text-xl text-white tracking-tight mb-2 leading-snug">
-                    {pillar.title}
-                  </h3>
-
-                  <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed">
-                    {pillar.desc}
-                  </p>
-
-                  <div className="mt-4 pt-3 border-t border-neutral-800/80 flex items-center justify-between">
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-500">
-                      {isSelected ? 'ACTIVE FOCUS IN RADAR' : 'HOVER TO CALIBRATE'}
-                    </span>
-                    <ArrowRight
-                      className={`w-3.5 h-3.5 transition-transform duration-300 ${
-                        isSelected ? 'translate-x-1 text-white' : 'text-neutral-600'
-                      }`}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* ================================================================= */}
-          {/* RIGHT COLUMN: Interactive 2D Risk Matrix & Telemetry HUD          */}
-          {/* ================================================================= */}
-          <div className="lg:col-span-7">
-            <SpotlightCard
-              spotlightColor="rgba(255, 255, 255, 0.05)"
-              className="relative rounded-md border border-neutral-800/90 bg-[#121212] p-6 sm:p-8 overflow-hidden shadow-2xl shadow-black/80"
+        {/* =================================================================== */}
+        {/* MOBILE FALLBACK CARD LIST (Clean stacked view on mobile/tablet)      */}
+        {/* =================================================================== */}
+        <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-6 w-full mt-12">
+          {TRUST_CARDS.map((card) => (
+            <div
+              key={card.num}
+              className="relative rounded-md border border-neutral-800/90 bg-[#121212] p-6 flex flex-col justify-between overflow-hidden shadow-xl"
             >
-              {/* HUD Header Bar */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-neutral-800/80 mb-6">
+              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <img
+                  src={card.image}
+                  alt={card.title}
+                  className="w-full h-full object-cover object-center opacity-20"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#101012] via-[#101012]/80 to-[#101012]/50" />
+              </div>
+
+              <div className="relative z-10 flex flex-col justify-between h-full">
                 <div>
-                  <span className="font-mono text-[11px] uppercase tracking-widest text-neutral-500 block mb-1">
-                    THREAT VECTOR MODELING
-                  </span>
-                  <h4 className="font-mono text-sm font-semibold text-white tracking-tight">
-                    Attacker Influence vs. Action Privilege Matrix
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-xs font-semibold tracking-widest text-white">
+                      {card.num}
+                    </span>
+                    <span className="font-mono text-[10px] tracking-widest text-neutral-400 uppercase">
+                      {card.category}
+                    </span>
+                  </div>
+                  <h4 className="font-display font-bold text-lg text-white uppercase tracking-tight mb-2">
+                    {card.title}
                   </h4>
-                </div>
-                <div className="flex items-center gap-2 font-mono text-[11px] text-neutral-400 self-start sm:self-auto bg-neutral-900/80 px-3 py-1.5 rounded-md border border-neutral-800">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                  <span>LIVE COORD TELEMETRY</span>
-                </div>
-              </div>
-
-              {/* Matrix Plot Container */}
-              <div ref={matrixRef} className="relative w-full aspect-[4/3] sm:aspect-[16/10] max-h-[440px] my-4">
-                {/* 4 Quadrants Visual Grid */}
-                <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 rounded border border-neutral-800 pointer-events-none">
-                  {/* Top Left: Latent Risk */}
-                  <div className="border-r border-b border-neutral-800/70 p-3 flex flex-col justify-start bg-neutral-950/20">
-                    <span className="font-mono text-[10px] tracking-wider text-neutral-500 uppercase font-semibold">
-                      LATENT RISK
-                    </span>
-                    <span className="font-mono text-[9px] text-neutral-600 mt-0.5">
-                      Low Input Control · High Privilege
-                    </span>
-                  </div>
-
-                  {/* Top Right: Critical Impact */}
-                  <div className="border-b border-neutral-800/70 p-3 flex flex-col justify-start bg-white/[0.02]">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-[10px] tracking-wider text-white uppercase font-bold">
-                        CRITICAL SEVERITY
-                      </span>
-                      <span className="font-mono text-[9px] px-1.5 py-0.5 bg-neutral-800 text-white rounded">
-                        TIER 1
-                      </span>
-                    </div>
-                    <span className="font-mono text-[9px] text-neutral-400 mt-0.5">
-                      High Input Control · High Privilege
-                    </span>
-                  </div>
-
-                  {/* Bottom Left: Low Impact */}
-                  <div className="border-r border-neutral-800/70 p-3 flex flex-col justify-end bg-neutral-950/40">
-                    <span className="font-mono text-[10px] tracking-wider text-neutral-600 uppercase">
-                      LOW IMPACT
-                    </span>
-                    <span className="font-mono text-[9px] text-neutral-700 mt-0.5">
-                      Contained · Schema Gate Discard
-                    </span>
-                  </div>
-
-                  {/* Bottom Right: Nuisance */}
-                  <div className="p-3 flex flex-col justify-end bg-neutral-950/20">
-                    <span className="font-mono text-[10px] tracking-wider text-neutral-500 uppercase font-semibold">
-                      NUISANCE
-                    </span>
-                    <span className="font-mono text-[9px] text-neutral-600 mt-0.5">
-                      High Input Control · Read-Only Context
-                    </span>
-                  </div>
-                </div>
-
-                {/* Subtle Coordinate Axis Crosshairs */}
-                <div className="absolute inset-x-0 top-1/2 h-px bg-neutral-800/40 border-t border-dashed border-neutral-800 pointer-events-none" />
-                <div className="absolute inset-y-0 left-1/2 w-px bg-neutral-800/40 border-l border-dashed border-neutral-800 pointer-events-none" />
-
-                {/* Coordinate Points */}
-                {THREAT_POINTS.map((threat) => {
-                  const isCurrent = activeThreatId === threat.id;
-                  const isLinkedToPillar = hoveredPillar !== null && threat.linkedPillarIndex === hoveredPillar;
-
-                  return (
-                    <div
-                      key={threat.id}
-                      style={{
-                        left: `${threat.x}%`,
-                        bottom: `${threat.y}%`
-                      }}
-                      className="matrix-dot absolute -translate-x-1/2 translate-y-1/2 z-20"
-                    >
-                      <button
-                        type="button"
-                        onClick={() => setActiveThreatId(threat.id)}
-                        onMouseEnter={() => setActiveThreatId(threat.id)}
-                        aria-label={threat.label}
-                        className={`group/point relative flex items-center justify-center transition-all duration-300 ${
-                          isCurrent
-                            ? 'scale-125 z-30'
-                            : isLinkedToPillar
-                            ? 'scale-110'
-                            : 'opacity-80 hover:opacity-100 hover:scale-110'
-                        }`}
-                      >
-                        {/* Radar Pulse Ring for Critical Active Threats */}
-                        {isCurrent && threat.severity === 'CRITICAL' && (
-                          <span className="absolute w-8 h-8 rounded-full bg-white/20 animate-ping pointer-events-none" />
-                        )}
-
-                        {/* Core Dot */}
-                        <span
-                          className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-all duration-300 ${
-                            isCurrent
-                              ? 'bg-white border-white shadow-[0_0_12px_rgba(255,255,255,0.9)]'
-                              : isLinkedToPillar
-                              ? 'bg-neutral-200 border-white'
-                              : 'bg-neutral-800 border-neutral-600'
-                          }`}
-                        >
-                          <span
-                            className={`w-1.5 h-1.5 rounded-full ${
-                              isCurrent ? 'bg-black' : 'bg-neutral-400'
-                            }`}
-                          />
-                        </span>
-
-                        {/* Floating Point Tag */}
-                        <span
-                          className={`absolute left-5 font-mono text-[10px] tracking-tight whitespace-nowrap px-2 py-0.5 rounded border transition-all duration-200 pointer-events-none ${
-                            isCurrent
-                              ? 'bg-white text-black border-white font-bold opacity-100 shadow-lg'
-                              : 'bg-neutral-900/90 text-neutral-300 border-neutral-700/80 opacity-0 sm:opacity-75 group-hover/point:opacity-100'
-                          }`}
-                        >
-                          {threat.label}
-                        </span>
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Axis Orientation Indicators */}
-              <div className="flex justify-between items-center text-neutral-500 font-mono text-[10px] tracking-wider mt-4 pt-2 border-t border-neutral-800/80">
-                <span>0% ATTACKER INFLUENCE</span>
-                <span className="uppercase text-neutral-400">Attacker influence over the input →</span>
-                <span>100% MAXIMUM SURFACE</span>
-              </div>
-
-              {/* Threat Detail & Mitigation Inspector Card */}
-              <div className="mt-6 p-5 rounded-md bg-neutral-900/90 border border-neutral-800 transition-all duration-300">
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-2 pb-2 border-b border-neutral-800">
-                  <div className="flex items-center gap-2.5">
-                    <span className="font-mono text-[10px] tracking-widest text-neutral-500 uppercase">
-                      INSPECTED THREAT
-                    </span>
-                    <span className="w-1 h-1 rounded-full bg-neutral-700" />
-                    <span className="font-mono text-[10px] font-semibold text-neutral-300 uppercase">
-                      {activeThreat.family}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 font-mono text-[10px]">
-                    <span className="text-neutral-500">SEVERITY:</span>
-                    <span
-                      className={`font-bold px-2 py-0.5 rounded border ${
-                        activeThreat.severity === 'CRITICAL'
-                          ? 'border-white bg-white text-black'
-                          : 'border-neutral-700 text-neutral-300 bg-neutral-800'
-                      }`}
-                    >
-                      {activeThreat.severity}
-                    </span>
-                  </div>
-                </div>
-
-                <h5 className="font-display font-bold text-base sm:text-lg text-white mb-2">
-                  {activeThreat.label}
-                </h5>
-
-                <p className="text-neutral-300 text-xs sm:text-sm leading-relaxed mb-4">
-                  {activeThreat.body}
-                </p>
-
-                {/* Evalixa Mitigation Protocol */}
-                <div className="pt-3 border-t border-neutral-800/80 flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-white shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 block mb-0.5">
-                      EVALIXA INTERVENTION
-                    </span>
-                    <span className="text-xs text-neutral-200 font-mono">
-                      {activeThreat.mitigation}
-                    </span>
-                  </div>
+                  <p className="text-neutral-300 text-xs sm:text-sm leading-relaxed">
+                    {card.desc}
+                  </p>
                 </div>
               </div>
-            </SpotlightCard>
-          </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
