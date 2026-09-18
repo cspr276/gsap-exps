@@ -2,8 +2,8 @@ import SmoothScroll from '@/components/SmoothScroll';
 import DynamicIslandNav from '@/components/DynamicIslandNav';
 import HeroAndServicesSection from '@/components/HeroAndServicesSection';
 import HorizontalServicesSection from '@/components/HorizontalServicesSection';
-import EvidenceAssuranceSection from '@/components/EvidenceAssuranceSection';
 import ManifestoSection from '@/components/ManifestoSection';
+import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
 
 export default function Home() {
@@ -19,11 +19,11 @@ export default function Home() {
         {/* Remaining Services arranged horizontally in one line, pinned while cards scroll on scroll */}
         <HorizontalServicesSection />
 
-        {/* Evidence & Assurance: Kinetic Typography Streams & Telemetry Inspector */}
-        <EvidenceAssuranceSection />
-
         {/* Editorial Manifesto Section with word-by-word scroll scrub */}
         <ManifestoSection />
+
+        {/* Section above Footer with Aurora background */}
+        <CTASection />
 
         {/* Footer matching uploaded reference design */}
         <Footer />
