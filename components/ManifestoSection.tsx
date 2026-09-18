@@ -13,18 +13,21 @@ const MANIFESTO_TEXT =
 const PILLARS = [
   {
     num: "01",
-    tag: "Deterministic Rigor",
-    desc: "Zero tolerance for hallucination or context drift. Every action is cryptographically attested and verified across consensus nodes before state commits."
+    tag: "AI Security & Defense",
+    headline: "Protect AI systems with adversarial testing and real-time attack detection.",
+    desc: "Evalixa combines model security testing with production-grade attack detection systems — identifying vulnerabilities before adversaries do and defending against exploitation in real time."
   },
   {
     num: "02",
-    tag: "Silicon Compilation",
-    desc: "Bypassing heavy virtualization layers. Agent compute graphs compile directly into bare-metal GPU instructions with sub-millisecond dispatch."
+    tag: "Evaluation & Quality",
+    headline: "Measure and benchmark AI agents with structured evaluation frameworks.",
+    desc: "From agent readiness assessments to continuous monitoring and regression testing, we build the measurement infrastructure that keeps AI systems trustworthy throughout their lifecycle."
   },
   {
     num: "03",
-    tag: "Continuous Scale",
-    desc: "Engineered from first principles for infinite horizontal concurrency across globally partitioned edge mesh clusters with self-balancing workloads."
+    tag: "Data & Model Training",
+    headline: "Power model improvement with expert data annotation and fine-tuning.",
+    desc: "High-quality data annotation, supervised fine-tuning, and RLHF workflows that bridge the gap between capable foundation models and domain-specific production performance."
   }
 ];
 
@@ -132,7 +135,10 @@ export default function ManifestoSection() {
                     {item.tag}
                   </span>
                 </div>
-                <p className="text-neutral-600 text-sm leading-relaxed font-normal">
+                <h4 className="font-heading font-medium text-sm sm:text-base text-neutral-900 leading-snug mb-3">
+                  {item.headline}
+                </h4>
+                <p className="text-neutral-600 text-xs sm:text-[13px] leading-relaxed font-normal">
                   {item.desc}
                 </p>
               </div>
