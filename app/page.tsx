@@ -2,6 +2,7 @@ import SmoothScroll from '@/components/SmoothScroll';
 import DynamicIslandNav from '@/components/DynamicIslandNav';
 import HeroAndServicesSection from '@/components/HeroAndServicesSection';
 import HorizontalServicesSection from '@/components/HorizontalServicesSection';
+import DeliveryProcessSection from '@/components/DeliveryProcessSection';
 import ManifestoSection from '@/components/ManifestoSection';
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
@@ -19,7 +20,10 @@ export default function Home() {
         {/* Remaining Services arranged horizontally in one line, pinned while cards scroll on scroll */}
         <HorizontalServicesSection />
 
-        {/* Editorial Manifesto Section with word-by-word scroll scrub */}
+        {/* Concept 1: The Pinned Step-Through Rail ("How We Deliver" — Steps 01–04) */}
+        <DeliveryProcessSection />
+
+        {/* Editorial Manifesto / 3 Core Pillars Section */}
         <ManifestoSection />
 
         {/* Section above Footer with Aurora background */}
