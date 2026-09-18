@@ -7,6 +7,7 @@ import { useGSAP } from '@gsap/react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import SpotlightCard from './SpotlightCard';
+import Image from 'next/image';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -155,9 +156,9 @@ export default function DeliveryProcessSection() {
           <div className="hidden lg:block lg:col-span-5 relative self-stretch">
             <div
               ref={leftColRef}
-              className="w-full flex flex-col justify-between h-[calc(100vh-160px)] max-h-[580px] pointer-events-auto"
+              className="w-full flex flex-col justify-start h-[calc(100vh-160px)] max-h-[580px] pointer-events-auto"
             >
-              {/* Top Eyebrow & Headline (No glowing dot) */}
+              {/* Top Eyebrow & Headline */}
               <div>
                 <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 mb-3 block">
                   HOW WE DELIVER
@@ -171,7 +172,7 @@ export default function DeliveryProcessSection() {
               </div>
 
               {/* Middle: Interactive Step Indicator Rail */}
-              <div className="relative pl-7 my-auto">
+              <div className="relative pl-7 mt-15">
                 {/* Vertical Track Background */}
                 <div className="absolute left-1 top-2 bottom-2 w-px bg-neutral-800" />
                 {/* Scrubbed Progress Laser Line */}
@@ -190,14 +191,8 @@ export default function DeliveryProcessSection() {
                           isActive ? 'text-white' : 'text-neutral-500'
                         }`}
                       >
-                        {/* Node Bullet */}
-                        <span
-                          className={`absolute -left-7 w-2.5 h-2.5 rounded-full border transition-all duration-300 ${
-                            isActive
-                              ? 'bg-white border-white shadow-[0_0_8px_rgba(255,255,255,0.8)] scale-110'
-                              : 'bg-neutral-900 border-neutral-700'
-                          }`}
-                        />
+                        {/* Node */}
+                        <span/>
                         <span className="font-mono text-xs font-semibold tracking-wider">
                           {step.num}
                         </span>
@@ -208,16 +203,6 @@ export default function DeliveryProcessSection() {
                     );
                   })}
                 </div>
-              </div>
-
-              {/* Bottom: Current Phase Snapshot */}
-              <div className="pt-6 border-t border-neutral-800/80">
-                <span className="font-mono text-[11px] uppercase tracking-widest text-neutral-500 block mb-1">
-                  CURRENT PHASE • {PROCESS_STEPS[activeStep].num} / 04
-                </span>
-                <span className="text-xs text-neutral-300 font-mono">
-                  {PROCESS_STEPS[activeStep].tagline}
-                </span>
               </div>
             </div>
           </div>
@@ -249,16 +234,17 @@ export default function DeliveryProcessSection() {
                   >
                     {/* Background Image Layer with Dark Overlay & Subtle Zoom */}
                     <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-                      <img
+                      <Image
                         src={step.image}
                         alt={step.title}
+                        fill
                         className="w-full h-full object-cover object-center group-hover/card:scale-105 opacity-25 group-hover/card:opacity-35 transition-all duration-700 ease-out"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#101012] via-[#101012]/80 to-[#101012]/50" />
                     </div>
 
                     {/* Foreground Card Content (Matching Horizontal Services Card Hierarchy) */}
-                    <div className="relative z-10 flex flex-col justify-between h-full">
+                    <div className="relative z-10 flex flex-col justify-end h-full">
                       <div className="flex flex-col">
                         {/* 1. Top Number */}
                         <div className="mb-4 sm:mb-6">
