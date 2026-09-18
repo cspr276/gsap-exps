@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
 :root {
   --background: #ffffff;
@@ -26,7 +27,6 @@ html, body {
   color: var(--foreground);
   overflow-x: hidden;
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
-  scroll-behavior: smooth;
 }
 
 /* Custom subtle scrollbar */
