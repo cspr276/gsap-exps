@@ -4,6 +4,7 @@ import HeroAndServicesSection from '@/components/HeroAndServicesSection';
 import HorizontalServicesSection from '@/components/HorizontalServicesSection';
 import DeliveryProcessSection from '@/components/DeliveryProcessSection';
 import ManifestoSection from '@/components/ManifestoSection';
+import WhyEvalixaSection from '@/components/WhyEvalixaSection';
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
 
@@ -25,6 +26,9 @@ export default function Home() {
 
         {/* Editorial Manifesto / 3 Core Pillars Section */}
         <ManifestoSection />
+
+        {/* Why Evalixa: Interactive Risk Matrix & Evidence HUD */}
+        <WhyEvalixaSection />
 
         {/* Section above Footer with Aurora background */}
         <CTASection />
