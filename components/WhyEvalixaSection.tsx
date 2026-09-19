@@ -1,9 +1,8 @@
 'use client';
 
-import React from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { ArrowRight, FileCheck, Scale, Users, ShieldCheck, Target, Activity, CheckCircle2 } from 'lucide-react';
+import { FileCheck, Scale, Users, ShieldCheck, Target, Activity } from 'lucide-react';
+import Image from 'next/image';
 
 const BENTO_CARDS = [
   {
@@ -83,7 +82,7 @@ export default function WhyEvalixaSection() {
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20">
         {/* Section Header */}
-        <div className="max-w-3xl mb-16 lg:mb-20">
+        <div className="max-w-5xl mb-16 lg:mb-20">
           <motion.span
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -101,13 +100,13 @@ export default function WhyEvalixaSection() {
             transition={{ duration: 0.6, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
             className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-neutral-950 tracking-tight leading-[1.15] mb-5"
           >
-            AI security, evaluation, and intelligent system delivery — shaped by real outcomes.
+            AI security, evaluation, and intelligent system delivery - shaped by real outcomes.
           </motion.h2>
 
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
+            viewport={{ once: true, margin: '-20px' }}
             transition={{ duration: 0.6, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
             className="text-neutral-600 text-sm sm:text-base lg:text-lg leading-relaxed font-normal"
           >
@@ -116,10 +115,8 @@ export default function WhyEvalixaSection() {
         </div>
 
         {/* Bento Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-2 items-stretch">
           {BENTO_CARDS.map((card, idx) => {
-            const Icon = card.icon;
-
             return (
               <motion.div
                 key={card.num}
@@ -131,34 +128,35 @@ export default function WhyEvalixaSection() {
                   delay: idx * 0.08,
                   ease: [0.16, 1, 0.3, 1]
                 }}
-                className={`${card.cols} group relative rounded-xl border border-neutral-200/90 bg-neutral-50/50 hover:bg-white p-8 sm:p-9 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl hover:border-neutral-300 transition-all duration-500`}
+                className={`${card.cols} group relative rounded-md border border-neutral-200/90 bg-neutral-50/50 hover:bg-white p-8 sm:p-9 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl hover:border-neutral-300 transition-all duration-500`}
               >
                 {/* Background Curated Architectural Image with Soft White Gradient Overlay */}
                 <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-                  <img
+                  <Image
                     src={card.image}
                     alt={card.title}
-                    className="w-full h-full object-cover object-center group-hover:scale-105 opacity-[0.08] group-hover:opacity-[0.14] transition-all duration-700 ease-out"
+                    fill
+                    className="w-full h-full object-cover object-center group-hover:scale-105 opacity-80 group-hover:opacity-90 transition-all duration-700 ease-out"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-50 via-neutral-50/80 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/50 to-black/25" />
                 </div>
 
                 {/* Foreground Card Content */}
-                <div className="relative z-10 flex flex-col justify-between h-full">
+                <div className="relative z-10 flex flex-col justify-between h-full p-2">
                   <div>
                     {/* Top Row: Monospace Index & Category */}
                     <div className="flex items-center justify-between mb-5">
-                      <span className="font-mono text-xs sm:text-sm font-bold tracking-widest text-neutral-900 uppercase">
+                      <span className="font-mono text-xs sm:text-sm font-bold tracking-widest text-neutral-100 uppercase">
                         {card.num}
                       </span>
-                      <span className="font-mono text-[11px] tracking-wider text-neutral-500 uppercase">
+                      <span className="font-mono text-[11px] tracking-wider text-neutral-200 uppercase">
                         {card.category}
                       </span>
                     </div>
 
                     {/* Heading */}
                     <h3
-                      className={`font-display font-bold text-neutral-950 tracking-tight mb-3 leading-snug ${
+                      className={`font-display font-bold text-white tracking-tight mb-3 leading-snug ${
                         card.featured ? 'text-2xl sm:text-3xl' : 'text-xl sm:text-2xl'
                       }`}
                     >
@@ -167,35 +165,12 @@ export default function WhyEvalixaSection() {
 
                     {/* Description */}
                     <p
-                      className={`text-neutral-600 font-normal leading-relaxed ${
+                      className={`text-neutral-300 font-normal leading-relaxed ${
                         card.isWide ? 'max-w-3xl text-sm sm:text-base' : 'text-xs sm:text-sm'
                       }`}
                     >
                       {card.desc}
                     </p>
-                  </div>
-
-                  {/* Bottom Deliverable & Action Bar */}
-                  <div className="pt-6 mt-6 border-t border-neutral-200/80 flex flex-wrap items-center justify-between gap-4">
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-white border border-neutral-200 shadow-xs font-mono text-xs font-medium text-neutral-800">
-                      <Icon className="w-3.5 h-3.5 text-neutral-700" />
-                      <span>{card.metric}</span>
-                    </div>
-
-                    {card.isWide ? (
-                      <Link
-                        href="/contact"
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-neutral-950 text-white font-mono text-xs uppercase tracking-wider font-semibold hover:bg-neutral-800 transition-colors shadow-md"
-                      >
-                        <span>Start an evaluation</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </Link>
-                    ) : (
-                      <div className="flex items-center gap-1 text-xs font-mono text-neutral-500 group-hover:text-neutral-950 transition-colors font-medium">
-                        <span>Verified standard</span>
-                        <CheckCircle2 className="w-3.5 h-3.5 text-neutral-400 group-hover:text-neutral-950 transition-colors" />
-                      </div>
-                    )}
                   </div>
                 </div>
               </motion.div>
