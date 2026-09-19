@@ -115,20 +115,23 @@ export default function WhyEvalixaSection() {
         </div>
 
         {/* Bento Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-2 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-1 lg:gap-2 items-stretch">
           {BENTO_CARDS.map((card, idx) => {
             return (
               <motion.div
                 key={card.num}
-                initial={{ opacity: 0, y: 28 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-80px' }}
+                initial={{ opacity: 0, y: 52, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, amount: 0.12 }}
+                whileHover={{ y: -5, transition: { type: 'spring', stiffness: 320, damping: 18 } }}
                 transition={{
-                  duration: 0.7,
-                  delay: idx * 0.08,
-                  ease: [0.16, 1, 0.3, 1]
+                  type: 'spring',
+                  stiffness: 125,
+                  damping: 13,
+                  mass: 0.85,
+                  delay: (idx % 3) * 0.08
                 }}
-                className={`${card.cols} group relative rounded-md border border-neutral-200/90 bg-neutral-50/50 hover:bg-white p-8 sm:p-9 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl hover:border-neutral-300 transition-all duration-500`}
+                className={`${card.cols} group relative rounded-md border border-neutral-200/90 bg-neutral-50/50 hover:bg-white p-8 sm:p-9 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl hover:border-neutral-300 transition-colors duration-300`}
               >
                 {/* Background Curated Architectural Image with Soft White Gradient Overlay */}
                 <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
