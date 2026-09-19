@@ -24,11 +24,11 @@ export default function Home() {
         {/* Concept 1: The Pinned Step-Through Rail ("How We Deliver" — Steps 01–04) */}
         <DeliveryProcessSection />
 
+        {/* Why Evalixa: Evidence & Assurance (White-themed Bento Grid) */}
+        <WhyEvalixaSection />
+
         {/* Editorial Manifesto / 3 Core Pillars Section */}
         <ManifestoSection />
-
-        {/* Why Evalixa: Interactive Risk Matrix & Evidence HUD */}
-        <WhyEvalixaSection />
 
         {/* Section above Footer with Aurora background */}
         <CTASection />
