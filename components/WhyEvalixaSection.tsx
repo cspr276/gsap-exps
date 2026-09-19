@@ -123,7 +123,7 @@ export default function WhyEvalixaSection() {
                 initial={{ opacity: 0, y: 52, scale: 0.95 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, amount: 0.12 }}
-                whileHover={{ y: -5, transition: { type: 'spring', stiffness: 320, damping: 18 } }}
+                whileHover={{ transition: { type: 'spring', stiffness: 320, damping: 18 } }}
                 transition={{
                   type: 'spring',
                   stiffness: 125,
