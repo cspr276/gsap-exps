@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -67,11 +67,13 @@ const PROOF_CARDS = [
   }
 ];
 
+const CARD_WIDTH = 460;
+const CARD_GAP = 40;
+
 export default function WhyEvalixaSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [activeIndex, setActiveIndex] = useState<number>(0);
 
   useGSAP(
     () => {
@@ -88,32 +90,25 @@ export default function WhyEvalixaSection() {
         const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
         if (cards.length === 0) return;
 
+        // Total distance needed to translate track from Card 0 centered to Card 5 centered
+        const totalScrollDistance = (cards.length - 1) * (CARD_WIDTH + CARD_GAP);
+
         const updateCard3DTransforms = () => {
           const viewportCenter = window.innerWidth / 2;
-          let closestIdx = 0;
-          let minDistance = Infinity;
 
-          cards.forEach((card, idx) => {
+          cards.forEach((card) => {
             const rect = card.getBoundingClientRect();
             const cardCenter = rect.left + rect.width / 2;
             const distFromCenter = cardCenter - viewportCenter;
             const normDist = distFromCenter / (window.innerWidth * 0.45);
             const clampedNorm = Math.max(-1.5, Math.min(1.5, normDist));
 
-            // Calculate active index
-            const absDist = Math.abs(distFromCenter);
-            if (absDist < minDistance) {
-              minDistance = absDist;
-              closestIdx = idx;
-            }
-
-            // 3D Horizon Arc Geometry:
-            // Center card faces flat (0deg), lateral cards curve inward towards viewer
-            const rotateY = -clampedNorm * 26;
-            // Push lateral cards back into depth
-            const z = -Math.pow(Math.abs(clampedNorm), 1.4) * 140;
-            // Center card scales up subtly, lateral cards scale down
-            const scale = 1 - Math.min(0.18, Math.pow(Math.abs(clampedNorm), 1.2) * 0.18);
+            // Inward 3D curve: center card faces flat (0deg), lateral cards angle inward
+            const rotateY = -clampedNorm * 25;
+            // Push lateral cards back into Z-depth
+            const z = -Math.pow(Math.abs(clampedNorm), 1.4) * 120;
+            // Center card is scale 1.0, lateral cards scale down slightly
+            const scale = 1 - Math.min(0.15, Math.pow(Math.abs(clampedNorm), 1.2) * 0.15);
             // Lateral cards soften opacity
             const opacity = 1 - Math.min(0.5, Math.pow(Math.abs(clampedNorm), 1.1) * 0.5);
 
@@ -122,34 +117,18 @@ export default function WhyEvalixaSection() {
               z,
               scale,
               opacity,
-              transformPerspective: 1400,
-              transformOrigin: '50% 50%',
-              willChange: 'transform, opacity'
+              transformPerspective: 1200,
+              transformOrigin: '50% 50%'
             });
           });
-
-          setActiveIndex(closestIdx);
         };
-
-        // Calculate total scroll travel needed to pan card 0 to card 5 across center
-        const getScrollDistance = () => {
-          const firstCard = cards[0];
-          const lastCard = cards[cards.length - 1];
-          if (!firstCard || !lastCard) return 2400;
-          return lastCard.offsetLeft - firstCard.offsetLeft;
-        };
-
-        const totalScrollDistance = getScrollDistance();
-
-        // Initial setup
-        updateCard3DTransforms();
 
         // Master Pinned Scroll Timeline
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: section,
             start: 'top top',
-            end: () => `+=${totalScrollDistance + 400}`,
+            end: () => `+=${totalScrollDistance}`,
             pin: true,
             scrub: 1,
             anticipatePin: 1,
@@ -158,10 +137,14 @@ export default function WhyEvalixaSection() {
           }
         });
 
+        // Translate track smoothly along X axis
         tl.to(track, {
-          x: () => -totalScrollDistance,
+          x: -totalScrollDistance,
           ease: 'none'
         });
+
+        // Initial setup pass
+        updateCard3DTransforms();
       });
 
       // =========================================================================
@@ -194,17 +177,17 @@ export default function WhyEvalixaSection() {
     <section
       id="why-evalixa"
       ref={sectionRef}
-      className="relative w-full bg-neutral-950 text-white border-t border-neutral-800/80 overflow-hidden"
+      className="relative z-20 w-full min-h-screen h-screen bg-neutral-950 text-white border-t border-neutral-800/80 overflow-hidden flex flex-col justify-between py-16 sm:py-20 lg:py-22"
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20 pt-28 pb-10 lg:pt-32 lg:pb-12 flex flex-col items-center text-center">
-        {/* Pinned Section Header */}
-        <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 mb-3 block">
+      {/* Section Header */}
+      <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20 flex flex-col items-center text-center flex-shrink-0">
+        <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 mb-2 block">
           WHY EVALIXA
         </span>
-        <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight uppercase leading-[1.15] mb-4 max-w-4xl">
+        <h2 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white tracking-tight uppercase leading-[1.15] mb-3 max-w-4xl">
           Shaped by Real Outcomes
         </h2>
-        <p className="text-neutral-400 text-xs sm:text-sm lg:text-base leading-relaxed font-normal max-w-2xl">
+        <p className="text-neutral-400 text-xs sm:text-sm lg:text-[15px] leading-relaxed font-normal max-w-2xl">
           Evalixa AI combines adversarial testing, real-time defense, structured evaluation, and expert data annotation into a unified delivery model. We measure AI where it meets the real world.
         </p>
       </div>
@@ -213,10 +196,10 @@ export default function WhyEvalixaSection() {
       {/* DESKTOP: 3D CURVED HORIZON PERSPECTIVE RUNWAY                         */}
       {/* ===================================================================== */}
       <div
-        className="hidden lg:block relative w-full overflow-hidden pb-16 pt-6"
-        style={{ perspective: '1400px', perspectiveOrigin: '50% 50%' }}
+        className="hidden lg:block relative w-full overflow-hidden my-auto py-8"
+        style={{ perspective: '1200px', perspectiveOrigin: '50% 50%' }}
       >
-        {/* Curved Track: Card 0 starts centered with left padding */}
+        {/* Curved Track: Card 0 starts centered with padding: calc(50vw - 230px) */}
         <div
           ref={trackRef}
           className="flex items-center gap-10 pl-[calc(50vw-230px)] pr-[calc(50vw-230px)] will-change-transform"
@@ -224,7 +207,6 @@ export default function WhyEvalixaSection() {
         >
           {PROOF_CARDS.map((card, idx) => {
             const Icon = card.icon;
-            const isCenter = activeIndex === idx;
 
             return (
               <div
@@ -232,27 +214,19 @@ export default function WhyEvalixaSection() {
                 ref={(el) => {
                   cardRefs.current[idx] = el;
                 }}
-                className="w-[440px] lg:w-[460px] h-[380px] sm:h-[400px] flex-shrink-0 cursor-default select-none"
+                className="w-[440px] lg:w-[460px] h-[360px] sm:h-[380px] flex-shrink-0 cursor-default select-none will-change-transform"
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 <SpotlightCard
                   spotlightColor="rgba(255, 255, 255, 0.12)"
-                  className={`group/card relative w-full h-full rounded-md border p-8 sm:p-9 flex flex-col justify-between overflow-hidden shadow-2xl transition-all duration-300 ${
-                    isCenter
-                      ? 'border-white/40 bg-[#141414] shadow-black/90 ring-1 ring-white/20'
-                      : 'border-neutral-800/80 bg-[#101010]/90 hover:border-neutral-700'
-                  }`}
+                  className="group/card relative w-full h-full rounded-md border border-neutral-800/90 bg-[#121212] p-8 flex flex-col justify-between overflow-hidden shadow-2xl transition-all duration-300 hover:border-neutral-700"
                 >
                   {/* Dark Background Texture with Gradient Overlay */}
                   <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                     <img
                       src={card.image}
                       alt={card.title}
-                      className={`w-full h-full object-cover object-center transition-all duration-700 ease-out ${
-                        isCenter
-                          ? 'opacity-30 scale-105'
-                          : 'opacity-20 group-hover/card:opacity-30'
-                      }`}
+                      className="w-full h-full object-cover object-center transition-all duration-700 ease-out opacity-25 group-hover/card:opacity-35 group-hover/card:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#101012] via-[#101012]/80 to-[#101012]/50" />
                   </div>
@@ -261,7 +235,7 @@ export default function WhyEvalixaSection() {
                   <div className="relative z-10 flex flex-col justify-between h-full">
                     <div>
                       {/* Monospace Header */}
-                      <div className="flex items-center justify-between mb-5">
+                      <div className="flex items-center justify-between mb-4">
                         <span className="font-mono text-sm font-semibold tracking-widest text-white uppercase">
                           {card.num}
                         </span>
@@ -271,27 +245,23 @@ export default function WhyEvalixaSection() {
                       </div>
 
                       {/* Title */}
-                      <h3 className="font-display font-bold text-2xl text-white uppercase tracking-tight mb-3 leading-snug">
+                      <h3 className="font-display font-bold text-xl sm:text-2xl text-white uppercase tracking-tight mb-3 leading-snug">
                         {card.title}
                       </h3>
 
                       {/* Description */}
-                      <p className="text-neutral-300 text-sm leading-relaxed font-normal">
+                      <p className="text-neutral-300 text-xs sm:text-sm leading-relaxed font-normal">
                         {card.desc}
                       </p>
                     </div>
 
                     {/* Bottom Deliverable Metric */}
-                    <div className="pt-5 border-t border-neutral-800/90 flex items-center justify-between">
+                    <div className="pt-4 border-t border-neutral-800/90 flex items-center justify-between">
                       <span className="font-mono text-xs text-neutral-200 flex items-center gap-2">
                         <Icon className="w-4 h-4 text-white" />
                         {card.metric}
                       </span>
-                      <span
-                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                          isCenter ? 'bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]' : 'bg-neutral-800'
-                        }`}
-                      />
+                      <ArrowRight className="w-4 h-4 text-neutral-500 -rotate-45 group-hover/card:rotate-0 group-hover/card:text-white transition-all duration-300" />
                     </div>
                   </div>
                 </SpotlightCard>
@@ -299,36 +269,12 @@ export default function WhyEvalixaSection() {
             );
           })}
         </div>
-
-        {/* 3D Horizon HUD: Active Stage & Interactive Step Navigation */}
-        <div className="max-w-4xl mx-auto mt-10 px-6 flex items-center justify-between border-t border-neutral-800/80 pt-6">
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-xs uppercase tracking-widest text-neutral-500">
-              ACTIVE PROOF POINT:
-            </span>
-            <span className="font-mono text-xs font-semibold text-white">
-              {PROOF_CARDS[activeIndex].num} / 06 — {PROOF_CARDS[activeIndex].title}
-            </span>
-          </div>
-
-          {/* Step Pill Indicators */}
-          <div className="flex items-center gap-2">
-            {PROOF_CARDS.map((c, i) => (
-              <span
-                key={c.num}
-                className={`h-1.5 transition-all duration-300 rounded-full ${
-                  activeIndex === i ? 'w-8 bg-white' : 'w-2 bg-neutral-800'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* ===================================================================== */}
       {/* MOBILE / TABLET: Clean Responsive List                                */}
       {/* ===================================================================== */}
-      <div className="lg:hidden px-6 pb-20 space-y-6">
+      <div className="lg:hidden px-6 pb-12 space-y-6">
         {PROOF_CARDS.map((card, idx) => {
           const Icon = card.icon;
           return (
@@ -337,7 +283,7 @@ export default function WhyEvalixaSection() {
               ref={(el) => {
                 cardRefs.current[idx] = el;
               }}
-              className="relative rounded-md border border-neutral-800/90 bg-[#121212] p-7 flex flex-col justify-between min-h-[260px] overflow-hidden shadow-xl"
+              className="relative rounded-md border border-neutral-800/90 bg-[#121212] p-7 flex flex-col justify-between min-h-[240px] overflow-hidden shadow-xl"
             >
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <img
@@ -350,7 +296,7 @@ export default function WhyEvalixaSection() {
 
               <div className="relative z-10 flex flex-col justify-between h-full">
                 <div>
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-3">
                     <span className="font-mono text-xs font-semibold tracking-widest text-white">
                       {card.num}
                     </span>
@@ -358,7 +304,7 @@ export default function WhyEvalixaSection() {
                       {card.category}
                     </span>
                   </div>
-                  <h3 className="font-display font-bold text-xl text-white uppercase tracking-tight mb-2">
+                  <h3 className="font-display font-bold text-lg text-white uppercase tracking-tight mb-2">
                     {card.title}
                   </h3>
                   <p className="text-neutral-300 text-xs sm:text-sm leading-relaxed">
@@ -366,7 +312,7 @@ export default function WhyEvalixaSection() {
                   </p>
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-neutral-800 flex items-center justify-between font-mono text-xs text-neutral-300">
+                <div className="pt-3 mt-3 border-t border-neutral-800 flex items-center justify-between font-mono text-xs text-neutral-300">
                   <span className="flex items-center gap-2">
                     <Icon className="w-4 h-4 text-white" />
                     {card.metric}
