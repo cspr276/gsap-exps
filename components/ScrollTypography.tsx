@@ -81,7 +81,7 @@ export default function ScrollTypography({
   );
 
   return (
-    <Tag ref={containerRef as any} className={`leading-tight ${className}`}>
+    <Tag ref={containerRef as React.Ref<HTMLHeadingElement>} className={`leading-tight ${className}`}>
       {words.map((word, i) => (
         <span
           key={i}

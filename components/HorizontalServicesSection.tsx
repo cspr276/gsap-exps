@@ -124,7 +124,7 @@ export default function HorizontalServicesSection() {
             <SpotlightCard
               key={item.num}
               spotlightColor="rgba(255, 255, 255, 0.08)"
-              className="group/card w-full md:w-115 lg:w-[490px] h-[380px] sm:h-[420px] lg:h-[440px] flex-shrink-0 relative rounded-md border border-neutral-800/90 bg-[#121212] hover:border-neutral-700 transition-all shadow-xl shadow-black/50 cursor-default overflow-hidden p-8 sm:p-9"
+              className="group/card w-full md:w-115 lg:w-[490px] h-[380px] sm:h-[420px] lg:h-[440px] flex-shrink-0 relative rounded-md border border-border-dark-muted bg-surface-card hover:border-border-dark transition-all shadow-xl shadow-black/50 cursor-default overflow-hidden p-8 sm:p-9"
             >
               {/* Background Image Layer with Dark Overlay & Subtle Zoom on Hover */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -133,7 +133,7 @@ export default function HorizontalServicesSection() {
                   alt={item.title}
                   className="w-full h-full object-cover object-center group-hover/card:scale-105 group-hover/card:opacity-30 transition-all duration-700 ease-out"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#10101280] via-[#101012]/40 to-[#101012]/25" />
+                <div className="absolute inset-0 bg-gradient-to-t from-surface-overlay/80 via-surface-overlay/40 to-surface-overlay/25" />
               </div>
 
               {/* Foreground Card Content */}

@@ -228,8 +228,8 @@ export default function DeliveryProcessSection() {
                     spotlightColor="rgba(255, 255, 255, 0.08)"
                     className={`group/card relative rounded-md border p-8 sm:p-9 transition-all duration-500 overflow-hidden cursor-default min-h-[340px] sm:min-h-[360px] flex flex-col justify-between ${
                       isActive
-                        ? 'border-neutral-700 bg-[#121212] shadow-2xl shadow-black/80'
-                        : 'border-neutral-800/80 bg-[#121212]/90 opacity-80 lg:opacity-60 hover:opacity-100 hover:border-neutral-700'
+                        ? 'border-border-dark bg-surface-card shadow-2xl shadow-black/80'
+                        : 'border-border-dark-muted bg-surface-card/90 opacity-80 lg:opacity-60 hover:opacity-100 hover:border-border-dark'
                     }`}
                   >
                     {/* Background Image Layer with Dark Overlay & Subtle Zoom */}
@@ -240,7 +240,7 @@ export default function DeliveryProcessSection() {
                         fill
                         className="w-full h-full object-cover object-center group-hover/card:scale-105 opacity-25 group-hover/card:opacity-35 transition-all duration-700 ease-out"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#101012] via-[#101012]/80 to-[#101012]/50" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-surface-overlay via-surface-overlay/80 to-surface-overlay/50" />
                     </div>
 
                     {/* Foreground Card Content (Matching Horizontal Services Card Hierarchy) */}
