@@ -297,7 +297,7 @@ export default function Navbar() {
           <div className="hidden sm:flex items-center gap-5">
             <Link
               href="/portal/login"
-              className="text-xs font-mono tracking-wider uppercase text-neutral-400 hover:text-white transition-colors"
+              className="text-xs font-mono tracking-wider uppercase text-white hover:text-neutral-200 transition-colors"
             >
               Sign In
             </Link>
