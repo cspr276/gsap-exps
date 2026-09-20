@@ -10,15 +10,66 @@ import {
   Menu,
   X,
   ExternalLink,
+  ArrowRight,
 } from 'lucide-react';
 import {
-  serviceLanes,
-  servicesMenuSignals,
-  lifecycleSteps,
   insightItems,
   directNavLinks,
-  type ServiceItem,
 } from '@/data/navigation';
+
+// Simplified, clean Scale AI-inspired service categories
+const serviceCategories = [
+  {
+    title: 'EVALUATE & ASSURE',
+    items: [
+      {
+        title: 'AI Agent Evaluation & Benchmarking',
+        path: '/services/ai-agent-evaluation-benchmarking',
+        tag: 'Assurance',
+      },
+      {
+        title: 'AI Model Security Testing',
+        path: '/services/ai-model-security-testing',
+        tag: 'Red Team',
+      },
+      {
+        title: 'Continuous Monitoring & Regression',
+        path: '/services/continuous-monitoring-regression-testing',
+        tag: 'Protection',
+      },
+      {
+        title: 'Agent Readiness & Risk Assessment',
+        path: '/services/agent-readiness-risk-assessment',
+        tag: 'Governance',
+      },
+    ],
+  },
+  {
+    title: 'RUNTIME & DATA OPS',
+    items: [
+      {
+        title: 'AI Attack Detection Systems',
+        path: '/services/ai-attack-detection-systems',
+        tag: 'Runtime',
+      },
+      {
+        title: 'Data Annotation & Gold Standards',
+        path: '/services/data-annotation',
+        tag: 'Expert Data',
+      },
+      {
+        title: 'Supervised Fine-Tuning (SFT) & RLHF',
+        path: '/services/sft-rlhf',
+        tag: 'Alignment',
+      },
+      {
+        title: 'Enterprise AI Agents & Systems',
+        path: '/services/enterprise-ai-agents',
+        tag: 'Build',
+      },
+    ],
+  },
+];
 
 export default function Navbar() {
   const [visible, setVisible] = useState(true);
@@ -29,8 +80,10 @@ export default function Navbar() {
   const [mobileInsightsOpen, setMobileInsightsOpen] = useState(false);
 
   const lastScrollY = useRef(0);
+  const scrollDelta = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const navContainerRef = useRef<HTMLElement | null>(null);
+
   const activeDropdownRef = useRef(activeDropdown);
   const mobileMenuOpenRef = useRef(mobileMenuOpen);
 
@@ -42,30 +95,39 @@ export default function Navbar() {
     mobileMenuOpenRef.current = mobileMenuOpen;
   }, [mobileMenuOpen]);
 
-  // Hide on scroll down, show on scroll up; apply bg only when scrolled
+  // Smooth Hide-on-Scroll with generous room and threshold
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      const isAtTop = currentScrollY <= 20;
+      const isAtTop = currentScrollY <= 25;
       setScrolled(!isAtTop);
 
-      // If dropdown or mobile menu is open, remain visible
+      // Never hide navbar if dropdown or mobile drawer is open
       if (activeDropdownRef.current || mobileMenuOpenRef.current) {
         setVisible(true);
         lastScrollY.current = currentScrollY;
+        scrollDelta.current = 0;
         return;
       }
 
       if (isAtTop) {
         setVisible(true);
+        scrollDelta.current = 0;
       } else {
         const diff = currentScrollY - lastScrollY.current;
-        // Scrolling down past threshold -> hide navbar and close dropdown
-        if (diff > 8 && currentScrollY > 80) {
+
+        // Reset accumulator on direction reversal
+        if ((diff > 0 && scrollDelta.current < 0) || (diff < 0 && scrollDelta.current > 0)) {
+          scrollDelta.current = 0;
+        }
+        scrollDelta.current += diff;
+
+        // Give plenty of room: only hide after user has scrolled down by at least 65px AND past 180px
+        if (scrollDelta.current > 65 && currentScrollY > 180) {
           setVisible(false);
           setActiveDropdown(null);
-        } else if (diff < -6) {
-          // Scrolling up -> show navbar
+        } else if (scrollDelta.current < -15) {
+          // Immediately reveal on scrolling up by at least 15px
           setVisible(true);
         }
       }
@@ -101,7 +163,7 @@ export default function Navbar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Hover management with debounce to eliminate flickering
+  // Hover management with smooth timing and debounce
   const handleMouseEnter = (dropdown: 'services' | 'insights') => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setActiveDropdown(dropdown);
@@ -111,7 +173,7 @@ export default function Navbar() {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       setActiveDropdown(null);
-    }, 180);
+    }, 220);
   };
 
   const closeDropdownImmediate = useCallback(() => {
@@ -124,7 +186,7 @@ export default function Navbar() {
       <header
         ref={navContainerRef}
         onMouseLeave={handleMouseLeave}
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 select-none ${
+        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] select-none ${
           visible ? 'translate-y-0' : '-translate-y-full'
         } ${
           activeDropdown
@@ -183,7 +245,7 @@ export default function Navbar() {
                 >
                   <span>Services</span>
                   <ChevronDown
-                    className={`w-3.5 h-3.5 transition-transform duration-200 text-neutral-400 ${
+                    className={`w-3.5 h-3.5 transition-transform duration-300 text-neutral-400 ${
                       activeDropdown === 'services' ? 'rotate-180 text-white' : ''
                     }`}
                   />
@@ -210,7 +272,7 @@ export default function Navbar() {
                 >
                   <span>Case Studies</span>
                   <ChevronDown
-                    className={`w-3.5 h-3.5 transition-transform duration-200 text-neutral-400 ${
+                    className={`w-3.5 h-3.5 transition-transform duration-300 text-neutral-400 ${
                       activeDropdown === 'insights' ? 'rotate-180 text-white' : ''
                     }`}
                   />
@@ -270,138 +332,77 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* ── DESKTOP SERVICES MEGA MENU (SOLID FULL DARK BG) ── */}
+        {/* ── REDESIGNED SERVICES DROPDOWN (Scale AI / Modern Clean Style) ── */}
         <AnimatePresence>
           {activeDropdown === 'services' && (
             <motion.div
               id="services-mega-menu"
-              initial={{ opacity: 0, y: -4 }}
+              initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
               onMouseEnter={() => handleMouseEnter('services')}
               onMouseLeave={handleMouseLeave}
               className="hidden lg:block absolute top-full inset-x-0 border-b border-neutral-800 bg-[#09090b] shadow-2xl shadow-black"
             >
-              <div className="max-w-7xl mx-auto px-6 py-8">
-                <div className="grid grid-cols-12 gap-8 items-stretch">
-                  {/* Left Column: Context / Brief (Clean display typography, no serif) */}
-                  <div className="col-span-3 flex flex-col justify-between pr-6 border-r border-neutral-800/80">
-                    <div>
-                      <span className="block font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-bold mb-3">
-                        METHODOLOGY & SUITE
-                      </span>
-                      <h3 className="font-display text-xl font-bold text-white leading-snug tracking-tight mb-3">
-                        AI systems tested, evaluated, and secured.
-                      </h3>
-                      <p className="text-neutral-400 text-xs leading-relaxed font-sans">
-                        From task-grounded rubrics to zero-day red teaming and continuous regression monitoring, Evalixa combines deep engineering with verified domain experts.
-                      </p>
-                    </div>
-
-                    <div className="pt-6 mt-6 border-t border-neutral-800/60">
-                      <Link
-                        href="/services/ai-agent-evaluation-benchmarking"
-                        onClick={closeDropdownImmediate}
-                        className="inline-flex items-center gap-1.5 text-xs font-mono text-neutral-300 hover:text-white uppercase tracking-wider transition-colors group"
-                      >
-                        <span>View Evaluation Suite</span>
-                        <ArrowUpRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-white transition-colors" />
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* Center Column: 4 Lanes / 8 Services (Clean text without icon boxes) */}
-                  <div className="col-span-6 grid grid-cols-2 gap-x-6 gap-y-6">
-                    {serviceLanes.map((lane) => (
-                      <div key={lane.id} className="space-y-2.5">
-                        <div className="flex items-center justify-between pb-1 border-b border-neutral-800/60">
-                          <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-bold">
-                            {lane.name}
-                          </span>
-                          <span className="font-mono text-[9px] text-neutral-400 tracking-wider">
-                            {lane.tagline}
-                          </span>
-                        </div>
-
-                        <div className="space-y-1.5">
-                          {lane.services.map((service: ServiceItem) => (
-                            <Link
-                              key={service.path}
-                              href={service.path}
-                              onClick={closeDropdownImmediate}
-                              className="group block p-2.5 rounded-lg hover:bg-white/[0.04] border border-transparent hover:border-neutral-800/80 transition-all duration-150"
-                            >
-                              <div className="flex items-center justify-between gap-2">
-                                <span className="text-xs font-semibold text-neutral-200 group-hover:text-white truncate transition-colors">
-                                  {service.title}
+              <div className="max-w-7xl mx-auto px-8 py-10">
+                <div className="grid grid-cols-12 gap-10 items-start">
+                  {/* Left Link Columns (Clean, unbloated, high-contrast) */}
+                  <div className="col-span-7 grid grid-cols-2 gap-8">
+                    {serviceCategories.map((category) => (
+                      <div key={category.title} className="space-y-4">
+                        <span className="block font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-semibold">
+                          {category.title}
+                        </span>
+                        <ul className="space-y-2.5">
+                          {category.items.map((item) => (
+                            <li key={item.path}>
+                              <Link
+                                href={item.path}
+                                onClick={closeDropdownImmediate}
+                                className="group flex items-center justify-between text-[13.5px] font-sans text-neutral-300 hover:text-white transition-colors duration-150 py-1"
+                              >
+                                <span className="group-hover:translate-x-1 transition-transform duration-150 font-normal">
+                                  {item.title}
                                 </span>
-                                <span className="font-mono text-[9px] uppercase tracking-wider text-neutral-400 bg-neutral-900 border border-neutral-800 px-1.5 py-0.5 rounded shrink-0 opacity-70 group-hover:opacity-100 transition-opacity">
-                                  {service.signal}
-                                </span>
-                              </div>
-                              <p className="text-[11px] text-neutral-400 line-clamp-1 leading-snug mt-1">
-                                {service.description}
-                              </p>
-                            </Link>
+                                <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-neutral-400 group-hover:text-white shrink-0 ml-2" />
+                              </Link>
+                            </li>
                           ))}
-                        </div>
+                        </ul>
                       </div>
                     ))}
                   </div>
 
-                  {/* Right Column: Service System Blueprint & Operational Signals */}
-                  <div className="col-span-3 pl-6 border-l border-neutral-800/80 flex flex-col justify-between bg-[#0e0e12] -my-8 py-8 -mr-6 pr-6">
-                    <div>
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="inline-flex items-center justify-center w-5 h-5 rounded bg-neutral-900 border border-neutral-700 text-[10px] font-mono text-neutral-300 font-bold">
-                          AI
+                  {/* Right Column: Featured Visual Showcase (Scale-style rounded media card) */}
+                  <div className="col-span-5">
+                    <Link
+                      href="/services/ai-agent-evaluation-benchmarking"
+                      onClick={closeDropdownImmediate}
+                      className="group relative block w-full h-[220px] rounded-2xl overflow-hidden border border-neutral-800/90 bg-neutral-900 transition-all duration-300 hover:border-neutral-700 shadow-xl"
+                    >
+                      <Image
+                        src="/hero_poster.jpg"
+                        alt="AI Evaluation Platform"
+                        fill
+                        className="object-cover object-center group-hover:scale-105 transition-transform duration-500 brightness-[0.45] group-hover:brightness-[0.55]"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end">
+                        <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-semibold mb-1">
+                          FEATURED PLATFORM
                         </span>
-                        <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-bold">
-                          SERVICE SYSTEM
-                        </span>
+                        <h4 className="font-display text-base font-bold text-white tracking-tight mb-1">
+                          Frontier Agent Evaluation & Red-Teaming
+                        </h4>
+                        <p className="text-xs text-neutral-300 line-clamp-1 mb-2 font-normal">
+                          Task-grounded benchmarks scored by verified domain specialists.
+                        </p>
+                        <div className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-white group-hover:text-neutral-200">
+                          <span>Explore Suite</span>
+                          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                        </div>
                       </div>
-                      <h4 className="font-display text-sm font-bold text-white uppercase tracking-wider mb-3">
-                        Test, secure, improve, then monitor.
-                      </h4>
-
-                      {/* 3-Step Lifecycle Rail */}
-                      <div className="grid grid-cols-3 gap-1.5 my-4">
-                        {lifecycleSteps.map((step) => (
-                          <div
-                            key={step.title}
-                            className="bg-neutral-900/80 border border-neutral-800 rounded p-1.5 text-center"
-                          >
-                            <span className="block font-mono text-[9px] text-neutral-400">
-                              {step.step}
-                            </span>
-                            <span className="font-mono text-[10px] font-semibold text-neutral-200 uppercase tracking-wider">
-                              {step.title}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Operational Signals */}
-                      <div className="space-y-2 mt-4 pt-4 border-t border-neutral-800/70">
-                        {servicesMenuSignals.map((signal) => (
-                          <div key={signal.label} className="text-xs">
-                            <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-semibold block mb-0.5">
-                              {signal.label}
-                            </span>
-                            <p className="text-[11px] text-neutral-400 leading-snug">
-                              {signal.description}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="pt-4 border-t border-neutral-800/60 mt-4">
-                      <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">
-                        Calibrated domain network
-                      </span>
-                    </div>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -409,64 +410,78 @@ export default function Navbar() {
           )}
         </AnimatePresence>
 
-        {/* ── DESKTOP INSIGHTS / CASE STUDIES DROPDOWN (SOLID FULL DARK BG) ── */}
+        {/* ── REDESIGNED INSIGHTS DROPDOWN (Scale AI / Modern Clean Style) ── */}
         <AnimatePresence>
           {activeDropdown === 'insights' && (
             <motion.div
               id="insights-dropdown"
-              initial={{ opacity: 0, y: -4 }}
+              initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
               onMouseEnter={() => handleMouseEnter('insights')}
               onMouseLeave={handleMouseLeave}
               className="hidden lg:block absolute top-full inset-x-0 border-b border-neutral-800 bg-[#09090b] shadow-2xl shadow-black"
             >
-              <div className="max-w-4xl mx-auto px-6 py-8">
-                <div className="grid grid-cols-12 gap-8 items-stretch">
-                  {/* Left Column: Insights Brief (Clean typography, no serif) */}
-                  <div className="col-span-5 pr-6 border-r border-neutral-800/80 flex flex-col justify-between">
-                    <div>
-                      <span className="block font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-bold mb-3">
-                        EVIDENCE & INSIGHTS
-                      </span>
-                      <h3 className="font-display text-xl font-bold text-white leading-snug tracking-tight mb-3">
-                        Proof over promise.
-                      </h3>
-                      <p className="text-neutral-400 text-xs leading-relaxed font-sans">
-                        Real delivery stories, applied thinking, and rigorous engineering post-mortems shaped by production client engagements.
-                      </p>
-                    </div>
-
-                    <div className="pt-4 border-t border-neutral-800/60 mt-6">
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 block">
-                        Verified outcomes • Zero black boxes
-                      </span>
-                    </div>
+              <div className="max-w-5xl mx-auto px-8 py-10">
+                <div className="grid grid-cols-12 gap-10 items-start">
+                  {/* Left Column: Clean link items */}
+                  <div className="col-span-6 space-y-4">
+                    <span className="block font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-semibold">
+                      RESEARCH & EVIDENCE
+                    </span>
+                    <ul className="space-y-3">
+                      {insightItems.map((item) => (
+                        <li key={item.path}>
+                          <Link
+                            href={item.path}
+                            onClick={closeDropdownImmediate}
+                            className="group flex items-center justify-between text-[14px] text-neutral-300 hover:text-white transition-colors duration-150 py-1"
+                          >
+                            <div className="group-hover:translate-x-1 transition-transform duration-150">
+                              <div className="font-normal text-neutral-200 group-hover:text-white">
+                                {item.title}
+                              </div>
+                              <div className="text-[12px] text-neutral-400 line-clamp-1 font-normal">
+                                {item.description}
+                              </div>
+                            </div>
+                            <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-neutral-400 group-hover:text-white shrink-0 ml-4" />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
 
-                  {/* Right Column: Case Studies, Articles, Blogs List (Clean typography without icons) */}
-                  <div className="col-span-7 space-y-2.5">
-                    {insightItems.map((item) => (
-                      <Link
-                        key={item.path}
-                        href={item.path}
-                        onClick={closeDropdownImmediate}
-                        className="group block p-3 rounded-lg hover:bg-white/[0.04] border border-transparent hover:border-neutral-800/80 transition-all duration-150"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-semibold text-neutral-200 group-hover:text-white transition-colors">
-                            {item.title}
-                          </span>
-                          <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 bg-neutral-900 border border-neutral-800 px-1.5 py-0.5 rounded">
-                            {item.tag}
-                          </span>
-                        </div>
-                        <p className="text-xs text-neutral-400 leading-snug mt-1">
-                          {item.description}
+                  {/* Right Column: Featured Story Showcase */}
+                  <div className="col-span-6">
+                    <Link
+                      href="/insights/case-studies"
+                      onClick={closeDropdownImmediate}
+                      className="group relative block w-full h-[180px] rounded-2xl overflow-hidden border border-neutral-800/90 bg-neutral-900 transition-all duration-300 hover:border-neutral-700 shadow-xl"
+                    >
+                      <Image
+                        src="/cards/card_04.jpg"
+                        alt="Case Studies"
+                        fill
+                        className="object-cover object-center group-hover:scale-105 transition-transform duration-500 brightness-[0.4] group-hover:brightness-[0.5]"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end">
+                        <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-semibold mb-1">
+                          PROVEN OUTCOMES
+                        </span>
+                        <h4 className="font-display text-base font-bold text-white tracking-tight mb-1">
+                          Proof Over Promise
+                        </h4>
+                        <p className="text-xs text-neutral-300 line-clamp-1 mb-2 font-normal">
+                          Read how enterprise teams benchmark, secure, and operate frontier AI systems.
                         </p>
-                      </Link>
-                    ))}
+                        <div className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-white group-hover:text-neutral-200">
+                          <span>View Case Studies</span>
+                          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </div>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -510,20 +525,19 @@ export default function Navbar() {
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden pt-2 pl-2 space-y-4"
                     >
-                      {serviceLanes.map((lane) => (
-                        <div key={lane.id} className="space-y-1.5">
+                      {serviceCategories.map((cat) => (
+                        <div key={cat.title} className="space-y-1.5">
                           <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 block font-semibold">
-                            {lane.name}
+                            {cat.title}
                           </span>
-                          {lane.services.map((service) => (
+                          {cat.items.map((item) => (
                             <Link
-                              key={service.path}
-                              href={service.path}
+                              key={item.path}
+                              href={item.path}
                               onClick={() => setMobileMenuOpen(false)}
                               className="block py-1.5 text-xs text-neutral-300 hover:text-white transition-colors"
                             >
-                              <div className="font-medium">{service.title}</div>
-                              <div className="text-[11px] text-neutral-400 line-clamp-1">{service.description}</div>
+                              <div className="font-medium">{item.title}</div>
                             </Link>
                           ))}
                         </div>
