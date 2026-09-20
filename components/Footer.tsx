@@ -32,7 +32,7 @@ export default function Footer() {
         </div>
 
         {/* Floating Dark Card Container */}
-        <div className="relative z-10 rounded-3xl bg-[#141414] border border-white/5 p-8 sm:p-12 lg:p-16 shadow-2xl shadow-black/80">
+        <div className="relative z-10 rounded-3xl bg-surface-card-elevated border border-border-subtle p-8 sm:p-12 lg:p-16 shadow-2xl shadow-black/80">
           {/* Main Grid: Newsletter Left, Navigation Columns Right */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start pb-16">
             {/* LEFT: Newsletter & Heading */}
@@ -47,7 +47,7 @@ export default function Footer() {
               {/* Email Input Bar with Arrow Button */}
               <form
                 onSubmit={(e) => e.preventDefault()}
-                className="w-full max-w-sm flex items-center rounded-xl bg-[#1b1b1b] border border-white/5 p-1.5 pl-4 focus-within:border-neutral-700 transition-colors"
+                className="w-full max-w-sm flex items-center rounded-xl bg-surface-card-subtle border border-border-subtle p-1.5 pl-4 focus-within:border-border-dark transition-colors"
               >
                 <input
                   type="email"

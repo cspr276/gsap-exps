@@ -355,6 +355,7 @@ export default function DecryptedText({
 
   useEffect(() => {
     if (animateOn === 'click') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       encryptInstantly();
     } else {
       setDisplayText(text);

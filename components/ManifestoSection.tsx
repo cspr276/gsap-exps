@@ -93,7 +93,7 @@ export default function ManifestoSection() {
     <section
       id="manifesto"
       ref={containerRef}
-      className="relative w-full bg-[#f6f6f8] text-neutral-900 py-28 sm:py-32 px-6 sm:px-12 lg:px-20 border-t border-neutral-200 overflow-hidden"
+      className="relative w-full bg-surface-light-muted text-foreground-dark py-28 sm:py-32 px-6 sm:px-12 lg:px-20 border-t border-border-light overflow-hidden"
     >
       <div className="max-w-6xl mx-auto flex flex-col items-start">
         {/* Clean Typographic Label (No pills) */}
