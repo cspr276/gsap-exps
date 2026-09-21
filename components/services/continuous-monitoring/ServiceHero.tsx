@@ -24,18 +24,16 @@ export default function ServiceHero() {
   };
 
   return (
-    <section className="relative w-full min-h-screen flex flex-col justify-center items-center pt-28 sm:pt-36 pb-20 overflow-hidden bg-[#09090b]">
-      {/* Infrastructure imagery background */}
+    <section className="relative w-full min-h-screen flex flex-col justify-center items-center pt-28 sm:pt-36 pb-20 overflow-hidden">
+      {/* Authentic Unsplash tech infrastructure background (natural, non-AI) */}
       <div className="absolute inset-0 z-0 pointer-events-none select-none">
         <Image
-          src="/services/hero-datacenter.jpg"
+          src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop"
           alt="Enterprise AI Continuous Monitoring Telemetry"
           fill
           priority
-          className="object-cover object-center brightness-[0.38] contrast-[1.05]"
+          className="object-cover object-center brightness-[0.45] contrast-[1.05]"
         />
-        {/* Subtle dark gradient overlay for optimal typography legibility */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/50 to-[#09090b]/70" />
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center flex flex-col items-center justify-center my-auto">

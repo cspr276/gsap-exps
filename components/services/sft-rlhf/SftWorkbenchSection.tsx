@@ -221,7 +221,7 @@ export default function SftWorkbenchSection() {
         {/* 2-Column Interactive Workbench with rectangular borders (rounded-md) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           {/* Left Column: 4 Pillar Navigation Cards */}
-          <div className="lg:col-span-5 space-y-2.5 flex flex-col justify-between">
+          <div className="lg:col-span-5 space-y-2.5 flex flex-col justify-start">
             {PILLARS.map((pillar) => {
               const isActive = activeTab === pillar.id;
               return (
@@ -305,7 +305,7 @@ export default function SftWorkbenchSection() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-col justify-between gap-6 h-full"
+                  className="flex flex-col justify-center gap-8 h-full"
                 >
                   <div>
                     <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight mb-3">

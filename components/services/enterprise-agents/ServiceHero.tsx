@@ -24,33 +24,20 @@ export default function ServiceHero() {
   };
 
   return (
-    <section className="relative w-full min-h-screen flex flex-col justify-center items-center pt-28 sm:pt-36 pb-20 overflow-hidden bg-[#09090b]">
-      {/* Infrastructure imagery background with dark contrast overlay */}
+    <section className="relative w-full min-h-screen flex flex-col justify-center items-center pt-28 sm:pt-36 pb-20 overflow-hidden">
+      {/* Authentic Unsplash tech infrastructure background (natural, non-AI) */}
       <div className="absolute inset-0 z-0 pointer-events-none select-none">
         <Image
-          src="/services/hero-datacenter.jpg"
+          src="https://images.unsplash.com/photo-1597733336794-12d05021d510?q=80&w=2000&auto=format&fit=crop"
           alt="Enterprise AI Systems Infrastructure"
           fill
           priority
-          className="object-cover object-center brightness-[0.42] contrast-[1.05]"
+          className="object-cover object-center brightness-[0.45] contrast-[1.05]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/50 to-[#09090b]/70" />
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center flex flex-col items-center justify-center my-auto">
         <div className="max-w-4xl mx-auto">
-          {/* Eyebrow */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-5 inline-block"
-          >
-            <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-400 font-semibold px-3 py-1 rounded-md border border-neutral-800 bg-neutral-950/70 backdrop-blur-md">
-              ENTERPRISE AI AGENTS &amp; SYSTEMS
-            </span>
-          </motion.div>
-
           {/* Centered Main Headline (Display typography, no serif) */}
           <motion.h1
             initial={{ opacity: 0, y: 16 }}
