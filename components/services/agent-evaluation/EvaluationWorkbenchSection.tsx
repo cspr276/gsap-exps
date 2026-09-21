@@ -106,21 +106,21 @@ export default function EvaluationWorkbenchSection() {
   const currentPillar = PILLARS.find((p) => p.id === activeTab) || PILLARS[0];
 
   return (
-    <section id="workbench" className="relative w-full py-24 sm:py-32 bg-[#09090b]">
+    <section id="workbench" className="relative w-full py-20 sm:py-28 bg-[#09090b]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-16">
-          <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-3">
+        <div className="max-w-2xl mb-12">
+          <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-2.5">
             EVALUATION ENGINE ARCHITECTURE
           </span>
-          <h2 className="font-display font-bold text-3xl sm:text-5xl text-white tracking-tight leading-tight">
+          <h2 className="font-display font-bold text-2xl sm:text-4xl text-white tracking-tight leading-tight">
             Engineered for Precision. Built for Auditable Decisions.
           </h2>
         </div>
 
-        {/* 2-Column Interactive Workbench */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* 2-Column Interactive Workbench with less curvy borders (rounded-md) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left Column: 4 Pillar Navigation Cards */}
-          <div className="lg:col-span-5 space-y-3">
+          <div className="lg:col-span-5 space-y-2.5">
             {PILLARS.map((pillar) => {
               const isActive = activeTab === pillar.id;
               return (
@@ -128,24 +128,24 @@ export default function EvaluationWorkbenchSection() {
                   key={pillar.id}
                   type="button"
                   onClick={() => setActiveTab(pillar.id)}
-                  className={`w-full text-left p-5 rounded-xl border transition-all duration-200 cursor-pointer ${
+                  className={`w-full text-left p-4 sm:p-5 rounded-md border transition-all duration-200 cursor-pointer ${
                     isActive
-                      ? 'bg-neutral-900 border-neutral-700 shadow-xl shadow-black/60'
-                      : 'bg-neutral-900/30 border-neutral-800/80 hover:border-neutral-700 hover:bg-neutral-900/60'
+                      ? 'bg-neutral-900 border-neutral-700 shadow-lg shadow-black/50'
+                      : 'bg-neutral-900/30 border-neutral-800/80 hover:border-neutral-700 hover:bg-neutral-900/50'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-1.5">
                     <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-bold">
                       {pillar.step}
                     </span>
                     {isActive && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-white" />
                     )}
                   </div>
-                  <h3 className="font-display font-bold text-base sm:text-lg text-white mb-1">
+                  <h3 className="font-display font-bold text-base text-white mb-1">
                     {pillar.title}
                   </h3>
-                  <p className="font-sans text-xs text-neutral-400 line-clamp-2 leading-relaxed">
+                  <p className="font-sans text-xs text-neutral-400 line-clamp-2 leading-relaxed font-normal">
                     {pillar.subtitle}
                   </p>
                 </button>
@@ -158,35 +158,35 @@ export default function EvaluationWorkbenchSection() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentPillar.id}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="p-8 rounded-2xl bg-neutral-900/60 border border-neutral-800/90 shadow-2xl shadow-black/80 flex flex-col justify-between min-h-[520px]"
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                className="p-6 sm:p-7 rounded-md bg-neutral-900/50 border border-neutral-800 shadow-xl shadow-black/70 flex flex-col justify-between min-h-[480px]"
               >
                 <div>
-                  <div className="flex items-center justify-between pb-4 mb-6 border-b border-neutral-800/80">
-                    <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-bold">
+                  <div className="flex items-center justify-between pb-3.5 mb-5 border-b border-neutral-800">
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-400 font-bold">
                       {currentPillar.step} — TECHNICAL BREAKDOWN
                     </span>
-                    <span className="font-mono text-[10px] text-neutral-400 bg-neutral-800 px-2 py-0.5 rounded border border-neutral-700">
+                    <span className="font-mono text-[10px] text-neutral-400 bg-neutral-800 px-2 py-0.5 rounded-sm border border-neutral-700">
                       SYSTEM COMPONENT
                     </span>
                   </div>
 
-                  <h3 className="font-display font-bold text-2xl text-white tracking-tight mb-4">
+                  <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight mb-3">
                     {currentPillar.title}
                   </h3>
 
-                  <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-6">
+                  <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-5">
                     {currentPillar.description}
                   </p>
 
-                  <div className="flex flex-wrap gap-2 mb-8">
+                  <div className="flex flex-wrap gap-2 mb-6">
                     {currentPillar.specs.map((spec) => (
                       <span
                         key={spec}
-                        className="font-mono text-[11px] text-neutral-300 bg-neutral-800/80 border border-neutral-700 px-2.5 py-1 rounded-md"
+                        className="font-mono text-[11px] text-neutral-300 bg-neutral-800/80 border border-neutral-700 px-2.5 py-1 rounded-sm"
                       >
                         {spec}
                       </span>
@@ -195,14 +195,14 @@ export default function EvaluationWorkbenchSection() {
                 </div>
 
                 {/* Dark Inspection Code / Telemetry Console */}
-                <div className="rounded-xl bg-[#0e0e12] border border-neutral-800 p-5 font-mono text-xs overflow-hidden">
-                  <div className="flex items-center justify-between pb-3 mb-3 border-b border-neutral-800/70 text-neutral-400 text-[11px]">
+                <div className="rounded-md bg-[#0e0e12] border border-neutral-800 p-4 font-mono text-xs overflow-hidden">
+                  <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-neutral-800/80 text-neutral-400 text-[11px]">
                     <span>{currentPillar.codePreview.title}</span>
                     <span className="text-neutral-400 font-bold">
                       {currentPillar.codePreview.badge}
                     </span>
                   </div>
-                  <div className="space-y-1.5 leading-relaxed overflow-x-auto">
+                  <div className="space-y-1 leading-relaxed overflow-x-auto">
                     {currentPillar.codePreview.lines.map((line, idx) => (
                       <div key={idx} className="flex gap-2">
                         {line.label && (
