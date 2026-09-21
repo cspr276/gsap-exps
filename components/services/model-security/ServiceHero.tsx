@@ -28,7 +28,7 @@ export default function ServiceHero() {
       {/* Authentic Unsplash tech infrastructure background (natural, non-AI) */}
       <div className="absolute inset-0 z-0 pointer-events-none select-none">
         <Image
-          src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=2000&auto=format&fit=crop"
+          src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2000&auto=format&fit=crop"
           alt="Enterprise AI Security Infrastructure"
           fill
           priority

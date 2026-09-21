@@ -28,7 +28,7 @@ export default function ServiceHero() {
       {/* Authentic Unsplash tech infrastructure background (natural, non-AI) */}
       <div className="absolute inset-0 z-0 pointer-events-none select-none">
         <Image
-          src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop"
+          src="https://images.unsplash.com/photo-1762163516269-3c143e04175c?q=80&w=2000&auto=format&fit=crop"
           alt="Enterprise AI Continuous Monitoring Telemetry"
           fill
           priority
