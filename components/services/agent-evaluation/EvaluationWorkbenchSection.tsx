@@ -138,9 +138,6 @@ export default function EvaluationWorkbenchSection() {
                     <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-bold">
                       {pillar.step}
                     </span>
-                    {isActive && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-white" />
-                    )}
                   </div>
                   <h3 className="font-display font-bold text-base text-white mb-1">
                     {pillar.title}
@@ -162,18 +159,9 @@ export default function EvaluationWorkbenchSection() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="p-6 sm:p-7 rounded-md bg-neutral-900/50 border border-neutral-800 shadow-xl shadow-black/70 flex flex-col justify-between min-h-[480px]"
+                className="p-6 sm:p-7 rounded-md bg-neutral-900/50 border border-neutral-800 shadow-xl shadow-black/70 flex flex-col justify-center gap-4 min-h-[470px]"
               >
                 <div>
-                  <div className="flex items-center justify-between pb-3.5 mb-5 border-b border-neutral-800">
-                    <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-400 font-bold">
-                      {currentPillar.step} — TECHNICAL BREAKDOWN
-                    </span>
-                    <span className="font-mono text-[10px] text-neutral-400 bg-neutral-800 px-2 py-0.5 rounded-sm border border-neutral-700">
-                      SYSTEM COMPONENT
-                    </span>
-                  </div>
-
                   <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight mb-3">
                     {currentPillar.title}
                   </h3>
@@ -195,7 +183,7 @@ export default function EvaluationWorkbenchSection() {
                 </div>
 
                 {/* Dark Inspection Code / Telemetry Console */}
-                <div className="rounded-md bg-[#0e0e12] border border-neutral-800 p-4 font-mono text-xs overflow-hidden">
+                <div className="rounded-md bg-black border border-neutral-800 p-4 font-mono text-xs overflow-hidden">
                   <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-neutral-800/80 text-neutral-400 text-[11px]">
                     <span>{currentPillar.codePreview.title}</span>
                     <span className="text-neutral-400 font-bold">

@@ -19,9 +19,8 @@ export default function ServiceHero() {
           className="object-cover object-center brightness-[0.45] contrast-[1.05]"
         />
         {/* Cinematic dark radial and vertical gradient overlays for optimal text contrast */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/40 to-[#09090b]/60" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#09090b]/70 via-transparent to-[#09090b]" />
-        <div className="absolute inset-0 [background:radial-gradient(ellipse_at_center,_transparent_25%,_#09090b_85%)]" />
+        {/* <div className="absolute inset-0 bg-linear-to-t from-[#09090b] via-[#09090b]/40 to-[#09090b]/60" /> */}
+        {/* <div className="absolute inset-0 bg-linear-to-b from-[#09090b]/70 via-transparent to-[#09090b]" /> */}
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center flex flex-col items-center justify-center my-auto">

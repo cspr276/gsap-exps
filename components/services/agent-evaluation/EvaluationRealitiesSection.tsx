@@ -55,7 +55,7 @@ export default function EvaluationRealitiesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.45, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="group relative p-7 sm:p-8 rounded-md bg-[#f8f8fa] border border-neutral-200/90 hover:border-neutral-400 transition-all flex flex-col justify-between overflow-hidden min-h-[340px] shadow-sm hover:shadow-md"
+              className="group relative p-7 sm:p-8 rounded-md bg-[#f8f8fa] border border-neutral-200/90 hover:border-neutral-400 transition-all flex flex-col justify-between overflow-hidden min-h-85 shadow-sm hover:shadow-md"
             >
               {/* Background Image Layer with Subtle Light Tint & Smooth Zoom on Hover */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
@@ -63,27 +63,27 @@ export default function EvaluationRealitiesSection() {
                   src={item.image}
                   alt={item.title}
                   fill
-                  className="object-cover object-center group-hover:scale-105 opacity-[0.14] group-hover:opacity-25 transition-all duration-700 ease-out brightness-[0.8] contrast-[1.1]"
+                  className="object-cover object-center group-hover:scale-105 opacity-60 group-hover:opacity-80 transition-all duration-700 ease-out"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#f8f8fa] via-[#f8f8fa]/85 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/70 to-black/25" />
               </div>
 
               {/* Foreground Card Content */}
               <div className="relative z-10">
-                <h3 className="font-display font-bold text-lg sm:text-xl text-neutral-950 tracking-tight mb-3 leading-snug">
+                <h3 className="font-display font-bold text-lg sm:text-xl text-neutral-100 tracking-tight mb-3 leading-snug">
                   {item.title}
                 </h3>
 
-                <p className="font-sans text-sm text-neutral-600 leading-relaxed font-normal mb-8">
+                <p className="font-sans text-sm text-white leading-relaxed font-normal mb-8">
                   {item.description}
                 </p>
               </div>
 
-              <div className="relative z-10 pt-5 border-t border-neutral-200/90">
-                <span className="font-mono text-xl sm:text-2xl font-bold text-neutral-950 block mb-1">
+              <div className="relative z-10 pt-5">
+                <span className="font-mono text-xl sm:text-2xl font-bold text-neutral-100 block mb-1">
                   {item.stat}
                 </span>
-                <span className="font-mono text-[11px] text-neutral-500 uppercase tracking-wider">
+                <span className="font-mono text-[11px] text-neutral-200 uppercase tracking-wider">
                   {item.statLabel}
                 </span>
               </div>
