@@ -40,16 +40,16 @@ export default function AgentEvaluationPage() {
         {/* 3. White-Themed Core Failure Realities (Why standard benchmarks fail) */}
         <EvaluationRealitiesSection />
 
-        {/* 3. Interactive Evaluation Workbench (4 Pillars: Rubrics, Verifiers, Judges, Gates) */}
+        {/* 4. Interactive Evaluation Workbench (4 Pillars: Rubrics, Verifiers, Judges, Gates) */}
         <EvaluationWorkbenchSection />
 
-        {/* 4. The 4 Evaluation Dimensions (50+ dimensions breakdown) */}
+        {/* 5. The 4 Evaluation Dimensions (50+ dimensions breakdown) */}
         <EvaluationTaxonomySection />
 
-        {/* 5. How We Deliver (Progressive 4-Step Engagement Grid) */}
+        {/* 6. How We Deliver (Progressive 4-Step Engagement Grid) */}
         <EvaluationDeliverySection />
 
-        {/* 6. High-Contrast Conversion CTA */}
+        {/* 7. High-Contrast Conversion CTA */}
         <ServiceCTASection />
 
         {/* Universal Footer */}
