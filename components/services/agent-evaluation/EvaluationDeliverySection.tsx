@@ -79,13 +79,6 @@ export default function EvaluationDeliverySection() {
                   {step.description}
                 </p>
               </div>
-
-              <div className="pt-5 mt-5 border-t border-neutral-200 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                <span className="font-mono text-[10px] text-neutral-500 uppercase tracking-wider font-semibold">
-                  Deliverable verified
-                </span>
-              </div>
             </motion.div>
           ))}
         </div>

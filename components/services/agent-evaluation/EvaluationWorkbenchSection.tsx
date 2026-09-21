@@ -1,7 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const Dither = dynamic(() => import('@/components/Dither'), { ssr: false });
+const Grainient = dynamic(() => import('@/components/Grainient'), { ssr: false });
 
 interface Pillar {
   id: string;
@@ -10,6 +14,8 @@ interface Pillar {
   subtitle: string;
   description: string;
   specs: string[];
+  ditherColor: [number, number, number];
+  grainientColors: { color1: string; color2: string; color3: string };
   codePreview: {
     title: string;
     badge: string;
@@ -26,6 +32,8 @@ const PILLARS: Pillar[] = [
     description:
       'We work with your engineers and domain specialists to construct tasks derived directly from real production logs. Every scenario defines strict acceptance criteria, gold-standard reference responses, and non-negotiable edge cases.',
     specs: ['Task-grounded rubrics', 'Multi-turn branching graphs', 'Gold-standard reference sets'],
+    ditherColor: [0.42, 0.65, 0.9],
+    grainientColors: { color1: '#162238', color2: '#253d66', color3: '#3b629e' },
     codePreview: {
       title: 'task_rubric_financial_reconciliation.json',
       badge: 'RUBRIC SPEC v2.4',
@@ -46,6 +54,8 @@ const PILLARS: Pillar[] = [
     description:
       'Subjective judgment is insufficient for mission-critical tooling. Our verifiers execute inside isolated sandboxes to assert programmatic state changes: did the agent update the right database row, maintain transactional integrity, and leave unrelated states intact?',
     specs: ['Isolated Docker/WASM sandboxes', 'End-state invariant checking', 'Idempotency verification'],
+    ditherColor: [0.32, 0.78, 0.55],
+    grainientColors: { color1: '#132e22', color2: '#1e4d3a', color3: '#2e7558' },
     codePreview: {
       title: 'verifier_sandbox_runner.py',
       badge: 'ENVIRONMENT RUNNER',
@@ -66,6 +76,8 @@ const PILLARS: Pillar[] = [
     description:
       'When outputs cannot be validated deterministically, we deploy a vetted network of domain specialists (attorneys, clinical practitioners, financial analysts). Disagreements are adjudicated and inter-rater agreement is mathematically tracked.',
     specs: ['Krippendorff’s Alpha tracking', 'Triple-blind expert scoring', 'Adjudicated dispute traces'],
+    ditherColor: [0.85, 0.62, 0.35],
+    grainientColors: { color1: '#362615', color2: '#573d1f', color3: '#825c2e' },
     codePreview: {
       title: 'adjudication_panel_telemetry.json',
       badge: 'INTER-RATER CALIBRATION',
@@ -86,6 +98,8 @@ const PILLARS: Pillar[] = [
     description:
       'Every confirmed failure mode is permanently converted into an automated regression unit test. As foundation models release updates, prompts are refined, or tool schemas evolve, our release gate blocks silent quality degradation.',
     specs: ['Automated PR blocking', 'Statistical regression deltas', 'Production canary monitoring'],
+    ditherColor: [0.72, 0.42, 0.92],
+    grainientColors: { color1: '#2f1940', color2: '#4e246e', color3: '#7535a6' },
     codePreview: {
       title: 'evalixa_release_gate_summary.log',
       badge: 'CI/CD RELEASE GATE',
@@ -118,9 +132,9 @@ export default function EvaluationWorkbenchSection() {
         </div>
 
         {/* 2-Column Interactive Workbench with less curvy borders (rounded-md) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           {/* Left Column: 4 Pillar Navigation Cards */}
-          <div className="lg:col-span-5 space-y-2.5">
+          <div className="lg:col-span-5 space-y-2.5 flex flex-col justify-between">
             {PILLARS.map((pillar) => {
               const isActive = activeTab === pillar.id;
               return (
@@ -128,95 +142,141 @@ export default function EvaluationWorkbenchSection() {
                   key={pillar.id}
                   type="button"
                   onClick={() => setActiveTab(pillar.id)}
-                  className={`w-full text-left p-4 sm:p-5 rounded-md border transition-all duration-200 cursor-pointer ${
+                  className={`relative overflow-hidden w-full text-left p-4 sm:p-5 rounded-md border transition-all duration-300 cursor-pointer ${
                     isActive
-                      ? 'bg-neutral-900 border-neutral-700 shadow-lg shadow-black/50'
-                      : 'bg-neutral-900/30 border-neutral-800/80 hover:border-neutral-700 hover:bg-neutral-900/50'
+                      ? 'border-neutral-600 bg-neutral-900/90 shadow-lg shadow-black/60 text-white'
+                      : 'bg-neutral-900/30 border-neutral-800/80 hover:border-neutral-700 hover:bg-neutral-900/50 text-neutral-300'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-bold">
-                      {pillar.step}
-                    </span>
+                  {/* Active fluid grain shader background */}
+                  {isActive && (
+                    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-85">
+                      <Grainient
+                        color1={pillar.grainientColors.color1}
+                        color2={pillar.grainientColors.color2}
+                        color3={pillar.grainientColors.color3}
+                        timeSpeed={0.25}
+                        warpStrength={0.5}
+                        grainAmount={0.06}
+                        contrast={1.15}
+                      />
+                      <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+                    </div>
+                  )}
+
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-bold">
+                        {pillar.step}
+                      </span>
+                    </div>
+                    <h3
+                      className={`font-display font-bold text-base mb-1 transition-colors ${
+                        isActive ? 'text-white' : 'text-neutral-200'
+                      }`}
+                    >
+                      {pillar.title}
+                    </h3>
+                    <p
+                      className={`font-sans text-xs line-clamp-2 leading-relaxed font-normal transition-colors ${
+                        isActive ? 'text-neutral-200' : 'text-neutral-400'
+                      }`}
+                    >
+                      {pillar.subtitle}
+                    </p>
                   </div>
-                  <h3 className="font-display font-bold text-base text-white mb-1">
-                    {pillar.title}
-                  </h3>
-                  <p className="font-sans text-xs text-neutral-400 line-clamp-2 leading-relaxed font-normal">
-                    {pillar.subtitle}
-                  </p>
                 </button>
               );
             })}
           </div>
 
           {/* Right Column: Dynamic Inspection Console & Details */}
-          <div className="lg:col-span-7">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentPillar.id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="p-6 sm:p-7 rounded-md bg-neutral-900/50 border border-neutral-800 shadow-xl shadow-black/70 flex flex-col justify-center gap-4 min-h-[470px]"
-              >
-                <div>
-                  <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight mb-3">
-                    {currentPillar.title}
-                  </h3>
+          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-neutral-950 overflow-hidden min-h-[500px] shadow-xl shadow-black/80 flex flex-col justify-between">
+            {/* Ambient Dither Canvas Background */}
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-75">
+              <Dither
+                waveSpeed={0.04}
+                waveFrequency={2.4}
+                waveAmplitude={0.3}
+                waveColor={currentPillar.ditherColor}
+                backgroundColor={[0.03, 0.03, 0.05]}
+                colorNum={4}
+                pixelSize={2}
+                enableMouseInteraction={false}
+              />
+            </div>
 
-                  <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-5">
-                    {currentPillar.description}
-                  </p>
+            {/* Ambient subtle vignette overlay to keep text crisp without dimming the waves */}
+            <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/70 via-transparent to-neutral-950/40" />
 
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {currentPillar.specs.map((spec) => (
-                      <span
-                        key={spec}
-                        className="font-mono text-[11px] text-neutral-300 bg-neutral-800/80 border border-neutral-700 px-2.5 py-1 rounded-sm"
-                      >
-                        {spec}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+            {/* Dynamic Content */}
+            <div className="relative z-10 p-6 sm:p-7 flex flex-col justify-between h-full">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentPillar.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex flex-col justify-center gap-8 h-full"
+                >
+                  <div>
+                    <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight mb-3">
+                      {currentPillar.title}
+                    </h3>
 
-                {/* Dark Inspection Code / Telemetry Console */}
-                <div className="rounded-md bg-black border border-neutral-800 p-4 font-mono text-xs overflow-hidden">
-                  <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-neutral-800/80 text-neutral-400 text-[11px]">
-                    <span>{currentPillar.codePreview.title}</span>
-                    <span className="text-neutral-400 font-bold">
-                      {currentPillar.codePreview.badge}
-                    </span>
-                  </div>
-                  <div className="space-y-1 leading-relaxed overflow-x-auto">
-                    {currentPillar.codePreview.lines.map((line, idx) => (
-                      <div key={idx} className="flex gap-2">
-                        {line.label && (
-                          <span className="text-neutral-400 shrink-0 select-none">
-                            {line.label}:
-                          </span>
-                        )}
+                    <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-5">
+                      {currentPillar.description}
+                    </p>
+
+                    <div className="flex flex-wrap gap-2">
+                      {currentPillar.specs.map((spec) => (
                         <span
-                          className={
-                            line.tone === 'success'
-                              ? 'text-emerald-400'
-                              : line.tone === 'warn'
-                              ? 'text-amber-400'
-                              : line.tone === 'accent'
-                              ? 'text-white font-bold'
-                              : 'text-neutral-300'
-                          }
+                          key={spec}
+                          className="font-mono text-[11px] text-neutral-300 bg-neutral-900/40 backdrop-blur-sm border border-neutral-700/80 px-2.5 py-1 rounded-sm"
                         >
-                          {line.code}
+                          {spec}
                         </span>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+
+                  {/* Dark Inspection Code / Telemetry Console */}
+                  <div className="rounded-md bg-black/50 backdrop-blur-sm border border-neutral-800 p-4 font-mono text-xs overflow-hidden shadow-inner mt-4">
+                    <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-neutral-800/80 text-neutral-400 text-[11px]">
+                      <span className="truncate pr-2">{currentPillar.codePreview.title}</span>
+                      <span className="text-neutral-400 font-bold shrink-0">
+                        {currentPillar.codePreview.badge}
+                      </span>
+                    </div>
+                    <div className="space-y-1.5 leading-relaxed overflow-x-auto">
+                      {currentPillar.codePreview.lines.map((line, idx) => (
+                        <div key={idx} className="flex gap-2">
+                          {line.label && (
+                            <span className="text-neutral-400 shrink-0 select-none">
+                              {line.label}:
+                            </span>
+                          )}
+                          <span
+                            className={
+                              line.tone === 'success'
+                                ? 'text-emerald-400 font-medium'
+                                : line.tone === 'warn'
+                                ? 'text-amber-400 font-medium'
+                                : line.tone === 'accent'
+                                ? 'text-white font-bold'
+                                : 'text-neutral-300'
+                            }
+                          >
+                            {line.code}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       </div>
