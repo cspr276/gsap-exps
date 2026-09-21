@@ -24,32 +24,20 @@ export default function ServiceHero() {
   };
 
   return (
-    <section className="relative w-full min-h-screen flex flex-col justify-center items-center pt-28 sm:pt-36 pb-20 overflow-hidden bg-[#09090b]">
-      {/* Infrastructure imagery background */}
+    <section className="relative w-full min-h-screen flex flex-col justify-center items-center pt-28 sm:pt-36 pb-20 overflow-hidden">
+      {/* Authentic Unsplash tech infrastructure background (natural, non-AI) */}
       <div className="absolute inset-0 z-0 pointer-events-none select-none">
         <Image
-          src="/services/hero-datacenter.jpg"
-          alt="Enterprise AI Infrastructure and Governance"
+          src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000&auto=format&fit=crop"
+          alt="Enterprise AI Architecture and Risk Assessment"
           fill
           priority
-          className="object-cover object-center brightness-[0.38] contrast-[1.05]"
+          className="object-cover object-center brightness-[0.45] contrast-[1.05]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/50 to-[#09090b]/70" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#09090b]/80 via-transparent to-[#09090b]" />
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center flex flex-col items-center justify-center my-auto">
         <div className="max-w-4xl mx-auto">
-          {/* Eyebrow */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-neutral-900/80 border border-neutral-800 text-neutral-400 font-mono text-[11px] uppercase tracking-widest mb-6 backdrop-blur-sm"
-          >
-            <span>AGENT READINESS &amp; RISK ASSESSMENT</span>
-          </motion.div>
-
           {/* Centered Main Headline */}
           <motion.h1
             initial={{ opacity: 0, y: 16 }}

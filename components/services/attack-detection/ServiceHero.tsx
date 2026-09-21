@@ -24,35 +24,20 @@ export default function ServiceHero() {
   };
 
   return (
-    <section className="relative w-full min-h-screen flex flex-col justify-center items-center pt-28 sm:pt-36 pb-20 overflow-hidden bg-[#09090b]">
-      {/* Authentic tech infrastructure background */}
+    <section className="relative w-full min-h-screen flex flex-col justify-center items-center pt-28 sm:pt-36 pb-20 overflow-hidden">
+      {/* Authentic Unsplash tech infrastructure background (natural, non-AI) */}
       <div className="absolute inset-0 z-0 pointer-events-none select-none">
         <Image
-          src="/services/hero-datacenter.jpg"
-          alt="Enterprise AI Computing Infrastructure"
+          src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=2000&auto=format&fit=crop"
+          alt="Enterprise AI Attack Detection Infrastructure"
           fill
           priority
-          className="object-cover object-center brightness-[0.38] contrast-[1.05]"
+          className="object-cover object-center brightness-[0.45] contrast-[1.05]"
         />
-        {/* Dark radial and vertical gradient overlays for optimal text contrast */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/50 to-[#09090b]/70" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#09090b]/80 via-transparent to-[#09090b]" />
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center flex flex-col items-center justify-center my-auto">
         <div className="max-w-4xl mx-auto">
-          {/* Eyebrow badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="flex items-center justify-center mb-5"
-          >
-            <span className="font-mono text-xs uppercase tracking-[0.22em] text-neutral-400 font-semibold px-3 py-1 rounded-md bg-neutral-900/80 border border-neutral-800">
-              AI ATTACK DETECTION SYSTEMS
-            </span>
-          </motion.div>
-
           {/* Centered Main Headline (Display typography, bold, no serif) */}
           <motion.h1
             initial={{ opacity: 0, y: 16 }}

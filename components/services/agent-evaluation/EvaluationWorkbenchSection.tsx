@@ -134,7 +134,7 @@ export default function EvaluationWorkbenchSection() {
         {/* 2-Column Interactive Workbench with less curvy borders (rounded-md) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           {/* Left Column: 4 Pillar Navigation Cards */}
-          <div className="lg:col-span-5 space-y-2.5 flex flex-col justify-between">
+          <div className="lg:col-span-5 space-y-2.5 flex flex-col justify-start">
             {PILLARS.map((pillar) => {
               const isActive = activeTab === pillar.id;
               return (
