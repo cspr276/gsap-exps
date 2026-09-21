@@ -36,13 +36,13 @@ const REALITIES = [
 
 export default function EvaluationRealitiesSection() {
   return (
-    <section className="relative w-full py-20 sm:py-28 bg-[#09090b] border-t border-neutral-900">
+    <section className="relative w-full py-20 sm:py-28 bg-white text-neutral-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mb-12">
-          <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-2.5">
+          <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-2.5">
             THE EVALUATION GAP
           </span>
-          <h2 className="font-display font-bold text-2xl sm:text-4xl text-white tracking-tight leading-tight">
+          <h2 className="font-display font-bold text-2xl sm:text-4xl text-neutral-950 tracking-tight leading-tight">
             Why Standard AI Benchmarks Fail Production Workflows.
           </h2>
         </div>
@@ -55,35 +55,35 @@ export default function EvaluationRealitiesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.45, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="group relative p-7 rounded-md border border-neutral-800 hover:border-neutral-700 transition-colors flex flex-col justify-between overflow-hidden min-h-[340px]"
+              className="group relative p-7 sm:p-8 rounded-md bg-[#f8f8fa] border border-neutral-200/90 hover:border-neutral-400 transition-all flex flex-col justify-between overflow-hidden min-h-[340px] shadow-sm hover:shadow-md"
             >
-              {/* Background Image Layer with Dark Overlay & Subtle Zoom on Hover */}
+              {/* Background Image Layer with Subtle Light Tint & Smooth Zoom on Hover */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
                 <Image
                   src={item.image}
                   alt={item.title}
                   fill
-                  className="object-cover object-center group-hover:scale-105 group-hover:opacity-30 opacity-20 transition-all duration-700 ease-out brightness-[0.75]"
+                  className="object-cover object-center group-hover:scale-105 opacity-[0.14] group-hover:opacity-25 transition-all duration-700 ease-out brightness-[0.8] contrast-[1.1]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/85 to-[#09090b]/60" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#f8f8fa] via-[#f8f8fa]/85 to-transparent" />
               </div>
 
               {/* Foreground Card Content */}
               <div className="relative z-10">
-                <h3 className="font-display font-bold text-lg sm:text-xl text-white tracking-tight mb-3 leading-snug">
+                <h3 className="font-display font-bold text-lg sm:text-xl text-neutral-950 tracking-tight mb-3 leading-snug">
                   {item.title}
                 </h3>
 
-                <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-8">
+                <p className="font-sans text-sm text-neutral-600 leading-relaxed font-normal mb-8">
                   {item.description}
                 </p>
               </div>
 
-              <div className="relative z-10 pt-5 border-t border-neutral-800/80">
-                <span className="font-mono text-xl sm:text-2xl font-bold text-white block mb-1">
+              <div className="relative z-10 pt-5 border-t border-neutral-200/90">
+                <span className="font-mono text-xl sm:text-2xl font-bold text-neutral-950 block mb-1">
                   {item.stat}
                 </span>
-                <span className="font-mono text-[11px] text-neutral-400 uppercase tracking-wider">
+                <span className="font-mono text-[11px] text-neutral-500 uppercase tracking-wider">
                   {item.statLabel}
                 </span>
               </div>

@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 
 // Flagship Service Sections (Neat, natural scroll, high-contrast)
 import ServiceHero from '@/components/services/agent-evaluation/ServiceHero';
+import ServiceMetricsStrip from '@/components/services/agent-evaluation/ServiceMetricsStrip';
 import EvaluationRealitiesSection from '@/components/services/agent-evaluation/EvaluationRealitiesSection';
 import EvaluationWorkbenchSection from '@/components/services/agent-evaluation/EvaluationWorkbenchSection';
 import EvaluationTaxonomySection from '@/components/services/agent-evaluation/EvaluationTaxonomySection';
@@ -30,10 +31,13 @@ export default function AgentEvaluationPage() {
         {/* Universal Architectural Sticky Navbar */}
         <Navbar />
 
-        {/* 1. Atmospheric Ambient Hero & Metric Strip */}
+        {/* 1. Atmospheric Ambient Hero */}
         <ServiceHero />
 
-        {/* 2. The Core Failure Realities (Why standard benchmarks fail) */}
+        {/* 2. White-Themed Architectural Metrics Strip */}
+        <ServiceMetricsStrip />
+
+        {/* 3. White-Themed Core Failure Realities (Why standard benchmarks fail) */}
         <EvaluationRealitiesSection />
 
         {/* 3. Interactive Evaluation Workbench (4 Pillars: Rubrics, Verifiers, Judges, Gates) */}

@@ -52,21 +52,21 @@ const DIMENSIONS = [
 
 export default function EvaluationTaxonomySection() {
   return (
-    <section className="relative w-full py-24 sm:py-32 bg-white text-neutral-950 border-t border-neutral-200">
+    <section className="relative w-full py-24 sm:py-32 bg-[#09090b] text-white border-t border-neutral-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mb-14">
-          <span className="font-mono text-xs uppercase tracking-[0.2em] text-neutral-500 font-semibold block mb-3">
+          <span className="font-mono text-xs uppercase tracking-[0.2em] text-neutral-400 font-semibold block mb-3">
             EVALUATION DIMENSIONS
           </span>
-          <h2 className="font-display font-bold text-3xl sm:text-5xl text-neutral-950 tracking-tight leading-tight mb-4">
+          <h2 className="font-display font-bold text-3xl sm:text-5xl text-white tracking-tight leading-tight mb-4">
             50+ Dimensions. 4 Rigorous Core Pillars.
           </h2>
-          <p className="font-sans text-base sm:text-lg text-neutral-600 leading-relaxed font-normal">
+          <p className="font-sans text-base sm:text-lg text-neutral-400 leading-relaxed font-normal">
             Every evaluation assesses the complete agent lifecycle across cognitive, agentic, security, and operational criteria.
           </p>
         </div>
 
-        {/* Crisp, less curvy light cards (rounded-md) */}
+        {/* Crisp cards with less curvy borders (rounded-md) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {DIMENSIONS.map((dim, idx) => (
             <motion.div
@@ -75,27 +75,27 @@ export default function EvaluationTaxonomySection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.45, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="p-8 rounded-md bg-[#f8f8fa] border border-[#e5e5e8] hover:border-neutral-400 transition-colors flex flex-col justify-between"
+              className="p-8 rounded-md bg-neutral-900/40 border border-neutral-800 hover:border-neutral-700 transition-colors flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-[#e5e5e8]">
-                  <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
+                <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-neutral-800">
+                  <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-400 font-semibold">
                     {dim.category}
                   </span>
                 </div>
 
-                <h3 className="font-display font-bold text-xl text-neutral-950 mb-2">
+                <h3 className="font-display font-bold text-xl text-white mb-2">
                   {dim.name}
                 </h3>
-                <p className="font-sans text-sm text-neutral-600 mb-6 leading-relaxed">
+                <p className="font-sans text-sm text-neutral-300 mb-6 leading-relaxed">
                   {dim.summary}
                 </p>
               </div>
 
-              <div className="space-y-2.5 pt-4 border-t border-[#e5e5e8]">
+              <div className="space-y-2.5 pt-4 border-t border-neutral-800">
                 {dim.criteria.map((item) => (
-                  <div key={item} className="flex items-start gap-2.5 text-xs text-neutral-800 font-sans">
-                    <span className="w-1.5 h-1.5 rounded-full bg-neutral-400 mt-1.5 shrink-0" />
+                  <div key={item} className="flex items-start gap-2.5 text-xs text-neutral-300 font-sans">
+                    <span className="w-1.5 h-1.5 rounded-full bg-neutral-600 mt-1.5 shrink-0" />
                     <span className="font-medium">{item}</span>
                   </div>
                 ))}
