@@ -10,6 +10,7 @@ import EvaluationRealitiesSection from '@/components/services/agent-evaluation/E
 import EvaluationWorkbenchSection from '@/components/services/agent-evaluation/EvaluationWorkbenchSection';
 import EvaluationTaxonomySection from '@/components/services/agent-evaluation/EvaluationTaxonomySection';
 import EvaluationDeliverySection from '@/components/services/agent-evaluation/EvaluationDeliverySection';
+import EvaluationFAQSection from '@/components/services/agent-evaluation/EvaluationFAQSection';
 import ServiceCTASection from '@/components/services/agent-evaluation/ServiceCTASection';
 
 export const metadata: Metadata = {
@@ -49,7 +50,10 @@ export default function AgentEvaluationPage() {
         {/* 6. How We Deliver (Progressive 4-Step Engagement Grid) */}
         <EvaluationDeliverySection />
 
-        {/* 7. High-Contrast Conversion CTA */}
+        {/* 7. Frequently Asked Questions (Technical & Engagement) */}
+        <EvaluationFAQSection />
+
+        {/* 8. High-Contrast Conversion CTA */}
         <ServiceCTASection />
 
         {/* Universal Footer */}
