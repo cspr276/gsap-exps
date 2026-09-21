@@ -65,7 +65,7 @@ export default function EvaluationRealitiesSection() {
                   fill
                   className="object-cover object-center group-hover:scale-105 opacity-60 group-hover:opacity-80 transition-all duration-700 ease-out"
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/70 to-black/25" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/70 to-black/60" />
               </div>
 
               {/* Foreground Card Content */}

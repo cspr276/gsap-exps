@@ -7,6 +7,22 @@ import { motion } from 'framer-motion';
 import { ArrowUpRight, ArrowDown } from 'lucide-react';
 
 export default function ServiceHero() {
+  const handleScrollToWorkbench = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const target = document.getElementById('workbench');
+    if (!target) return;
+
+    if (typeof window !== 'undefined' && window.__lenis) {
+      window.__lenis.scrollTo(target, {
+        offset: -40,
+        duration: 1.4,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      });
+    } else {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="relative w-full min-h-screen flex flex-col justify-center items-center pt-28 sm:pt-36 pb-20 overflow-hidden">
       {/* Authentic Unsplash tech infrastructure background (natural, non-AI) */}
@@ -45,7 +61,7 @@ export default function ServiceHero() {
             transition={{ duration: 0.5, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
             className="font-sans text-base sm:text-lg text-neutral-200 leading-relaxed max-w-2xl mx-auto mb-10 font-normal drop-shadow-sm"
           >
-            We construct empirical, reproducible benchmark suites for enterprise AI workflows — exposing compound error drift, multi-turn hallucinations, and security regressions before production release.
+            We construct empirical, reproducible benchmark suites for enterprise AI workflows - exposing compound error drift, multi-turn hallucinations, and security regressions before production release.
           </motion.p>
 
           {/* Centered High-Contrast Action CTAs with less curvy borders (rounded-md) */}
@@ -65,7 +81,8 @@ export default function ServiceHero() {
 
             <a
               href="#workbench"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-md bg-neutral-900/80 hover:bg-neutral-800 text-neutral-200 hover:text-white font-mono text-xs uppercase tracking-wider font-medium border border-neutral-700/80 transition-all backdrop-blur-md"
+              onClick={handleScrollToWorkbench}
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-md bg-neutral-900/80 hover:bg-neutral-800 text-neutral-200 hover:text-white font-mono text-xs uppercase tracking-wider font-medium border border-neutral-700/80 transition-all backdrop-blur-md cursor-pointer"
             >
               <span>Explore Benchmark Engine</span>
               <ArrowDown className="w-3.5 h-3.5 text-neutral-400" />
