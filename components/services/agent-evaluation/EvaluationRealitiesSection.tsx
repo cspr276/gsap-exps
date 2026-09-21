@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 const REALITIES = [
@@ -11,6 +12,7 @@ const REALITIES = [
       'Standard benchmarks measure one input in isolation. Production agents execute 6 to 14 sequential tool steps. A 95% single-step accuracy degrades exponentially to roughly 66% reliability across an 8-turn enterprise pipeline.',
     stat: '0.95⁸ ≈ 66%',
     statLabel: 'Multi-turn degradation baseline',
+    image: '/services/reality-01.jpg',
   },
   {
     id: 'synthetic-bias',
@@ -19,6 +21,7 @@ const REALITIES = [
       'Public evaluations rank models on generic trivia and synthetic coding challenges. They completely overlook proprietary business schemas, asynchronous state machines, and multi-tenant authorization boundaries.',
     stat: '0% Domain Fit',
     statLabel: 'Public score to workflow correlation',
+    image: '/services/reality-02.jpg',
   },
   {
     id: 'measurement-integrity',
@@ -27,6 +30,7 @@ const REALITIES = [
       'Automated LLM-as-a-judge pipelines suffer from severe verbosity bias, position bias, and self-preference drift. Without calibrated human ground truth, evaluation scores become an arbitrary black box.',
     stat: '38% Variance',
     statLabel: 'Uncalibrated automated judge drift',
+    image: '/services/reality-03.jpg',
   },
 ];
 
@@ -51,23 +55,35 @@ export default function EvaluationRealitiesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.45, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="p-7 rounded-md bg-neutral-900/40 border border-neutral-800 hover:border-neutral-700 transition-colors flex flex-col justify-between"
+              className="group relative p-7 rounded-md border border-neutral-800 hover:border-neutral-700 transition-colors flex flex-col justify-between overflow-hidden min-h-[340px]"
             >
-              <div>
+              {/* Background Image Layer with Dark Overlay & Subtle Zoom on Hover */}
+              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  className="object-cover object-center group-hover:scale-105 group-hover:opacity-30 opacity-20 transition-all duration-700 ease-out brightness-[0.75]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/85 to-[#09090b]/60" />
+              </div>
+
+              {/* Foreground Card Content */}
+              <div className="relative z-10">
                 <h3 className="font-display font-bold text-lg sm:text-xl text-white tracking-tight mb-3 leading-snug">
                   {item.title}
                 </h3>
 
-                <p className="font-sans text-sm text-neutral-400 leading-relaxed font-normal mb-8">
+                <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-8">
                   {item.description}
                 </p>
               </div>
 
-              <div className="pt-5 border-t border-neutral-800/80">
+              <div className="relative z-10 pt-5 border-t border-neutral-800/80">
                 <span className="font-mono text-xl sm:text-2xl font-bold text-white block mb-1">
                   {item.stat}
                 </span>
-                <span className="font-mono text-[11px] text-neutral-500 uppercase tracking-wider">
+                <span className="font-mono text-[11px] text-neutral-400 uppercase tracking-wider">
                   {item.statLabel}
                 </span>
               </div>
