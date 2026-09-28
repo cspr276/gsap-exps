@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -63,37 +62,23 @@ const DIMENSIONS = [
 ];
 
 function DimensionCard({ dim, idx }: { dim: (typeof DIMENSIONS)[number]; idx: number }) {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
     <div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="taxonomy-card relative p-8 rounded-md bg-neutral-900/40 border border-neutral-800 hover:border-neutral-600 transition-colors duration-300 flex flex-col justify-between overflow-hidden group shadow-sm hover:shadow-2xl hover:shadow-black/60 will-change-transform"
+      className="taxonomy-card relative p-8 rounded-md bg-neutral-900/60 border border-neutral-800 hover:border-neutral-600 transition-colors duration-300 flex flex-col justify-between overflow-hidden group shadow-sm hover:shadow-2xl hover:shadow-black/60 will-change-transform"
     >
-      {/* Ambient dynamic monochromatic fluid Grainient on hover */}
-      <AnimatePresence>
-        {isHovered && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.8 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.35 }}
-            className="absolute inset-0 z-0 pointer-events-none overflow-hidden"
-          >
-            <Grainient
-              color1={dim.grainientColors.color1}
-              color2={dim.grainientColors.color2}
-              color3={dim.grainientColors.color3}
-              timeSpeed={0.2}
-              warpStrength={0.45}
-              grainAmount={0.06}
-              contrast={1.15}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/75 via-transparent to-neutral-950/50 pointer-events-none" />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Dynamic monochromatic fluid Grainient as permanent card background */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-75 group-hover:opacity-100 transition-opacity duration-500">
+        <Grainient
+          color1={dim.grainientColors.color1}
+          color2={dim.grainientColors.color2}
+          color3={dim.grainientColors.color3}
+          timeSpeed={0.2}
+          warpStrength={0.45}
+          grainAmount={0.06}
+          contrast={1.15}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-neutral-950/45 to-neutral-950/65 pointer-events-none" />
+      </div>
 
       {/* Card Content */}
       <div className="relative z-10">
@@ -101,7 +86,7 @@ function DimensionCard({ dim, idx }: { dim: (typeof DIMENSIONS)[number]; idx: nu
           <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-400 group-hover:text-neutral-200 transition-colors font-semibold">
             {dim.category}
           </span>
-          <span className="font-mono text-xs text-neutral-600 group-hover:text-neutral-400">
+          <span className="font-mono text-xs text-neutral-500 group-hover:text-neutral-400">
             0{idx + 1}
           </span>
         </div>
@@ -114,7 +99,7 @@ function DimensionCard({ dim, idx }: { dim: (typeof DIMENSIONS)[number]; idx: nu
         </p>
       </div>
 
-      <div className="relative z-10 space-y-2.5 pt-4 border-t border-neutral-800 group-hover:border-neutral-700 transition-colors">
+      <div className="relative z-10 space-y-2.5 pt-4 transition-colors">
         {dim.criteria.map((item) => (
           <div key={item} className="flex items-start gap-2.5 text-xs text-neutral-300 font-sans">
             <span className="text-neutral-500 font-mono text-[11px] select-none pt-0.5 shrink-0">—</span>

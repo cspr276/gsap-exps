@@ -17,7 +17,6 @@ const REALITIES = [
     stat: '0.95⁸ ≈ 66%',
     statLabel: 'Multi-turn degradation baseline',
     image: '/services/reality-01.jpg',
-    turnNodes: [95, 90, 86, 81, 77, 73, 70, 66],
   },
   {
     id: 'synthetic-bias',
@@ -109,16 +108,16 @@ export default function EvaluationRealitiesSection() {
         {/* 3D Perspective Grid */}
         <div
           ref={cardsContainerRef}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch"
           style={{ perspective: '1200px' }}
         >
           {REALITIES.map((item, idx) => (
             <div
               key={item.id}
-              className="reality-card group relative p-7 sm:p-8 rounded-md bg-[#f8f8fa] border border-neutral-200/90 hover:border-neutral-400 transition-all flex flex-col justify-between overflow-hidden min-h-85 shadow-sm hover:shadow-md will-change-transform"
+              className="reality-card group relative p-7 sm:p-8 rounded-md bg-[#f8f8fa] border border-neutral-200/90 hover:border-neutral-400 transition-all flex flex-col justify-between overflow-hidden min-h-[380px] shadow-sm hover:shadow-md will-change-transform"
               style={{ transformStyle: 'preserve-3d' }}
             >
-              {/* Restored Background Image Layer with User's Exact Opacity & Gradient */}
+              {/* Background Image Layer with User's Exact Opacity & Gradient */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
                 <Image
                   src={item.image}
@@ -130,7 +129,7 @@ export default function EvaluationRealitiesSection() {
               </div>
 
               {/* Foreground Card Content */}
-              <div className="relative z-10">
+              <div className="relative z-10 flex-1">
                 <div className="flex items-center justify-between mb-4 pb-2.5 border-b border-white/20">
                   <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-200 font-bold">
                     FAILURE REALITY 0{idx + 1}
@@ -144,40 +143,19 @@ export default function EvaluationRealitiesSection() {
                   {item.title}
                 </h3>
 
-                <p className="font-sans text-sm text-white leading-relaxed font-normal mb-6">
+                <p className="font-sans text-sm text-white leading-relaxed font-normal mb-8">
                   {item.description}
                 </p>
               </div>
 
-              {/* Bottom Stat & Optional Turn-Decay Sparkline */}
-              <div className="relative z-10 pt-4 border-t border-white/20">
-                {item.turnNodes && (
-                  <div className="mb-3">
-                    <div className="flex items-center justify-between text-[10px] font-mono text-neutral-300 mb-1.5">
-                      <span>Turn 1 (95%)</span>
-                      <span>Turn 8 (66%)</span>
-                    </div>
-                    <div className="grid grid-cols-8 gap-1 h-1.5 w-full">
-                      {item.turnNodes.map((val, nIdx) => (
-                        <div
-                          key={nIdx}
-                          className="h-full rounded-xs bg-white transition-opacity"
-                          style={{ opacity: val / 100 }}
-                          title={`Turn ${nIdx + 1}: ${val}% reliability`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex items-baseline justify-between">
-                  <span className="font-mono text-xl sm:text-2xl font-bold text-neutral-100 block">
-                    {item.stat}
-                  </span>
-                  <span className="font-mono text-[11px] text-neutral-200 uppercase tracking-wider">
-                    {item.statLabel}
-                  </span>
-                </div>
+              {/* Bottom Stat Block - Clean, Uniform & Perfectly Aligned */}
+              <div className="relative z-10 pt-5 border-t border-white/20 mt-auto">
+                <span className="font-mono text-xl sm:text-2xl font-bold text-neutral-100 block mb-1">
+                  {item.stat}
+                </span>
+                <span className="font-mono text-[11px] text-neutral-200 uppercase tracking-wider block">
+                  {item.statLabel}
+                </span>
               </div>
             </div>
           ))}
