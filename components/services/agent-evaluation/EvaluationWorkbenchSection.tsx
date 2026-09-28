@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import dynamic from 'next/dynamic';
+import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -11,110 +12,109 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 const Dither = dynamic(() => import('@/components/Dither'), { ssr: false });
 const Grainient = dynamic(() => import('@/components/Grainient'), { ssr: false });
 
-interface LayerPillar {
+interface Pillar {
   id: string;
   step: string;
-  layerNum: string;
   title: string;
-  shortTitle: string;
   subtitle: string;
   description: string;
   specs: string[];
   ditherColor: [number, number, number];
   grainientColors: { color1: string; color2: string; color3: string };
-  telemetry: {
-    file: string;
+  codePreview: {
+    title: string;
     badge: string;
-    entries: { label: string; value: string; highlight?: boolean }[];
+    lines: { label?: string; code: string; tone?: 'neutral' | 'accent' | 'highlight' }[];
   };
 }
 
-const LAYERS: LayerPillar[] = [
+// 100% Monochromatic (Obsidian, Graphite, Slate & Platinum Silvers)
+const PILLARS: Pillar[] = [
   {
     id: 'rubrics',
     step: 'PILLAR 01',
-    layerNum: 'LAYER 01 / TOP STRATA',
     title: 'Task Grounding & Domain Rubrics',
-    shortTitle: 'Domain Task Rubric Matrix',
     subtitle: 'Extracting realistic evaluation suites from enterprise traffic',
     description:
       'We work with your engineers and domain specialists to construct tasks derived directly from real production logs. Every scenario defines strict acceptance criteria, gold-standard reference responses, and non-negotiable edge cases.',
     specs: ['Task-grounded rubrics', 'Multi-turn branching graphs', 'Gold-standard reference sets'],
-    ditherColor: [0.82, 0.84, 0.88],
+    ditherColor: [0.82, 0.84, 0.88], // Platinum Silver
     grainientColors: { color1: '#09090b', color2: '#18181b', color3: '#27272a' },
-    telemetry: {
-      file: 'task_rubric_financial_reconciliation.json',
+    codePreview: {
+      title: 'task_rubric_financial_reconciliation.json',
       badge: 'RUBRIC SPEC v2.4',
-      entries: [
-        { label: 'OBJECTIVE', value: '"Reconcile cross-border transaction discrepancies against ERP"' },
-        { label: 'GOLD_STANDARD', value: '{ "variance_threshold": 0.00, "disallow_rounding": true }' },
-        { label: 'STATUS', value: 'CALIBRATED BY SENIOR TREASURY SPECIALISTS [CERTIFIED]', highlight: true },
+      lines: [
+        { label: 'OBJECTIVE', code: '"Reconcile cross-border transaction discrepancies against ERP"' },
+        { label: 'DIMENSIONS', code: '["numerical_accuracy", "compliance_attestation", "audit_trace"]' },
+        { label: 'GOLD_STANDARD', code: '{ "variance_threshold": 0.00, "disallow_rounding": true }' },
+        { label: 'SEVERITY_BAND', code: '"Tier-1 Blocker (Immediate Release Failure on Mismatch)"', tone: 'highlight' },
+        { label: 'STATUS', code: 'CALIBRATED BY SENIOR TREASURY SPECIALISTS [CERTIFIED]', tone: 'accent' },
       ],
     },
   },
   {
     id: 'verifiers',
     step: 'PILLAR 02',
-    layerNum: 'LAYER 02 / EXECUTION STRATA',
     title: 'Programmatic Sandbox Verifiers',
-    shortTitle: 'Deterministic Sandbox Verifiers',
     subtitle: 'Asserting end-state database mutations and environmental invariants',
     description:
       'Subjective judgment is insufficient for mission-critical tooling. Our verifiers execute inside isolated sandboxes to assert programmatic state changes: did the agent update the right database row, maintain transactional integrity, and leave unrelated states intact?',
     specs: ['Isolated Docker/WASM sandboxes', 'End-state invariant checking', 'Idempotency verification'],
-    ditherColor: [0.75, 0.78, 0.82],
+    ditherColor: [0.75, 0.78, 0.82], // Titanium Zinc
     grainientColors: { color1: '#0b0c0e', color2: '#191b20', color3: '#2a2d36' },
-    telemetry: {
-      file: 'verifier_sandbox_runner.py',
+    codePreview: {
+      title: 'verifier_sandbox_runner.py',
       badge: 'ENVIRONMENT RUNNER',
-      entries: [
-        { label: 'ENVIRONMENT', value: 'IsolatedEnvironment.spawn(snapshot="erp_prod_clone_104")' },
-        { label: 'ASSERTION', value: 'sandbox.db.invariants_preserved() == True' },
-        { label: 'RESULT', value: 'ALL 14 HARD ASSERTIONS PASSED [0 REGRESSIONS]', highlight: true },
+      lines: [
+        { code: 'sandbox = IsolatedEnvironment.spawn(snapshot="erp_prod_clone_104")' },
+        { code: 'trace = agent.execute(task_payload, timeout_sec=45.0)' },
+        { code: 'assert sandbox.db.invariants_preserved(), "Invariant violation detected!"', tone: 'neutral' },
+        { code: 'assert sandbox.audit_log.verify_signature(trace.token), "Missing cryptographic trace"', tone: 'neutral' },
+        { code: 'RESULT: ALL 14 HARD ASSERTIONS PASSED [0 REGRESSIONS RECORDED]', tone: 'accent' },
       ],
     },
   },
   {
     id: 'judges',
     step: 'PILLAR 03',
-    layerNum: 'LAYER 03 / CONSENSUS STRATA',
     title: 'Calibrated Human-in-the-Loop',
-    shortTitle: 'Specialist Adjudication Panel',
     subtitle: 'Vetted domain specialists adjudicating ambiguous reasoning paths',
     description:
       'When outputs cannot be validated deterministically, we deploy a vetted network of domain specialists (attorneys, clinical practitioners, financial analysts). Disagreements are adjudicated and inter-rater agreement is mathematically tracked.',
     specs: ['Krippendorff’s Alpha tracking', 'Triple-blind expert scoring', 'Adjudicated dispute traces'],
-    ditherColor: [0.88, 0.88, 0.92],
+    ditherColor: [0.88, 0.88, 0.92], // Pure Platinum
     grainientColors: { color1: '#0d0d10', color2: '#1b1c22', color3: '#31333d' },
-    telemetry: {
-      file: 'adjudication_panel_telemetry.json',
+    codePreview: {
+      title: 'adjudication_panel_telemetry.json',
       badge: 'INTER-RATER CALIBRATION',
-      entries: [
-        { label: 'PANEL_SIZE', value: '3 Independent Calibrated Domain Evaluators' },
-        { label: 'AGREEMENT', value: 'Krippendorff α = 0.942 [Statistically Certified]', highlight: true },
-        { label: 'DISPUTE_TRACE', value: '"Dispute resolved: Ambiguity in regulatory clause 4.2"' },
+      lines: [
+        { label: 'PANEL_SIZE', code: '3 Independent Calibrated Domain Evaluators' },
+        { label: 'AGREEMENT_SCORE', code: 'Krippendorff α = 0.942 (Statistically Certified)', tone: 'accent' },
+        { label: 'SAMPLE_#849', code: 'Reviewer A: Pass | Reviewer B: Pass | Reviewer C: Dispute' },
+        { label: 'ADJUDICATION', code: '"Dispute resolved: Ambiguity in regulatory clause 4.2"', tone: 'neutral' },
+        { label: 'OUTCOME', code: 'CONSENSUS CERTIFIED WITH CRYPTOGRAPHIC AUDIT TRACE', tone: 'accent' },
       ],
     },
   },
   {
     id: 'gates',
     step: 'PILLAR 04',
-    layerNum: 'LAYER 04 / BASE STRATA',
     title: 'Automated CI/CD Release Gates',
-    shortTitle: 'Continuous CI/CD Release Gate',
     subtitle: 'Continuous regression evaluation on every model and prompt deploy',
     description:
       'Every confirmed failure mode is permanently converted into an automated regression unit test. As foundation models release updates, prompts are refined, or tool schemas evolve, our release gate blocks silent quality degradation.',
     specs: ['Automated PR blocking', 'Statistical regression deltas', 'Production canary monitoring'],
-    ditherColor: [0.8, 0.82, 0.85],
+    ditherColor: [0.8, 0.82, 0.85], // Slate Steel
     grainientColors: { color1: '#0f1013', color2: '#1e2026', color3: '#363944' },
-    telemetry: {
-      file: 'evalixa_release_gate_summary.log',
+    codePreview: {
+      title: 'evalixa_release_gate_summary.log',
       badge: 'CI/CD RELEASE GATE',
-      entries: [
-        { label: 'EVAL_RUN', value: 'Candidate: mistral-large-v2-tuned vs Baseline: prod-v1.8' },
-        { label: 'DELTA_SECURITY', value: '0.0% prompt-injection escape rate [100% Containment]', highlight: true },
-        { label: 'DECISION', value: 'DEPLOYMENT APPROVED — RELEASE GATE PASSED [0 ESCAPES]', highlight: true },
+      lines: [
+        { label: 'EVAL_RUN', code: 'Candidate: mistral-large-v2-tuned vs Baseline: prod-v1.8' },
+        { label: 'TASKS_EVALUATED', code: '1,420 multi-turn scenarios across 50 dimensions' },
+        { label: 'DELTA_REASONING', code: '+6.4% improvement on long-horizon tool chains', tone: 'accent' },
+        { label: 'DELTA_SECURITY', code: '0.0% prompt-injection escape rate [100% Containment]', tone: 'accent' },
+        { label: 'DECISION', code: 'DEPLOYMENT APPROVED — RELEASE GATE PASSED [0 ESCAPES]', tone: 'accent' },
       ],
     },
   },
@@ -124,26 +124,23 @@ export default function EvaluationWorkbenchSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const leftColRef = useRef<HTMLDivElement>(null);
   const laserLineRef = useRef<HTMLDivElement>(null);
-  const stackStageRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
-  // Standard vertical spacing coordinates for 3D stack explosion
-  const baseZValues = [150, 50, -50, -150];
+  const currentPillar = PILLARS[activeIndex] || PILLARS[0];
 
   useGSAP(
     () => {
       const section = sectionRef.current;
       const laser = laserLineRef.current;
-      const stackStage = stackStageRef.current;
       if (!section) return;
 
       const mm = gsap.matchMedia();
 
       mm.add('(min-width: 1024px)', () => {
-        const totalPillars = LAYERS.length;
-        const scrollDistance = 2400; // 600px of scroll per layer
+        const totalPillars = PILLARS.length;
+        const scrollDistance = 2400; // 600px of scroll per pillar
 
-        // Pin the workbench section while user scrolls through the 4 3D layers
+        // Pin the entire workbench section while user scrolls through the 4 pillars
         const st = ScrollTrigger.create({
           id: 'workbench-pin',
           trigger: section,
@@ -155,21 +152,12 @@ export default function EvaluationWorkbenchSection() {
           onUpdate: (self) => {
             const p = self.progress;
 
-            // Animate laser track line on the left
+            // Animate laser track line
             if (laser) {
               gsap.set(laser, { scaleY: p });
             }
 
-            // Subtle 3D breathing rotation for the stack as you scroll
-            if (stackStage) {
-              const rotX = 52 + p * 6; // 52deg -> 58deg
-              const rotZ = -26 + p * 4; // -26deg -> -22deg
-              gsap.set(stackStage, {
-                transform: `rotateX(${rotX}deg) rotateZ(${rotZ}deg)`,
-              });
-            }
-
-            // Calculate active layer index based on scroll position
+            // Calculate active pillar index based on scroll position
             const newIndex = Math.min(totalPillars - 1, Math.floor(p * totalPillars));
             setActiveIndex(newIndex);
           },
@@ -188,7 +176,8 @@ export default function EvaluationWorkbenchSection() {
 
     const st = ScrollTrigger.getById('workbench-pin');
     if (st) {
-      const stepProgress = (index + 0.15) / LAYERS.length;
+      // Scroll to the exact position within the pinned range
+      const stepProgress = (index + 0.15) / PILLARS.length;
       const targetScroll = st.start + stepProgress * (st.end - st.start);
       if (typeof window !== 'undefined' && window.__lenis) {
         window.__lenis.scrollTo(targetScroll, { duration: 1.0 });
@@ -205,7 +194,7 @@ export default function EvaluationWorkbenchSection() {
       className="relative w-full min-h-screen lg:h-screen flex flex-col justify-center py-10 sm:py-12 lg:py-6 bg-[#09090b] text-white overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col justify-center my-auto">
-        {/* Section Header */}
+        {/* Section Header with balanced compact spacing */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-6 gap-3">
           <div className="max-w-2xl">
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-1.5">
@@ -218,15 +207,15 @@ export default function EvaluationWorkbenchSection() {
 
           {/* Desktop Scroll Progress Indicator */}
           <div className="hidden lg:flex items-center gap-2 text-neutral-400 font-mono text-xs pb-1">
-            <span className="text-white font-bold">LAYER {String(activeIndex + 1).padStart(2, '0')}</span>
+            <span className="text-white font-bold">PILLAR {String(activeIndex + 1).padStart(2, '0')}</span>
             <span>/</span>
             <span>04</span>
-            <span className="text-neutral-500 ml-2 text-[11px]">(Scroll to explode architecture)</span>
+            <span className="text-neutral-500 ml-2 text-[11px]">(Scroll to step through)</span>
           </div>
         </div>
 
-        {/* 2-Column Layout: Left Navigation + Right 3D Exploded Layer Stack */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+        {/* 2-Column Interactive Workbench */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
           {/* Left Column: 4 Pillar Navigation Cards with Vertical Laser Rail */}
           <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col justify-between space-y-2">
             {/* Ambient Background Track for Laser Line (Desktop) */}
@@ -238,7 +227,7 @@ export default function EvaluationWorkbenchSection() {
               />
             </div>
 
-            {LAYERS.map((pillar, idx) => {
+            {PILLARS.map((pillar, idx) => {
               const isActive = activeIndex === idx;
               return (
                 <button
@@ -293,7 +282,7 @@ export default function EvaluationWorkbenchSection() {
                     </div>
 
                     <div className="shrink-0 pt-0.5 font-mono text-[11px] text-neutral-500">
-                      0{idx + 1}
+                      {String(idx + 1).padStart(2, '0')}
                     </div>
                   </div>
                 </button>
@@ -301,15 +290,15 @@ export default function EvaluationWorkbenchSection() {
             })}
           </div>
 
-          {/* Right Column: 3D Exploded Architecture Layer Stack (Centerpiece Animation) */}
-          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-[#0c0d10] overflow-hidden min-h-[460px] sm:min-h-[500px] lg:min-h-[520px] shadow-2xl shadow-black flex items-center justify-center p-4 sm:p-6 lg:p-8">
-            {/* Ambient Monochromatic Dither Background Canvas */}
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-60">
+          {/* Right Column: Dynamic Inspection Console & Details */}
+          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-[#0c0d10] overflow-hidden min-h-[440px] sm:min-h-[470px] shadow-2xl shadow-black flex flex-col justify-between">
+            {/* Ambient Monochromatic Dither Canvas Background */}
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-80">
               <Dither
-                waveSpeed={0.03}
+                waveSpeed={0.035}
                 waveFrequency={2.2}
-                waveAmplitude={0.25}
-                waveColor={LAYERS[activeIndex].ditherColor}
+                waveAmplitude={0.28}
+                waveColor={currentPillar.ditherColor}
                 backgroundColor={[0.04, 0.04, 0.05]}
                 colorNum={4}
                 pixelSize={2}
@@ -317,130 +306,81 @@ export default function EvaluationWorkbenchSection() {
               />
             </div>
 
-            {/* Depth vignette */}
-            <div className="absolute inset-0 z-[1] pointer-events-none bg-radial-gradient from-transparent via-neutral-950/40 to-neutral-950/90" />
+            {/* Ambient vignette overlay to keep text crisp without washing out the waves */}
+            <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/85 via-neutral-950/30 to-neutral-950/50" />
 
-            {/* Top HUD Overlay within Chassis */}
-            <div className="absolute top-4 left-5 right-5 z-20 flex items-center justify-between pointer-events-none text-[11px] font-mono border-b border-white/10 pb-2 text-neutral-400">
-              <div className="flex items-center gap-2">
-                <span className="text-white font-semibold">3D ARCHITECTURAL STRATA</span>
-                <span>/</span>
-                <span className="text-neutral-400">{LAYERS[activeIndex].shortTitle}</span>
-              </div>
-              <span className="px-2 py-0.5 rounded bg-white/10 text-white border border-white/20 text-[10px] font-bold">
-                {LAYERS[activeIndex].telemetry.badge}
-              </span>
-            </div>
+            {/* Dynamic Content */}
+            <div className="relative z-10 p-5 sm:p-6 lg:p-7 flex flex-col justify-between h-full">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentPillar.id}
+                  initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+                  transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex flex-col justify-center gap-5 h-full"
+                >
+                  <div>
+                    <div className="flex items-center gap-2 mb-1.5 font-mono text-[11px] uppercase tracking-wider text-neutral-400">
+                      <span className="text-white font-bold">{currentPillar.step}</span>
+                      <span>/</span>
+                      <span>INSPECTION CONSOLE</span>
+                    </div>
 
-            {/* 3D Isometric Viewport */}
-            <div
-              className="relative z-10 w-full h-[380px] sm:h-[420px] flex items-center justify-center select-none"
-              style={{ perspective: '1100px' }}
-            >
-              {/* Master 3D Rotational Chassis */}
-              <div
-                ref={stackStageRef}
-                className="relative w-[340px] sm:w-[440px] lg:w-[480px] h-[180px] sm:h-[200px] transition-transform duration-700 ease-out"
-                style={{
-                  transformStyle: 'preserve-3d',
-                  transform: 'rotateX(52deg) rotateZ(-26deg)',
-                }}
-              >
-                {/* Central Laser Telemetry Axis passing vertically through all 4 plates */}
-                <div
-                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[2px] h-[340px] bg-gradient-to-t from-white/10 via-white to-white/10 pointer-events-none origin-center"
-                  style={{
-                    transform: 'rotateX(90deg) translateY(-50%)',
-                    transformStyle: 'preserve-3d',
-                  }}
-                />
+                    <h3 className="font-display font-bold text-lg sm:text-xl lg:text-2xl text-white tracking-tight mb-2">
+                      {currentPillar.title}
+                    </h3>
 
-                {/* The 4 3D Floating Plates */}
-                {LAYERS.map((layer, idx) => {
-                  const isActive = activeIndex === idx;
-                  const baseZ = baseZValues[idx];
-                  // When active, the plate elevates forward in 3D relief toward camera
-                  const currentZ = isActive ? baseZ + 45 : baseZ;
-                  const scale = isActive ? 1.04 : 0.98;
+                    <p className="font-sans text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal mb-4">
+                      {currentPillar.description}
+                    </p>
 
-                  return (
-                    <div
-                      key={layer.id}
-                      onClick={() => handlePillarClick(idx)}
-                      className={`absolute inset-0 rounded-md border transition-all duration-500 ease-out cursor-pointer flex flex-col justify-between p-4 sm:p-5 ${
-                        isActive
-                          ? 'border-white/90 bg-[#16171b]/95 shadow-[0_0_40px_rgba(255,255,255,0.2)] opacity-100'
-                          : 'border-white/15 bg-[#0e0f12]/80 backdrop-blur-md opacity-45 hover:opacity-75 hover:border-white/40'
-                      }`}
-                      style={{
-                        transform: `translate3d(0, 0, ${currentZ}px) scale(${scale})`,
-                        transformStyle: 'preserve-3d',
-                        zIndex: isActive ? 40 : 10 + idx,
-                      }}
-                    >
-                      {/* Plate Top Bar */}
-                      <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                        <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                      {currentPillar.specs.map((spec) => (
+                        <span
+                          key={spec}
+                          className="font-mono text-[10px] sm:text-[11px] text-neutral-200 bg-neutral-900/70 backdrop-blur-md border border-neutral-700/80 px-2.5 py-1 rounded-sm shadow-sm"
+                        >
+                          {spec}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Dark Monochromatic Inspection Code / Telemetry Console */}
+                  <div className="rounded-md bg-black/70 backdrop-blur-md border border-neutral-800 p-3.5 sm:p-4 font-mono text-xs overflow-hidden shadow-2xl">
+                    <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-neutral-800 text-neutral-400 text-[11px]">
+                      <span className="truncate pr-2 text-neutral-300">{currentPillar.codePreview.title}</span>
+                      <span className="px-2 py-0.5 rounded bg-white/10 text-white border border-white/20 text-[10px] font-bold shrink-0 uppercase tracking-wider">
+                        {currentPillar.codePreview.badge}
+                      </span>
+                    </div>
+
+                    <div className="space-y-1.5 leading-relaxed overflow-x-auto text-[11px]">
+                      {currentPillar.codePreview.lines.map((line, idx) => (
+                        <div key={idx} className="flex gap-2">
+                          {line.label && (
+                            <span className="text-neutral-500 shrink-0 select-none">
+                              {line.label}:
+                            </span>
+                          )}
                           <span
-                            className={`font-mono text-[10px] sm:text-[11px] font-bold tracking-wider ${
-                              isActive ? 'text-white' : 'text-neutral-400'
-                            }`}
+                            className={
+                              line.tone === 'accent'
+                                ? 'text-white font-semibold'
+                                : line.tone === 'highlight'
+                                ? 'text-neutral-200 font-medium'
+                                : 'text-neutral-400'
+                            }
                           >
-                            {layer.layerNum}
+                            {line.code}
                           </span>
                         </div>
-                        <span className="font-mono text-[10px] text-neutral-400 uppercase">
-                          {layer.step}
-                        </span>
-                      </div>
-
-                      {/* Plate Main Title & Telemetry Payload */}
-                      <div className="my-1.5 sm:my-2">
-                        <h4
-                          className={`font-display font-bold text-sm sm:text-base tracking-tight mb-1 ${
-                            isActive ? 'text-white' : 'text-neutral-300'
-                          }`}
-                        >
-                          {layer.shortTitle}
-                        </h4>
-
-                        {/* Live Telemetry Rows: Expanded when active */}
-                        {isActive ? (
-                          <div className="space-y-1 font-mono text-[10px] sm:text-[11px] bg-black/60 rounded p-2 border border-white/10 mt-2">
-                            {layer.telemetry.entries.map((entry, eIdx) => (
-                              <div key={eIdx} className="flex items-center gap-2 truncate">
-                                <span className="text-neutral-500 shrink-0">{entry.label}:</span>
-                                <span
-                                  className={`truncate ${
-                                    entry.highlight ? 'text-white font-bold' : 'text-neutral-300'
-                                  }`}
-                                >
-                                  {entry.value}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="font-sans text-[11px] text-neutral-400 line-clamp-1">
-                            {layer.subtitle}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Plate Bottom Footer */}
-                      <div className="flex items-center justify-between pt-1.5 border-t border-white/10 text-[10px] font-mono text-neutral-400">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-neutral-500">—</span>
-                          <span className="truncate">{layer.specs[0]}</span>
-                        </div>
-                        <span className={isActive ? 'text-white font-bold' : 'text-neutral-500'}>
-                          {isActive ? '[ACTIVE TELEMETRY]' : '[INSPECT]'}
-                        </span>
-                      </div>
+                      ))}
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </div>
