@@ -138,7 +138,7 @@ export default function EvaluationWorkbenchSection() {
 
       mm.add('(min-width: 1024px)', () => {
         const totalPillars = PILLARS.length;
-        const scrollDistance = 2400; // 600px of comfortable scroll room per pillar
+        const scrollDistance = 2400; // 600px of scroll per pillar
 
         // Pin the entire workbench section while user scrolls through the 4 pillars
         const st = ScrollTrigger.create({
@@ -191,25 +191,22 @@ export default function EvaluationWorkbenchSection() {
     <section
       ref={sectionRef}
       id="workbench"
-      className="relative w-full min-h-screen flex flex-col justify-center py-16 sm:py-20 bg-[#09090b] text-white overflow-hidden"
+      className="relative w-full min-h-screen lg:h-screen flex flex-col justify-center py-10 sm:py-12 lg:py-6 bg-[#09090b] text-white overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col justify-center my-auto">
-        {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4">
+        {/* Section Header with balanced compact spacing */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-6 gap-3">
           <div className="max-w-2xl">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-              <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold">
-                EVALUATION ENGINE ARCHITECTURE
-              </span>
-            </div>
-            <h2 className="font-display font-bold text-2xl sm:text-4xl text-white tracking-tight leading-tight">
+            <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-1.5">
+              EVALUATION ENGINE ARCHITECTURE
+            </span>
+            <h2 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-tight">
               Engineered for Precision. Built for Auditable Decisions.
             </h2>
           </div>
 
           {/* Desktop Scroll Progress Indicator */}
-          <div className="hidden lg:flex items-center gap-3 text-neutral-400 font-mono text-xs">
+          <div className="hidden lg:flex items-center gap-2 text-neutral-400 font-mono text-xs pb-1">
             <span className="text-white font-bold">PILLAR {String(activeIndex + 1).padStart(2, '0')}</span>
             <span>/</span>
             <span>04</span>
@@ -218,11 +215,11 @@ export default function EvaluationWorkbenchSection() {
         </div>
 
         {/* 2-Column Interactive Workbench */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
           {/* Left Column: 4 Pillar Navigation Cards with Vertical Laser Rail */}
-          <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col justify-between space-y-3">
+          <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col justify-between space-y-2">
             {/* Ambient Background Track for Laser Line (Desktop) */}
-            <div className="hidden lg:block absolute left-[-16px] top-3 bottom-3 w-[2px] bg-neutral-800 rounded-full overflow-hidden">
+            <div className="hidden lg:block absolute left-[-14px] top-2 bottom-2 w-[2px] bg-neutral-800 rounded-full overflow-hidden">
               <div
                 ref={laserLineRef}
                 className="w-full h-full bg-white origin-top"
@@ -237,9 +234,9 @@ export default function EvaluationWorkbenchSection() {
                   key={pillar.id}
                   type="button"
                   onClick={() => handlePillarClick(idx)}
-                  className={`group relative overflow-hidden w-full text-left p-4 sm:p-5 rounded-md border transition-all duration-300 cursor-pointer ${
+                  className={`group relative overflow-hidden w-full text-left p-3.5 sm:p-4 rounded-md border transition-all duration-300 cursor-pointer ${
                     isActive
-                      ? 'border-white/40 bg-neutral-900/90 shadow-2xl shadow-black/80 text-white scale-[1.01]'
+                      ? 'border-white/40 bg-neutral-900/90 shadow-xl shadow-black/80 text-white'
                       : 'bg-neutral-900/30 border-neutral-800 hover:border-neutral-700 hover:bg-neutral-900/60 text-neutral-400'
                   }`}
                 >
@@ -261,20 +258,15 @@ export default function EvaluationWorkbenchSection() {
 
                   <div className="relative z-10 flex items-start justify-between gap-3">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span
-                          className={`font-mono text-[10px] uppercase tracking-wider font-bold transition-colors ${
-                            isActive ? 'text-white' : 'text-neutral-500 group-hover:text-neutral-400'
-                          }`}
-                        >
-                          {pillar.step}
-                        </span>
-                        {isActive && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-                        )}
-                      </div>
+                      <span
+                        className={`font-mono text-[10px] uppercase tracking-wider font-bold block mb-1 transition-colors ${
+                          isActive ? 'text-white' : 'text-neutral-500 group-hover:text-neutral-400'
+                        }`}
+                      >
+                        {pillar.step}
+                      </span>
                       <h3
-                        className={`font-display font-bold text-base mb-1 transition-colors ${
+                        className={`font-display font-bold text-sm sm:text-base mb-0.5 transition-colors ${
                           isActive ? 'text-white' : 'text-neutral-300 group-hover:text-white'
                         }`}
                       >
@@ -289,7 +281,7 @@ export default function EvaluationWorkbenchSection() {
                       </p>
                     </div>
 
-                    <div className="shrink-0 pt-1 font-mono text-[11px] text-neutral-500">
+                    <div className="shrink-0 pt-0.5 font-mono text-[11px] text-neutral-500">
                       {String(idx + 1).padStart(2, '0')}
                     </div>
                   </div>
@@ -299,7 +291,7 @@ export default function EvaluationWorkbenchSection() {
           </div>
 
           {/* Right Column: Dynamic Inspection Console & Details */}
-          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-[#0c0d10] overflow-hidden min-h-[480px] sm:min-h-[520px] shadow-2xl shadow-black flex flex-col justify-between">
+          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-[#0c0d10] overflow-hidden min-h-[440px] sm:min-h-[470px] shadow-2xl shadow-black flex flex-col justify-between">
             {/* Ambient Monochromatic Dither Canvas Background */}
             <div className="absolute inset-0 z-0 pointer-events-none opacity-80">
               <Dither
@@ -318,36 +310,36 @@ export default function EvaluationWorkbenchSection() {
             <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/85 via-neutral-950/30 to-neutral-950/50" />
 
             {/* Dynamic Content */}
-            <div className="relative z-10 p-6 sm:p-8 flex flex-col justify-between h-full">
+            <div className="relative z-10 p-5 sm:p-6 lg:p-7 flex flex-col justify-between h-full">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentPillar.id}
-                  initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
+                  initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  exit={{ opacity: 0, y: -12, filter: 'blur(4px)' }}
-                  transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-col justify-center gap-6 h-full"
+                  exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+                  transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex flex-col justify-center gap-5 h-full"
                 >
                   <div>
-                    <div className="flex items-center gap-2 mb-2 font-mono text-[11px] uppercase tracking-wider text-neutral-400">
+                    <div className="flex items-center gap-2 mb-1.5 font-mono text-[11px] uppercase tracking-wider text-neutral-400">
                       <span className="text-white font-bold">{currentPillar.step}</span>
-                      <span>•</span>
+                      <span>/</span>
                       <span>INSPECTION CONSOLE</span>
                     </div>
 
-                    <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight mb-3">
+                    <h3 className="font-display font-bold text-lg sm:text-xl lg:text-2xl text-white tracking-tight mb-2">
                       {currentPillar.title}
                     </h3>
 
-                    <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-5">
+                    <p className="font-sans text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal mb-4">
                       {currentPillar.description}
                     </p>
 
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
                       {currentPillar.specs.map((spec) => (
                         <span
                           key={spec}
-                          className="font-mono text-[11px] text-neutral-200 bg-neutral-900/70 backdrop-blur-md border border-neutral-700/80 px-2.5 py-1 rounded-sm shadow-sm"
+                          className="font-mono text-[10px] sm:text-[11px] text-neutral-200 bg-neutral-900/70 backdrop-blur-md border border-neutral-700/80 px-2.5 py-1 rounded-sm shadow-sm"
                         >
                           {spec}
                         </span>
@@ -356,18 +348,15 @@ export default function EvaluationWorkbenchSection() {
                   </div>
 
                   {/* Dark Monochromatic Inspection Code / Telemetry Console */}
-                  <div className="rounded-md bg-black/70 backdrop-blur-md border border-neutral-800 p-4 sm:p-5 font-mono text-xs overflow-hidden shadow-2xl">
-                    <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-neutral-800 text-neutral-400 text-[11px]">
-                      <div className="flex items-center gap-2 truncate pr-2">
-                        <span className="w-2 h-2 rounded-full bg-white/60" />
-                        <span className="truncate text-neutral-300">{currentPillar.codePreview.title}</span>
-                      </div>
+                  <div className="rounded-md bg-black/70 backdrop-blur-md border border-neutral-800 p-3.5 sm:p-4 font-mono text-xs overflow-hidden shadow-2xl">
+                    <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-neutral-800 text-neutral-400 text-[11px]">
+                      <span className="truncate pr-2 text-neutral-300">{currentPillar.codePreview.title}</span>
                       <span className="px-2 py-0.5 rounded bg-white/10 text-white border border-white/20 text-[10px] font-bold shrink-0 uppercase tracking-wider">
                         {currentPillar.codePreview.badge}
                       </span>
                     </div>
 
-                    <div className="space-y-2 leading-relaxed overflow-x-auto text-[11px] sm:text-xs">
+                    <div className="space-y-1.5 leading-relaxed overflow-x-auto text-[11px]">
                       {currentPillar.codePreview.lines.map((line, idx) => (
                         <div key={idx} className="flex gap-2">
                           {line.label && (

@@ -69,7 +69,7 @@ function DimensionCard({ dim, idx }: { dim: (typeof DIMENSIONS)[number]; idx: nu
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="taxonomy-card relative p-8 rounded-md bg-neutral-900/40 border border-neutral-800 hover:border-neutral-600 transition-all duration-300 flex flex-col justify-between overflow-hidden group shadow-sm hover:shadow-2xl hover:shadow-black/60"
+      className="taxonomy-card relative p-8 rounded-md bg-neutral-900/40 border border-neutral-800 hover:border-neutral-600 transition-colors duration-300 flex flex-col justify-between overflow-hidden group shadow-sm hover:shadow-2xl hover:shadow-black/60 will-change-transform"
     >
       {/* Ambient dynamic monochromatic fluid Grainient on hover */}
       <AnimatePresence>
@@ -117,7 +117,7 @@ function DimensionCard({ dim, idx }: { dim: (typeof DIMENSIONS)[number]; idx: nu
       <div className="relative z-10 space-y-2.5 pt-4 border-t border-neutral-800 group-hover:border-neutral-700 transition-colors">
         {dim.criteria.map((item) => (
           <div key={item} className="flex items-start gap-2.5 text-xs text-neutral-300 font-sans">
-            <span className="w-1.5 h-1.5 rounded-full bg-neutral-600 group-hover:bg-neutral-300 transition-colors mt-1.5 shrink-0" />
+            <span className="text-neutral-500 font-mono text-[11px] select-none pt-0.5 shrink-0">—</span>
             <span className="font-medium">{item}</span>
           </div>
         ))}
@@ -138,28 +138,53 @@ export default function EvaluationTaxonomySection() {
       const cards = gsap.utils.toArray<HTMLElement>('.taxonomy-card');
       if (!cards.length) return;
 
-      // Scroll-driven staggered reveal with lateral perspective drift
-      gsap.fromTo(
-        cards,
-        {
-          opacity: 0,
-          y: 40,
-          scale: 0.98,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.8,
-          stagger: 0.12,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: grid,
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-          },
-        }
-      );
+      const mm = gsap.matchMedia();
+
+      mm.add('(min-width: 768px)', () => {
+        // Desktop / tablet: Left cards slide from left, right cards slide from right with to-and-fro scroll scrub
+        cards.forEach((card, idx) => {
+          const isLeft = idx % 2 === 0;
+          gsap.fromTo(
+            card,
+            {
+              x: isLeft ? -80 : 80,
+              opacity: 0.15,
+            },
+            {
+              x: 0,
+              opacity: 1,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 92%',
+                end: 'top 55%',
+                scrub: 0.8,
+              },
+            }
+          );
+        });
+      });
+
+      mm.add('(max-width: 767px)', () => {
+        // Mobile: smooth natural fade/slide up
+        cards.forEach((card) => {
+          gsap.fromTo(
+            card,
+            { y: 35, opacity: 0.2 },
+            {
+              y: 0,
+              opacity: 1,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 90%',
+                end: 'top 65%',
+                scrub: 0.8,
+              },
+            }
+          );
+        });
+      });
     },
     { scope: sectionRef }
   );
@@ -182,7 +207,7 @@ export default function EvaluationTaxonomySection() {
           </p>
         </div>
 
-        {/* Crisp cards with monochromatic hover shader */}
+        {/* 2-column grid with to-and-fro lateral scroll scrub */}
         <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {DIMENSIONS.map((dim, idx) => (
             <DimensionCard key={dim.name} dim={dim} idx={idx} />

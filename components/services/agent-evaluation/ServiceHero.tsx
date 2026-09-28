@@ -137,13 +137,6 @@ export default function ServiceHero() {
         className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center flex flex-col items-center justify-center pt-28 pb-16 my-auto"
       >
         <div className="max-w-4xl mx-auto">
-          {/* Eyebrow */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-6 backdrop-blur-md">
-            <span className="w-1.5 h-1.5 rounded-full bg-neutral-300 animate-pulse" />
-            <span className="font-mono text-[11px] uppercase tracking-widest text-neutral-300 font-semibold">
-              FLAGSHIP EVALUATION PLATFORM
-            </span>
-          </div>
 
           {/* Centered Main Headline */}
           <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.12] mb-6 drop-shadow-md">

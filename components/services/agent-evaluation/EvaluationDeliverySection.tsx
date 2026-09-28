@@ -67,24 +67,24 @@ export default function EvaluationDeliverySection() {
           const cards = track.children;
           if (cards.length > 1) {
             const lastCard = cards[cards.length - 1] as HTMLElement;
-            return Math.max(0, lastCard.offsetLeft + lastCard.offsetWidth - window.innerWidth + 80);
+            // Scroll until the last card is fully visible with comfortable 160px right margin
+            const scrollDistance = lastCard.offsetLeft + lastCard.offsetWidth - window.innerWidth + 160;
+            return Math.max(1400, scrollDistance);
           }
-          return 1600;
+          return 2000;
         };
 
-        const dist = getScrollDistance();
-
-        // Horizontal card glide
+        // Horizontal card glide with generous reading hold
         gsap.to(track, {
-          x: () => -dist,
+          x: () => -getScrollDistance(),
           ease: 'none',
           scrollTrigger: {
             id: 'delivery-horizontal',
             trigger: section,
             pin: true,
             start: 'top top',
-            end: () => `+=${dist + 400}`,
-            scrub: 0.6,
+            end: () => `+=${getScrollDistance() + 600}`,
+            scrub: 1,
             anticipatePin: 1,
             invalidateOnRefresh: true,
           },
@@ -101,8 +101,9 @@ export default function EvaluationDeliverySection() {
               scrollTrigger: {
                 trigger: section,
                 start: 'top top',
-                end: () => `+=${dist + 400}`,
-                scrub: 0.6,
+                end: () => `+=${getScrollDistance() + 600}`,
+                scrub: 1,
+                invalidateOnRefresh: true,
               },
             }
           );
@@ -128,14 +129,11 @@ export default function EvaluationDeliverySection() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col justify-center my-auto">
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 sm:mb-12 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4">
           <div className="max-w-2xl">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-neutral-950" />
-              <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold">
-                DELIVERY ENGAGEMENT
-              </span>
-            </div>
+            <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-2">
+              DELIVERY ENGAGEMENT
+            </span>
             <h2 className="font-display font-bold text-3xl sm:text-5xl text-neutral-950 tracking-tight leading-tight">
               From Discovery to Continuous Regression.
             </h2>
@@ -143,7 +141,7 @@ export default function EvaluationDeliverySection() {
 
           <div className="hidden lg:flex items-center gap-2 text-neutral-500 font-mono text-xs">
             <span className="text-neutral-950 font-bold">4 PHASES</span>
-            <span>•</span>
+            <span>/</span>
             <span>TIMELINE RAIL</span>
           </div>
         </div>
@@ -152,51 +150,51 @@ export default function EvaluationDeliverySection() {
         <div className="relative w-full overflow-visible">
           <div
             ref={trackRef}
-            className="flex flex-col lg:flex-row gap-6 w-full lg:w-max lg:will-change-transform"
+            className="flex flex-col lg:flex-row gap-6 w-full lg:w-max lg:will-change-transform lg:pr-32"
           >
             {STEPS.map((step) => (
               <div
                 key={step.step}
-                className="group relative p-6 sm:p-7 rounded-md bg-[#121214] border border-neutral-300 hover:border-neutral-950 transition-all duration-300 flex flex-col justify-between overflow-hidden w-full lg:w-[420px] min-h-[400px] shrink-0 shadow-lg hover:shadow-2xl"
+                className="group relative p-6 sm:p-7 rounded-md bg-[#f8f8fa] border border-neutral-200/90 hover:border-neutral-400 transition-all flex flex-col justify-between overflow-hidden w-full lg:w-[420px] min-h-[400px] shrink-0 shadow-sm hover:shadow-md"
               >
-                {/* Background Image Layer */}
+                {/* Background Image Layer with User's Exact Opacity & Gradient */}
                 <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
                   <Image
                     src={step.image}
                     alt={step.title}
                     fill
                     sizes="(max-width: 640px) 100vw, 420px"
-                    className="object-cover object-center group-hover:scale-105 opacity-40 group-hover:opacity-55 transition-transform duration-700 ease-out"
+                    className="object-cover object-center group-hover:scale-105 opacity-60 group-hover:opacity-80 transition-all duration-700 ease-out"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/80 to-[#09090b]/60" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/70 to-black/60" />
                 </div>
 
                 {/* Foreground Card Content */}
                 <div className="relative z-10 flex flex-col justify-between h-full">
                   <div>
-                    <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/10">
-                      <span className="font-mono text-2xl font-bold text-white">
+                    <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/20">
+                      <span className="font-mono text-2xl font-bold text-neutral-100">
                         {step.step}
                       </span>
-                      <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-300 font-semibold px-2 py-0.5 rounded bg-white/10 border border-white/20">
+                      <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-200 font-semibold px-2 py-0.5 rounded bg-white/10 border border-white/20">
                         {step.duration}
                       </span>
                     </div>
 
-                    <h3 className="font-display font-bold text-lg sm:text-xl text-white mb-3 leading-snug">
+                    <h3 className="font-display font-bold text-lg sm:text-xl text-neutral-100 mb-3 leading-snug">
                       {step.title}
                     </h3>
 
-                    <p className="font-sans text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal mb-6">
+                    <p className="font-sans text-xs sm:text-sm text-white leading-relaxed font-normal mb-6">
                       {step.description}
                     </p>
                   </div>
 
                   {/* Milestones specs */}
-                  <div className="pt-4 border-t border-white/10 space-y-1.5">
+                  <div className="pt-4 border-t border-white/20 space-y-1.5">
                     {step.milestones.map((ms) => (
-                      <div key={ms} className="flex items-center gap-2 text-[11px] font-mono text-neutral-400">
-                        <span className="w-1 h-1 rounded-full bg-neutral-400" />
+                      <div key={ms} className="flex items-center gap-2 text-[11px] font-mono text-neutral-200">
+                        <span className="text-neutral-400 select-none">—</span>
                         <span>{ms}</span>
                       </div>
                     ))}

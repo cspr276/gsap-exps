@@ -49,7 +49,6 @@ export default function EvaluationRealitiesSection() {
       if (!container) return;
 
       const cards = gsap.utils.toArray<HTMLElement>('.reality-card');
-      const images = gsap.utils.toArray<HTMLElement>('.reality-bg-image');
 
       const mm = gsap.matchMedia();
 
@@ -87,24 +86,6 @@ export default function EvaluationRealitiesSection() {
             }
           );
         });
-
-        // Parallax image scrub
-        images.forEach((img) => {
-          gsap.fromTo(
-            img,
-            { yPercent: 0 },
-            {
-              yPercent: -12,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: img,
-                start: 'top bottom',
-                end: 'bottom top',
-                scrub: true,
-              },
-            }
-          );
-        });
       });
     },
     { scope: sectionRef }
@@ -117,12 +98,9 @@ export default function EvaluationRealitiesSection() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mb-12">
-          <div className="flex items-center gap-2 mb-2.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-neutral-950" />
-            <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold">
-              THE EVALUATION GAP
-            </span>
-          </div>
+          <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-2.5">
+            THE EVALUATION GAP
+          </span>
           <h2 className="font-display font-bold text-2xl sm:text-4xl text-neutral-950 tracking-tight leading-tight">
             Why Standard AI Benchmarks Fail Production Workflows.
           </h2>
@@ -137,47 +115,45 @@ export default function EvaluationRealitiesSection() {
           {REALITIES.map((item, idx) => (
             <div
               key={item.id}
-              className="reality-card group relative p-7 sm:p-8 rounded-md bg-[#121214] border border-neutral-300 hover:border-neutral-900 transition-shadow duration-500 flex flex-col justify-between overflow-hidden min-h-[380px] shadow-lg hover:shadow-2xl"
+              className="reality-card group relative p-7 sm:p-8 rounded-md bg-[#f8f8fa] border border-neutral-200/90 hover:border-neutral-400 transition-all flex flex-col justify-between overflow-hidden min-h-85 shadow-sm hover:shadow-md will-change-transform"
               style={{ transformStyle: 'preserve-3d' }}
             >
-              {/* Background Image Layer with Parallax Scrub */}
-              <div className="absolute inset-[-10%] z-0 overflow-hidden pointer-events-none select-none">
-                <div className="reality-bg-image relative w-full h-[120%]">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    className="object-cover object-center group-hover:scale-105 opacity-40 group-hover:opacity-55 transition-transform duration-700 ease-out"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/80 to-[#09090b]/60" />
-                </div>
+              {/* Restored Background Image Layer with User's Exact Opacity & Gradient */}
+              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  className="object-cover object-center group-hover:scale-105 opacity-60 group-hover:opacity-80 transition-all duration-700 ease-out"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/70 to-black/60" />
               </div>
 
               {/* Foreground Card Content */}
               <div className="relative z-10">
-                <div className="flex items-center justify-between mb-4 pb-2.5 border-b border-white/10">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-bold">
+                <div className="flex items-center justify-between mb-4 pb-2.5 border-b border-white/20">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-200 font-bold">
                     FAILURE REALITY 0{idx + 1}
                   </span>
-                  <span className="font-mono text-[11px] text-neutral-500 font-medium">
+                  <span className="font-mono text-[11px] text-neutral-300 font-medium">
                     DIAGNOSTIC
                   </span>
                 </div>
 
-                <h3 className="font-display font-bold text-lg sm:text-xl text-white tracking-tight mb-3 leading-snug">
+                <h3 className="font-display font-bold text-lg sm:text-xl text-neutral-100 tracking-tight mb-3 leading-snug">
                   {item.title}
                 </h3>
 
-                <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-6">
+                <p className="font-sans text-sm text-white leading-relaxed font-normal mb-6">
                   {item.description}
                 </p>
               </div>
 
               {/* Bottom Stat & Optional Turn-Decay Sparkline */}
-              <div className="relative z-10 pt-4 border-t border-white/10">
+              <div className="relative z-10 pt-4 border-t border-white/20">
                 {item.turnNodes && (
                   <div className="mb-3">
-                    <div className="flex items-center justify-between text-[10px] font-mono text-neutral-400 mb-1.5">
+                    <div className="flex items-center justify-between text-[10px] font-mono text-neutral-300 mb-1.5">
                       <span>Turn 1 (95%)</span>
                       <span>Turn 8 (66%)</span>
                     </div>
@@ -195,10 +171,10 @@ export default function EvaluationRealitiesSection() {
                 )}
 
                 <div className="flex items-baseline justify-between">
-                  <span className="font-mono text-xl sm:text-2xl font-bold text-white block">
+                  <span className="font-mono text-xl sm:text-2xl font-bold text-neutral-100 block">
                     {item.stat}
                   </span>
-                  <span className="font-mono text-[11px] text-neutral-400 uppercase tracking-wider">
+                  <span className="font-mono text-[11px] text-neutral-200 uppercase tracking-wider">
                     {item.statLabel}
                   </span>
                 </div>
