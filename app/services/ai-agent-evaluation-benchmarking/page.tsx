@@ -35,11 +35,11 @@ export default function AgentEvaluationPage() {
         {/* 1. Atmospheric Ambient Hero */}
         <ServiceHero />
 
-        {/* 2. White-Themed Architectural Metrics Strip */}
-        <ServiceMetricsStrip />
-
-        {/* 3. White-Themed Core Failure Realities (Why standard benchmarks fail) */}
+        {/* 2. Standout Curtain-Wipe Highlight Animation: The Evaluation Gap */}
         <EvaluationRealitiesSection />
+
+        {/* 3. High-Contrast Architectural Metrics Strip */}
+        <ServiceMetricsStrip />
 
         {/* 4. Interactive Evaluation Workbench (4 Pillars: Rubrics, Verifiers, Judges, Gates) */}
         <EvaluationWorkbenchSection />
