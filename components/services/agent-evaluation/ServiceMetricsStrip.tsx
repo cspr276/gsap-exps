@@ -116,7 +116,7 @@ export default function ServiceMetricsStrip() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full bg-white text-neutral-950 border-t border-b border-neutral-200 py-12 sm:py-16 overflow-hidden"
+      className="relative z-30 w-full bg-white text-neutral-950 border-t border-b border-neutral-200 py-12 sm:py-16 overflow-hidden"
     >
       {/* Laser line sweep along top border */}
       <div

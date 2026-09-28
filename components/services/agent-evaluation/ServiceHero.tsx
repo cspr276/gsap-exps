@@ -37,9 +37,7 @@ export default function ServiceHero() {
           scrollTrigger: {
             trigger: container,
             start: 'top top',
-            end: '+=100%',
-            pin: true,
-            pinSpacing: false,
+            end: 'bottom top',
             scrub: 0.6,
           },
         });
@@ -110,7 +108,7 @@ export default function ServiceHero() {
     <section
       id="service-hero"
       ref={containerRef}
-      className="relative z-0 w-full h-screen flex flex-col justify-center items-center overflow-hidden bg-[#09090b]"
+      className="sticky top-0 z-0 w-full h-screen flex flex-col justify-center items-center overflow-hidden bg-[#09090b]"
     >
       {/* Dynamic Floating Frame / Chassis */}
       <div
