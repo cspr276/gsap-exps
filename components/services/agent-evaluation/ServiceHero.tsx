@@ -1,12 +1,95 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { ArrowUpRight, ArrowDown } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export default function ServiceHero() {
+  const containerRef = useRef<HTMLElement>(null);
+  const heroTextRef = useRef<HTMLDivElement>(null);
+  const imageFrameRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const container = containerRef.current;
+      const heroText = heroTextRef.current;
+      const imageFrame = imageFrameRef.current;
+      const overlay = overlayRef.current;
+      if (!container || !heroText || !imageFrame) return;
+
+      const mm = gsap.matchMedia();
+
+      mm.add('(min-width: 1024px)', () => {
+        // Initialize hero state: full coverage
+        gsap.set(imageFrame, {
+          scale: 1.12,
+          borderRadius: '0px',
+        });
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: container,
+            start: 'top top',
+            end: '+=900',
+            pin: true,
+            scrub: 0.6,
+            anticipatePin: 1,
+          },
+        });
+
+        // Text floats up and dissolves with optical blur
+        tl.to(
+          heroText,
+          {
+            y: -50,
+            opacity: 0,
+            filter: 'blur(8px)',
+            ease: 'power2.inOut',
+            duration: 1,
+          },
+          0
+        );
+
+        // Frame contracts into floating precision chassis
+        tl.to(
+          imageFrame,
+          {
+            scale: 0.94,
+            borderRadius: '24px',
+            ease: 'power2.inOut',
+            duration: 1,
+          },
+          0
+        );
+
+        // Dark scrim increases slightly for clean contrast transition into next section
+        if (overlay) {
+          tl.to(
+            overlay,
+            {
+              backgroundColor: 'rgba(9, 9, 11, 0.72)',
+              ease: 'power2.inOut',
+              duration: 1,
+            },
+            0
+          );
+        }
+
+        return () => {
+          tl.kill();
+        };
+      });
+    },
+    { scope: containerRef }
+  );
+
   const handleScrollToWorkbench = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const target = document.getElementById('workbench');
@@ -14,7 +97,7 @@ export default function ServiceHero() {
 
     if (typeof window !== 'undefined' && window.__lenis) {
       window.__lenis.scrollTo(target, {
-        offset: -40,
+        offset: -20,
         duration: 1.4,
         easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       });
@@ -24,9 +107,15 @@ export default function ServiceHero() {
   };
 
   return (
-    <section className="relative w-full min-h-screen flex flex-col justify-center items-center pt-28 sm:pt-36 pb-20 overflow-hidden">
-      {/* Authentic Unsplash tech infrastructure background (natural, non-AI) */}
-      <div className="absolute inset-0 z-0 pointer-events-none select-none">
+    <section
+      ref={containerRef}
+      className="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden bg-[#09090b]"
+    >
+      {/* Dynamic Floating Frame / Chassis */}
+      <div
+        ref={imageFrameRef}
+        className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none origin-center transition-shadow border border-white/5"
+      >
         <Image
           src="/services/hero-datacenter.jpg"
           alt="Enterprise AI Computing Infrastructure"
@@ -34,43 +123,43 @@ export default function ServiceHero() {
           priority
           className="object-cover object-center brightness-[0.45] contrast-[1.05]"
         />
-        {/* Cinematic dark radial and vertical gradient overlays for optimal text contrast */}
-        {/* <div className="absolute inset-0 bg-linear-to-t from-[#09090b] via-[#09090b]/40 to-[#09090b]/60" /> */}
-        {/* <div className="absolute inset-0 bg-linear-to-b from-[#09090b]/70 via-transparent to-[#09090b]" /> */}
+        {/* Scrim Overlay */}
+        <div
+          ref={overlayRef}
+          className="absolute inset-0 bg-[#09090b]/40 transition-colors pointer-events-none"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-transparent to-[#09090b]/60 pointer-events-none" />
       </div>
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center flex flex-col items-center justify-center my-auto">
+      {/* Hero Content */}
+      <div
+        ref={heroTextRef}
+        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center flex flex-col items-center justify-center pt-28 pb-16 my-auto"
+      >
         <div className="max-w-4xl mx-auto">
-          {/* Centered Main Headline (Display typography, no serif) */}
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.12] mb-6"
-          >
+          {/* Eyebrow */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-6 backdrop-blur-md">
+            <span className="w-1.5 h-1.5 rounded-full bg-neutral-300 animate-pulse" />
+            <span className="font-mono text-[11px] uppercase tracking-widest text-neutral-300 font-semibold">
+              FLAGSHIP EVALUATION PLATFORM
+            </span>
+          </div>
+
+          {/* Centered Main Headline */}
+          <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.12] mb-6 drop-shadow-md">
             Decision-Grade AI Agent Evaluation.{' '}
             <span className="text-neutral-300 font-bold block sm:inline">
               Benchmarked by Domain Experts.
             </span>
-          </motion.h1>
+          </h1>
 
           {/* Centered lede prose */}
-          <motion.p
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="font-sans text-base sm:text-lg text-neutral-200 leading-relaxed max-w-2xl mx-auto mb-10 font-normal drop-shadow-sm"
-          >
-            We construct empirical, reproducible benchmark suites for enterprise AI workflows - exposing compound error drift, multi-turn hallucinations, and security regressions before production release.
-          </motion.p>
+          <p className="font-sans text-base sm:text-lg text-neutral-200 leading-relaxed max-w-2xl mx-auto mb-10 font-normal drop-shadow-sm">
+            We construct empirical, reproducible benchmark suites for enterprise AI workflows — exposing compound error drift, multi-turn hallucinations, and security regressions before production release.
+          </p>
 
-          {/* Centered High-Contrast Action CTAs with less curvy borders (rounded-md) */}
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-wrap items-center justify-center gap-4"
-          >
+          {/* Centered High-Contrast Action CTAs */}
+          <div className="flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/contact"
               className="inline-flex items-center gap-2 px-6 py-3.5 rounded-md bg-white text-black font-mono text-xs uppercase tracking-wider font-semibold hover:bg-neutral-200 transition-all shadow-xl shadow-black/50"
@@ -87,7 +176,7 @@ export default function ServiceHero() {
               <span>Explore Benchmark Engine</span>
               <ArrowDown className="w-3.5 h-3.5 text-neutral-400" />
             </a>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

@@ -1,8 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const STEPS = [
   {
@@ -12,6 +16,7 @@ const STEPS = [
     description:
       'We extract load-bearing workflows from your production logs and interview your domain experts to codify exact pass/fail rubrics and boundary conditions.',
     image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1000&auto=format&fit=crop',
+    milestones: ['Production log sampling', 'Domain expert interviews', 'Failure mode taxonomy codification'],
   },
   {
     step: '02',
@@ -20,6 +25,7 @@ const STEPS = [
     description:
       'We generate task variations, synthetic edge cases, and adversarial injection vectors mapped to severity tiers to stress-test failure modes.',
     image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1000&auto=format&fit=crop',
+    milestones: ['Multi-turn jailbreak harness', 'Compound drift benchmarks', 'Synthetic task permutations'],
   },
   {
     step: '03',
@@ -28,6 +34,7 @@ const STEPS = [
     description:
       'Vetted domain specialists score ambiguous reasoning paths in triple-blind review; disagreements are adjudicated and agreement scores certified.',
     image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=1000&auto=format&fit=crop',
+    milestones: ['Triple-blind scoring panel', 'Krippendorff α certification', 'Deterministic dispute ledger'],
   },
   {
     step: '04',
@@ -36,71 +43,168 @@ const STEPS = [
     description:
       'Every validated failure mode is converted into permanent automated regression tests integrated directly into your deployment pipeline.',
     image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop',
+    milestones: ['Automated PR blocking gate', 'Delta regression dashboards', 'Production canary monitors'],
   },
 ];
 
 export default function EvaluationDeliverySection() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      const track = trackRef.current;
+      const progressBar = progressBarRef.current;
+      if (!section || !track) return;
+
+      const mm = gsap.matchMedia();
+
+      // Pinned Horizontal Track on Desktop
+      mm.add('(min-width: 1024px)', () => {
+        const getScrollDistance = () => {
+          const cards = track.children;
+          if (cards.length > 1) {
+            const lastCard = cards[cards.length - 1] as HTMLElement;
+            return Math.max(0, lastCard.offsetLeft + lastCard.offsetWidth - window.innerWidth + 80);
+          }
+          return 1600;
+        };
+
+        const dist = getScrollDistance();
+
+        // Horizontal card glide
+        gsap.to(track, {
+          x: () => -dist,
+          ease: 'none',
+          scrollTrigger: {
+            id: 'delivery-horizontal',
+            trigger: section,
+            pin: true,
+            start: 'top top',
+            end: () => `+=${dist + 400}`,
+            scrub: 0.6,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        // Top horizontal laser progress line
+        if (progressBar) {
+          gsap.fromTo(
+            progressBar,
+            { scaleX: 0 },
+            {
+              scaleX: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: section,
+                start: 'top top',
+                end: () => `+=${dist + 400}`,
+                scrub: 0.6,
+              },
+            }
+          );
+        }
+      });
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section className="relative w-full py-24 sm:py-32 bg-white text-neutral-950 border-t border-neutral-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-14">
-          <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-2.5">
-            DELIVERY ENGAGEMENT
-          </span>
-          <h2 className="font-display font-bold text-3xl sm:text-5xl text-neutral-950 tracking-tight leading-tight mb-4">
-            From Discovery to Continuous Regression.
-          </h2>
-          <p className="font-sans text-base sm:text-lg text-neutral-600 leading-relaxed font-normal">
-            A structured 4-stage deployment methodology designed to deliver auditable results within weeks.
-          </p>
+    <section
+      ref={sectionRef}
+      className="relative w-full min-h-screen flex flex-col justify-center py-20 sm:py-24 bg-white text-neutral-950 border-t border-neutral-200 overflow-hidden"
+    >
+      {/* Laser progress wire (Desktop) */}
+      <div className="hidden lg:block absolute top-0 left-0 right-0 h-[2px] bg-neutral-200">
+        <div
+          ref={progressBarRef}
+          className="w-full h-full bg-neutral-950 origin-left"
+          style={{ transform: 'scaleX(0)' }}
+        />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col justify-center my-auto">
+        {/* Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 sm:mb-12 gap-4">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-neutral-950" />
+              <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold">
+                DELIVERY ENGAGEMENT
+              </span>
+            </div>
+            <h2 className="font-display font-bold text-3xl sm:text-5xl text-neutral-950 tracking-tight leading-tight">
+              From Discovery to Continuous Regression.
+            </h2>
+          </div>
+
+          <div className="hidden lg:flex items-center gap-2 text-neutral-500 font-mono text-xs">
+            <span className="text-neutral-950 font-bold">4 PHASES</span>
+            <span>•</span>
+            <span>TIMELINE RAIL</span>
+          </div>
         </div>
 
-        {/* Crisp cards with Unsplash image backgrounds matching EvaluationRealitiesSection style */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {STEPS.map((step, idx) => (
-            <motion.div
-              key={step.step}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.45, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="group relative p-6 rounded-md bg-[#f8f8fa] border border-neutral-200/90 hover:border-neutral-400 transition-all flex flex-col justify-between overflow-hidden min-h-70 shadow-sm hover:shadow-md"
-            >
-              {/* Background Image Layer with Subtle Light Tint & Smooth Zoom on Hover */}
-              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
-                <Image
-                  src={step.image}
-                  alt={step.title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-cover object-center group-hover:scale-105 opacity-60 group-hover:opacity-80 transition-all duration-700 ease-out"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/70 to-black/60" />
-              </div>
+        {/* Pinned Horizontal Track Container */}
+        <div className="relative w-full overflow-visible">
+          <div
+            ref={trackRef}
+            className="flex flex-col lg:flex-row gap-6 w-full lg:w-max lg:will-change-transform"
+          >
+            {STEPS.map((step) => (
+              <div
+                key={step.step}
+                className="group relative p-6 sm:p-7 rounded-md bg-[#121214] border border-neutral-300 hover:border-neutral-950 transition-all duration-300 flex flex-col justify-between overflow-hidden w-full lg:w-[420px] min-h-[400px] shrink-0 shadow-lg hover:shadow-2xl"
+              >
+                {/* Background Image Layer */}
+                <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+                  <Image
+                    src={step.image}
+                    alt={step.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 420px"
+                    className="object-cover object-center group-hover:scale-105 opacity-40 group-hover:opacity-55 transition-transform duration-700 ease-out"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/80 to-[#09090b]/60" />
+                </div>
 
-              {/* Foreground Card Content */}
-              <div className="relative z-10 flex flex-col justify-between h-full">
-                <div>
-                  <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/20">
-                    <span className="font-mono text-xl font-bold text-neutral-100">
-                      {step.step}
-                    </span>
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-200 font-semibold">
-                      {step.duration}
-                    </span>
+                {/* Foreground Card Content */}
+                <div className="relative z-10 flex flex-col justify-between h-full">
+                  <div>
+                    <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/10">
+                      <span className="font-mono text-2xl font-bold text-white">
+                        {step.step}
+                      </span>
+                      <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-300 font-semibold px-2 py-0.5 rounded bg-white/10 border border-white/20">
+                        {step.duration}
+                      </span>
+                    </div>
+
+                    <h3 className="font-display font-bold text-lg sm:text-xl text-white mb-3 leading-snug">
+                      {step.title}
+                    </h3>
+
+                    <p className="font-sans text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal mb-6">
+                      {step.description}
+                    </p>
                   </div>
 
-                  <h3 className="font-display font-bold text-base sm:text-lg text-neutral-100 mb-2.5 leading-snug">
-                    {step.title}
-                  </h3>
-
-                  <p className="font-sans text-xs text-white leading-relaxed font-normal">
-                    {step.description}
-                  </p>
+                  {/* Milestones specs */}
+                  <div className="pt-4 border-t border-white/10 space-y-1.5">
+                    {step.milestones.map((ms) => (
+                      <div key={ms} className="flex items-center gap-2 text-[11px] font-mono text-neutral-400">
+                        <span className="w-1 h-1 rounded-full bg-neutral-400" />
+                        <span>{ms}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </motion.div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

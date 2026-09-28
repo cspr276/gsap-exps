@@ -8,13 +8,13 @@ import Aurora from '@/components/Aurora';
 export default function ServiceCTASection() {
   return (
     <section className="relative w-full overflow-hidden bg-neutral-950 text-white py-32 sm:py-40 lg:py-48 flex items-center justify-center border-t border-neutral-900">
-      {/* WebGL Aurora Background Canvas matching home page */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      {/* Monochromatic Whitish-Gray WebGL Aurora Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-60">
         <Aurora
-          colorStops={['#a7a8ff', '#9096fe', '#a892ff']}
-          blend={0.5}
-          amplitude={0.5}
-          speed={1}
+          colorStops={['#ffffff', '#d4d4d8', '#71717a']}
+          blend={0.6}
+          amplitude={0.4}
+          speed={0.8}
         />
       </div>
 

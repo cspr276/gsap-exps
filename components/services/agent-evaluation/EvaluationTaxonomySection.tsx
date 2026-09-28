@@ -1,8 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const Grainient = dynamic(() => import('@/components/Grainient'), { ssr: false });
 
@@ -11,7 +16,7 @@ const DIMENSIONS = [
     category: '01 / COGNITIVE INTEGRITY',
     name: 'Reasoning & Faithfulness',
     summary: 'Testing step-by-step logic consistency, premise compliance, and hallucination emergence.',
-    grainientColors: { color1: '#142542', color2: '#233d6b', color3: '#365d9c' },
+    grainientColors: { color1: '#09090b', color2: '#18181b', color3: '#272932' },
     criteria: [
       'Multi-hop deduction validation',
       'Premise adherence without hallucinations',
@@ -23,7 +28,7 @@ const DIMENSIONS = [
     category: '02 / AGENTIC EXECUTION',
     name: 'Tool & Schema Execution',
     summary: 'Evaluating parameter accuracy, schema adherence, error recovery, and environmental safety.',
-    grainientColors: { color1: '#123829', color2: '#1c543e', color3: '#2a7d5c' },
+    grainientColors: { color1: '#0b0c0e', color2: '#191b20', color3: '#2d303a' },
     criteria: [
       'JSON schema and parameter constraint precision',
       'Graceful error recovery on API 4xx/5xx responses',
@@ -35,7 +40,7 @@ const DIMENSIONS = [
     category: '03 / SYSTEM DEFENSE',
     name: 'Security & Boundary Defense',
     summary: 'Stress-testing agent resilience against adversarial inputs, prompt injection, and data leaks.',
-    grainientColors: { color1: '#3d1633', color2: '#5c224e', color3: '#873173' },
+    grainientColors: { color1: '#0d0e11', color2: '#1b1d24', color3: '#313540' },
     criteria: [
       'Direct and indirect prompt injection resistance',
       'Jailbreak mitigation across multi-turn context',
@@ -47,7 +52,7 @@ const DIMENSIONS = [
     category: '04 / PRODUCTION OPERATION',
     name: 'Operational Resilience',
     summary: 'Measuring latency budgets, context degradation over long horizons, and token costs.',
-    grainientColors: { color1: '#3d2c14', color2: '#5c431e', color3: '#87622c' },
+    grainientColors: { color1: '#101114', color2: '#1e2027', color3: '#353945' },
     criteria: [
       'Sub-second latency budget conformance',
       'Performance stability across 128k+ token horizons',
@@ -61,21 +66,17 @@ function DimensionCard({ dim, idx }: { dim: (typeof DIMENSIONS)[number]; idx: nu
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.45, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
+    <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative p-8 rounded-md bg-neutral-900/40 border border-neutral-800 hover:border-neutral-600 transition-all duration-300 flex flex-col justify-between overflow-hidden group shadow-sm hover:shadow-xl hover:shadow-black/50"
+      className="taxonomy-card relative p-8 rounded-md bg-neutral-900/40 border border-neutral-800 hover:border-neutral-600 transition-all duration-300 flex flex-col justify-between overflow-hidden group shadow-sm hover:shadow-2xl hover:shadow-black/60"
     >
-      {/* Ambient dynamic fluid Grainient on hover */}
+      {/* Ambient dynamic monochromatic fluid Grainient on hover */}
       <AnimatePresence>
         {isHovered && (
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.7 }}
+            animate={{ opacity: 0.8 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35 }}
             className="absolute inset-0 z-0 pointer-events-none overflow-hidden"
@@ -85,11 +86,11 @@ function DimensionCard({ dim, idx }: { dim: (typeof DIMENSIONS)[number]; idx: nu
               color2={dim.grainientColors.color2}
               color3={dim.grainientColors.color3}
               timeSpeed={0.2}
-              warpStrength={0.5}
+              warpStrength={0.45}
               grainAmount={0.06}
               contrast={1.15}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/65 via-transparent to-neutral-950/40 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/75 via-transparent to-neutral-950/50 pointer-events-none" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -97,8 +98,11 @@ function DimensionCard({ dim, idx }: { dim: (typeof DIMENSIONS)[number]; idx: nu
       {/* Card Content */}
       <div className="relative z-10">
         <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-neutral-800 group-hover:border-neutral-700 transition-colors">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-400 group-hover:text-neutral-300 transition-colors font-semibold">
+          <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-400 group-hover:text-neutral-200 transition-colors font-semibold">
             {dim.category}
+          </span>
+          <span className="font-mono text-xs text-neutral-600 group-hover:text-neutral-400">
+            0{idx + 1}
           </span>
         </div>
 
@@ -113,18 +117,58 @@ function DimensionCard({ dim, idx }: { dim: (typeof DIMENSIONS)[number]; idx: nu
       <div className="relative z-10 space-y-2.5 pt-4 border-t border-neutral-800 group-hover:border-neutral-700 transition-colors">
         {dim.criteria.map((item) => (
           <div key={item} className="flex items-start gap-2.5 text-xs text-neutral-300 font-sans">
-            <span className="w-1.5 h-1.5 rounded-full bg-neutral-600 group-hover:bg-neutral-400 transition-colors mt-1.5 shrink-0" />
+            <span className="w-1.5 h-1.5 rounded-full bg-neutral-600 group-hover:bg-neutral-300 transition-colors mt-1.5 shrink-0" />
             <span className="font-medium">{item}</span>
           </div>
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 export default function EvaluationTaxonomySection() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const grid = gridRef.current;
+      if (!grid) return;
+
+      const cards = gsap.utils.toArray<HTMLElement>('.taxonomy-card');
+      if (!cards.length) return;
+
+      // Scroll-driven staggered reveal with lateral perspective drift
+      gsap.fromTo(
+        cards,
+        {
+          opacity: 0,
+          y: 40,
+          scale: 0.98,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.8,
+          stagger: 0.12,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: grid,
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section className="relative w-full py-24 sm:py-32 bg-[#09090b] text-white border-t border-neutral-900">
+    <section
+      ref={sectionRef}
+      className="relative w-full py-24 sm:py-32 bg-[#09090b] text-white border-t border-neutral-900 overflow-hidden"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mb-14">
           <span className="font-mono text-xs uppercase tracking-[0.2em] text-neutral-400 font-semibold block mb-3">
@@ -138,8 +182,8 @@ export default function EvaluationTaxonomySection() {
           </p>
         </div>
 
-        {/* Crisp cards with less curvy borders (rounded-md) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Crisp cards with monochromatic hover shader */}
+        <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {DIMENSIONS.map((dim, idx) => (
             <DimensionCard key={dim.name} dim={dim} idx={idx} />
           ))}
