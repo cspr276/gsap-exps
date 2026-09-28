@@ -37,7 +37,9 @@ export default function ServiceHero() {
           scrollTrigger: {
             trigger: container,
             start: 'top top',
-            end: 'bottom top',
+            end: '+=100%',
+            pin: true,
+            pinSpacing: false,
             scrub: 0.6,
           },
         });
@@ -46,7 +48,7 @@ export default function ServiceHero() {
         tl.to(
           heroText,
           {
-            y: -60,
+            y: -70,
             opacity: 0,
             filter: 'blur(8px)',
             ease: 'power2.inOut',
@@ -59,7 +61,7 @@ export default function ServiceHero() {
         tl.to(
           imageFrame,
           {
-            scale: 0.95,
+            scale: 0.93,
             borderRadius: '24px',
             ease: 'power2.inOut',
             duration: 1,
@@ -106,8 +108,9 @@ export default function ServiceHero() {
 
   return (
     <section
+      id="service-hero"
       ref={containerRef}
-      className="sticky top-0 z-0 w-full h-screen flex flex-col justify-center items-center overflow-hidden bg-[#09090b]"
+      className="relative z-0 w-full h-screen flex flex-col justify-center items-center overflow-hidden bg-[#09090b]"
     >
       {/* Dynamic Floating Frame / Chassis */}
       <div
