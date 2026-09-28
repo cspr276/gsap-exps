@@ -147,8 +147,8 @@ export default function EvaluationTaxonomySection() {
           gsap.fromTo(
             card,
             {
-              x: isLeft ? -80 : 80,
-              opacity: 0.15,
+              x: isLeft ? -110 : 110,
+              opacity: 0.1,
             },
             {
               x: 0,
@@ -156,9 +156,9 @@ export default function EvaluationTaxonomySection() {
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: card,
-                start: 'top 92%',
-                end: 'top 55%',
-                scrub: 0.8,
+                start: 'top bottom+=60px', // Starts early as card enters viewport
+                end: 'top 48%',           // Extended travel range for continuous fluid feel
+                scrub: 1,
               },
             }
           );
@@ -166,19 +166,19 @@ export default function EvaluationTaxonomySection() {
       });
 
       mm.add('(max-width: 767px)', () => {
-        // Mobile: smooth natural fade/slide up
+        // Mobile: smooth natural fade/slide up starting early
         cards.forEach((card) => {
           gsap.fromTo(
             card,
-            { y: 35, opacity: 0.2 },
+            { y: 40, opacity: 0.15 },
             {
               y: 0,
               opacity: 1,
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: card,
-                start: 'top 90%',
-                end: 'top 65%',
+                start: 'top bottom+=40px',
+                end: 'top 55%',
                 scrub: 0.8,
               },
             }

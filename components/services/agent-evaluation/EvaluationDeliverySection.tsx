@@ -67,14 +67,14 @@ export default function EvaluationDeliverySection() {
           const cards = track.children;
           if (cards.length > 1) {
             const lastCard = cards[cards.length - 1] as HTMLElement;
-            // Scroll until the last card is fully visible with comfortable 160px right margin
-            const scrollDistance = lastCard.offsetLeft + lastCard.offsetWidth - window.innerWidth + 160;
-            return Math.max(1400, scrollDistance);
+            // Settle last card with its center just before the midpoint of the screen width
+            const targetLeft = (window.innerWidth * 0.5) - (lastCard.offsetWidth * 0.5) - 50;
+            return Math.max(0, lastCard.offsetLeft - targetLeft);
           }
-          return 2000;
+          return 1400;
         };
 
-        // Horizontal card glide with generous reading hold
+        // Horizontal card glide with comfortable hold
         gsap.to(track, {
           x: () => -getScrollDistance(),
           ease: 'none',
@@ -83,7 +83,7 @@ export default function EvaluationDeliverySection() {
             trigger: section,
             pin: true,
             start: 'top top',
-            end: () => `+=${getScrollDistance() + 600}`,
+            end: () => `+=${getScrollDistance() + 450}`,
             scrub: 1,
             anticipatePin: 1,
             invalidateOnRefresh: true,
@@ -101,7 +101,7 @@ export default function EvaluationDeliverySection() {
               scrollTrigger: {
                 trigger: section,
                 start: 'top top',
-                end: () => `+=${getScrollDistance() + 600}`,
+                end: () => `+=${getScrollDistance() + 450}`,
                 scrub: 1,
                 invalidateOnRefresh: true,
               },
