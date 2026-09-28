@@ -37,18 +37,16 @@ export default function ServiceHero() {
           scrollTrigger: {
             trigger: container,
             start: 'top top',
-            end: '+=900',
-            pin: true,
+            end: 'bottom top',
             scrub: 0.6,
-            anticipatePin: 1,
           },
         });
 
-        // Text floats up and dissolves with optical blur
+        // Text floats up and dissolves with optical blur as next section stacks on top
         tl.to(
           heroText,
           {
-            y: -50,
+            y: -60,
             opacity: 0,
             filter: 'blur(8px)',
             ease: 'power2.inOut',
@@ -57,11 +55,11 @@ export default function ServiceHero() {
           0
         );
 
-        // Frame contracts into floating precision chassis
+        // Frame contracts slightly into precision chassis
         tl.to(
           imageFrame,
           {
-            scale: 0.94,
+            scale: 0.95,
             borderRadius: '24px',
             ease: 'power2.inOut',
             duration: 1,
@@ -74,7 +72,7 @@ export default function ServiceHero() {
           tl.to(
             overlay,
             {
-              backgroundColor: 'rgba(9, 9, 11, 0.72)',
+              backgroundColor: 'rgba(9, 9, 11, 0.85)',
               ease: 'power2.inOut',
               duration: 1,
             },
@@ -109,7 +107,7 @@ export default function ServiceHero() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden bg-[#09090b]"
+      className="sticky top-0 z-0 w-full h-screen flex flex-col justify-center items-center overflow-hidden bg-[#09090b]"
     >
       {/* Dynamic Floating Frame / Chassis */}
       <div
