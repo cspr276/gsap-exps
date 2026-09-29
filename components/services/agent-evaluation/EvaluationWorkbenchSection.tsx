@@ -301,7 +301,7 @@ export default function EvaluationWorkbenchSection() {
             <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/85 via-neutral-950/30 to-neutral-950/50" />
 
             {/* Dynamic Content */}
-            <div className="relative z-10 p-6 sm:p-7 lg:p-7 flex flex-col justify-between h-full">
+            <div className="relative z-10 p-6 sm:p-7 lg:p-7 flex flex-col justify-center h-full">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentPillar.id}
@@ -309,7 +309,7 @@ export default function EvaluationWorkbenchSection() {
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
                   transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-col justify-between gap-5 sm:gap-6 h-full"
+                  className="flex flex-col justify-center gap-12 h-full"
                 >
                   <div>
                     <h3 className="font-display font-bold text-xl sm:text-2xl lg:text-3xl text-white tracking-tight mb-2.5">
