@@ -9,7 +9,6 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const Dither = dynamic(() => import('@/components/Dither'), { ssr: false });
 const Grainient = dynamic(() => import('@/components/Grainient'), { ssr: false });
 
 interface Pillar {
@@ -19,7 +18,6 @@ interface Pillar {
   subtitle: string;
   description: string;
   specs: string[];
-  ditherColor: [number, number, number];
   codePreview: {
     title: string;
     badge: string;
@@ -37,7 +35,6 @@ const PILLARS: Pillar[] = [
     description:
       'We work with your engineers and domain specialists to construct tasks derived directly from real production logs. Every scenario defines strict acceptance criteria, gold-standard reference responses, and non-negotiable edge cases.',
     specs: ['Task-grounded rubrics', 'Multi-turn branching graphs', 'Gold-standard reference sets'],
-    ditherColor: [0.82, 0.84, 0.88], // Platinum Silver
     codePreview: {
       title: 'task_rubric_financial_reconciliation.json',
       badge: 'RUBRIC SPEC v2.4',
@@ -58,7 +55,6 @@ const PILLARS: Pillar[] = [
     description:
       'Subjective judgment is insufficient for mission-critical tooling. Our verifiers execute inside isolated sandboxes to assert programmatic state changes: did the agent update the right database row, maintain transactional integrity, and leave unrelated states intact?',
     specs: ['Isolated Docker/WASM sandboxes', 'End-state invariant checking', 'Idempotency verification'],
-    ditherColor: [0.75, 0.78, 0.82], // Titanium Zinc
     codePreview: {
       title: 'verifier_sandbox_runner.py',
       badge: 'ENVIRONMENT RUNNER',
@@ -79,7 +75,6 @@ const PILLARS: Pillar[] = [
     description:
       'When outputs cannot be validated deterministically, we deploy a vetted network of domain specialists (attorneys, clinical practitioners, financial analysts). Disagreements are adjudicated and inter-rater agreement is mathematically tracked.',
     specs: ['Krippendorff’s Alpha tracking', 'Triple-blind expert scoring', 'Adjudicated dispute traces'],
-    ditherColor: [0.88, 0.88, 0.92], // Pure Platinum
     codePreview: {
       title: 'adjudication_panel_telemetry.json',
       badge: 'INTER-RATER CALIBRATION',
@@ -100,7 +95,6 @@ const PILLARS: Pillar[] = [
     description:
       'Every confirmed failure mode is permanently converted into an automated regression unit test. As foundation models release updates, prompts are refined, or tool schemas evolve, our release gate blocks silent quality degradation.',
     specs: ['Automated PR blocking', 'Statistical regression deltas', 'Production canary monitoring'],
-    ditherColor: [0.8, 0.82, 0.85], // Slate Steel
     codePreview: {
       title: 'evalixa_release_gate_summary.log',
       badge: 'CI/CD RELEASE GATE',
@@ -212,7 +206,7 @@ export default function EvaluationWorkbenchSection() {
         {/* 2-Column Interactive Workbench */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
           {/* Left Column: 4 Pillar Navigation Cards with Vertical Laser Rail */}
-          <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col justify-between space-y-2">
+          <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col justify-between space-y-3 sm:space-y-3.5">
             {/* Ambient Background Track for Laser Line (Desktop) */}
             <div className="hidden lg:block absolute left-[-14px] top-2 bottom-2 w-[2px] bg-neutral-800 rounded-full overflow-hidden">
               <div
@@ -229,49 +223,45 @@ export default function EvaluationWorkbenchSection() {
                   key={pillar.id}
                   type="button"
                   onClick={() => handlePillarClick(idx)}
-                  className={`group relative overflow-hidden w-full text-left p-3.5 sm:p-4 rounded-md border transition-all duration-300 cursor-pointer ${
+                  className={`group relative overflow-hidden w-full text-left p-4 sm:p-5 rounded-md border transition-all duration-300 cursor-pointer ${
                     isActive
                       ? 'border-white/40 bg-neutral-900/90 shadow-xl shadow-black/80 text-white'
                       : 'bg-neutral-900/30 border-neutral-800 hover:border-neutral-700 hover:bg-neutral-900/60 text-neutral-400'
                   }`}
                 >
-                  {/* Monochromatic Dither Canvas Background on Active Card */}
+                  {/* Monochromatic Fluid Grain Shader Background on Active Card */}
                   {isActive && (
-                    <motion.div
-                      layoutId="workbench-active-card-bg"
-                      className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-75"
-                    >
-                      <Dither
-                        waveSpeed={0.03}
-                        waveFrequency={2.5}
-                        waveAmplitude={0.22}
-                        waveColor={pillar.ditherColor}
-                        backgroundColor={[0.04, 0.04, 0.05]}
-                        colorNum={4}
-                        pixelSize={2}
-                        enableMouseInteraction={false}
+                    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-85">
+                      <Grainient
+                        color1="#000000"
+                        color2="#2c2c2c"
+                        color3="#6c6c6c"
+                        saturation={0}
+                        timeSpeed={0.2}
+                        warpStrength={0.5}
+                        grainAmount={0.07}
+                        contrast={1.3}
                       />
                       <div className="absolute inset-0 bg-neutral-950/40 pointer-events-none" />
-                    </motion.div>
+                    </div>
                   )}
 
                   <div className="relative z-10 flex items-start justify-between gap-3">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-mono text-[11px] font-bold text-neutral-400">
+                      <div className="flex items-center gap-2.5 mb-1.5">
+                        <span className="font-mono text-xs font-bold text-neutral-400">
                           {String(idx + 1).padStart(2, '0')}
                         </span>
-                        <span className="text-neutral-600">//</span>
                         <span
                           className={`font-mono text-[10px] uppercase tracking-wider font-semibold transition-colors ${
-                            isActive ? 'text-neutral-200' : 'text-neutral-500'
+                            isActive ? 'text-neutral-200' : 'text-neutral-500 group-hover:text-neutral-400'
                           }`}
                         >
                           {pillar.category}
                         </span>
                       </div>
                       <h3
-                        className={`font-display font-bold text-sm sm:text-base mb-0.5 transition-colors ${
+                        className={`font-display font-bold text-sm sm:text-base mb-1 transition-colors ${
                           isActive ? 'text-white' : 'text-neutral-300 group-hover:text-white'
                         }`}
                       >
@@ -292,7 +282,7 @@ export default function EvaluationWorkbenchSection() {
           </div>
 
           {/* Right Column: Dynamic Inspection Console & Details */}
-          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-[#0c0d10] overflow-hidden min-h-[440px] sm:min-h-[470px] shadow-2xl shadow-black flex flex-col justify-between">
+          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-[#0c0d10] overflow-hidden min-h-[460px] sm:min-h-[500px] shadow-2xl shadow-black flex flex-col justify-between">
             {/* Ambient Monochromatic Fluid Grain Shader Background on Console */}
             <div className="absolute inset-0 z-0 pointer-events-none opacity-85">
               <Grainient
@@ -311,7 +301,7 @@ export default function EvaluationWorkbenchSection() {
             <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/85 via-neutral-950/30 to-neutral-950/50" />
 
             {/* Dynamic Content */}
-            <div className="relative z-10 p-5 sm:p-6 lg:p-7 flex flex-col justify-between h-full">
+            <div className="relative z-10 p-6 sm:p-7 lg:p-8 flex flex-col justify-between h-full">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentPillar.id}
@@ -319,22 +309,22 @@ export default function EvaluationWorkbenchSection() {
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
                   transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-col justify-center gap-5 h-full"
+                  className="flex flex-col justify-between gap-6 sm:gap-8 h-full"
                 >
                   <div>
-                    <h3 className="font-display font-bold text-lg sm:text-xl lg:text-2xl text-white tracking-tight mb-2">
+                    <h3 className="font-display font-bold text-xl sm:text-2xl lg:text-3xl text-white tracking-tight mb-3">
                       {currentPillar.title}
                     </h3>
 
-                    <p className="font-sans text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal mb-4">
+                    <p className="font-sans text-sm sm:text-base text-neutral-300 leading-relaxed font-normal mb-5 max-w-2xl">
                       {currentPillar.description}
                     </p>
 
-                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                    <div className="flex flex-wrap gap-2">
                       {currentPillar.specs.map((spec) => (
                         <span
                           key={spec}
-                          className="font-mono text-[10px] sm:text-[11px] text-neutral-200 bg-neutral-900/70 backdrop-blur-md border border-neutral-700/80 px-2.5 py-1 rounded-sm shadow-sm"
+                          className="font-mono text-[11px] text-neutral-200 bg-neutral-900/70 backdrop-blur-md border border-neutral-700/80 px-3 py-1.5 rounded-sm shadow-sm"
                         >
                           {spec}
                         </span>
@@ -343,17 +333,17 @@ export default function EvaluationWorkbenchSection() {
                   </div>
 
                   {/* Dark Monochromatic Inspection Code / Telemetry Console */}
-                  <div className="rounded-md bg-black/70 backdrop-blur-md border border-neutral-800 p-3.5 sm:p-4 font-mono text-xs overflow-hidden shadow-2xl">
-                    <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-neutral-800 text-neutral-400 text-[11px]">
-                      <span className="truncate pr-2 text-neutral-300">{currentPillar.codePreview.title}</span>
+                  <div className="rounded-md bg-black/75 backdrop-blur-md border border-neutral-800 p-4 sm:p-5 font-mono text-xs overflow-hidden shadow-2xl">
+                    <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-neutral-800 text-neutral-400 text-[11px]">
+                      <span className="truncate pr-2 text-neutral-300 font-medium">{currentPillar.codePreview.title}</span>
                       <span className="px-2 py-0.5 rounded bg-white/10 text-white border border-white/20 text-[10px] font-bold shrink-0 uppercase tracking-wider">
                         {currentPillar.codePreview.badge}
                       </span>
                     </div>
 
-                    <div className="space-y-1.5 leading-relaxed overflow-x-auto text-[11px]">
+                    <div className="space-y-2 leading-relaxed overflow-x-auto text-[11px]">
                       {currentPillar.codePreview.lines.map((line, idx) => (
-                        <div key={idx} className="flex gap-2">
+                        <div key={idx} className="flex gap-2.5">
                           {line.label && (
                             <span className="text-neutral-500 shrink-0 select-none">
                               {line.label}:
