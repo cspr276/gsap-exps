@@ -63,15 +63,14 @@ export default function EvaluationDeliverySection() {
 
       // Pinned Horizontal Track on Desktop
       mm.add('(min-width: 1024px)', () => {
+        // Distance from card 01 to card 04 brings card 04 to center (50vw), plus 80px to settle comfortably
         const getScrollDistance = () => {
           const cards = track.children;
           if (cards.length > 1) {
             const lastCard = cards[cards.length - 1] as HTMLElement;
-            // Settle last card with its center just before the midpoint of the screen width
-            const targetLeft = (window.innerWidth * 0.5) - (lastCard.offsetWidth * 0.5) - 50;
-            return Math.max(0, lastCard.offsetLeft - targetLeft);
+            return lastCard.offsetLeft + 80;
           }
-          return 1400;
+          return 1600;
         };
 
         // Horizontal card glide with comfortable hold
@@ -116,7 +115,7 @@ export default function EvaluationDeliverySection() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full min-h-screen flex flex-col justify-center py-20 sm:py-24 bg-white text-neutral-950 border-t border-neutral-200 overflow-hidden"
+      className="relative w-full min-h-screen flex flex-col justify-center py-16 sm:py-20 lg:py-24 bg-white text-neutral-950 border-t border-neutral-200 overflow-hidden"
     >
       {/* Laser progress wire (Desktop) */}
       <div className="hidden lg:block absolute top-0 left-0 right-0 h-[2px] bg-neutral-200">
@@ -127,9 +126,9 @@ export default function EvaluationDeliverySection() {
         />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col justify-center my-auto">
-        {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4">
+      {/* Section Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mb-8 sm:mb-10 flex-shrink-0">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="max-w-2xl">
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-2">
               DELIVERY ENGAGEMENT
@@ -145,13 +144,14 @@ export default function EvaluationDeliverySection() {
             <span>TIMELINE RAIL</span>
           </div>
         </div>
+      </div>
 
-        {/* Pinned Horizontal Track Container */}
-        <div className="relative w-full overflow-visible">
-          <div
-            ref={trackRef}
-            className="flex flex-col lg:flex-row gap-6 w-full lg:w-max lg:will-change-transform lg:pr-32"
-          >
+      {/* Pinned Horizontal Track Container: First card starts centered around mid (50vw) on desktop */}
+      <div className="relative w-full overflow-hidden lg:overflow-visible px-4 sm:px-6 lg:px-0 lg:pl-[calc(50vw-210px)]">
+        <div
+          ref={trackRef}
+          className="flex flex-col lg:flex-row gap-6 w-full lg:w-max lg:will-change-transform lg:pr-32"
+        >
             {STEPS.map((step) => (
               <div
                 key={step.step}
@@ -204,7 +204,6 @@ export default function EvaluationDeliverySection() {
             ))}
           </div>
         </div>
-      </div>
-    </section>
+      </section>
   );
 }
