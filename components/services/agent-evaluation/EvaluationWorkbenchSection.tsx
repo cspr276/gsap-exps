@@ -39,7 +39,7 @@ const PILLARS: Pillar[] = [
       'We work with your engineers and domain specialists to construct tasks derived directly from real production logs. Every scenario defines strict acceptance criteria, gold-standard reference responses, and non-negotiable edge cases.',
     specs: ['Task-grounded rubrics', 'Multi-turn branching graphs', 'Gold-standard reference sets'],
     ditherColor: [0.82, 0.84, 0.88], // Platinum Silver
-    grainientColors: { color1: '#09090b', color2: '#18181b', color3: '#27272a' },
+    grainientColors: { color1: '#0b0d12', color2: '#1a202b', color3: '#2d3748' },
     codePreview: {
       title: 'task_rubric_financial_reconciliation.json',
       badge: 'RUBRIC SPEC v2.4',
@@ -61,7 +61,7 @@ const PILLARS: Pillar[] = [
       'Subjective judgment is insufficient for mission-critical tooling. Our verifiers execute inside isolated sandboxes to assert programmatic state changes: did the agent update the right database row, maintain transactional integrity, and leave unrelated states intact?',
     specs: ['Isolated Docker/WASM sandboxes', 'End-state invariant checking', 'Idempotency verification'],
     ditherColor: [0.75, 0.78, 0.82], // Titanium Zinc
-    grainientColors: { color1: '#0b0c0e', color2: '#191b20', color3: '#2a2d36' },
+    grainientColors: { color1: '#0c0f13', color2: '#19222c', color3: '#2a394a' },
     codePreview: {
       title: 'verifier_sandbox_runner.py',
       badge: 'ENVIRONMENT RUNNER',
@@ -83,7 +83,7 @@ const PILLARS: Pillar[] = [
       'When outputs cannot be validated deterministically, we deploy a vetted network of domain specialists (attorneys, clinical practitioners, financial analysts). Disagreements are adjudicated and inter-rater agreement is mathematically tracked.',
     specs: ['Krippendorff’s Alpha tracking', 'Triple-blind expert scoring', 'Adjudicated dispute traces'],
     ditherColor: [0.88, 0.88, 0.92], // Pure Platinum
-    grainientColors: { color1: '#0d0d10', color2: '#1b1c22', color3: '#31333d' },
+    grainientColors: { color1: '#0e0e14', color2: '#1d1e29', color3: '#323447' },
     codePreview: {
       title: 'adjudication_panel_telemetry.json',
       badge: 'INTER-RATER CALIBRATION',
@@ -105,7 +105,7 @@ const PILLARS: Pillar[] = [
       'Every confirmed failure mode is permanently converted into an automated regression unit test. As foundation models release updates, prompts are refined, or tool schemas evolve, our release gate blocks silent quality degradation.',
     specs: ['Automated PR blocking', 'Statistical regression deltas', 'Production canary monitoring'],
     ditherColor: [0.8, 0.82, 0.85], // Slate Steel
-    grainientColors: { color1: '#0f1013', color2: '#1e2026', color3: '#363944' },
+    grainientColors: { color1: '#0f1115', color2: '#1f2229', color3: '#353a47' },
     codePreview: {
       title: 'evalixa_release_gate_summary.log',
       badge: 'CI/CD RELEASE GATE',
@@ -240,17 +240,18 @@ export default function EvaluationWorkbenchSection() {
                       : 'bg-neutral-900/30 border-neutral-800 hover:border-neutral-700 hover:bg-neutral-900/60 text-neutral-400'
                   }`}
                 >
-                  {/* Monochromatic Fluid Grain Shader Background on Active Card */}
+                  {/* Monochromatic Dither Canvas Background on Active Card */}
                   {isActive && (
-                    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-90">
-                      <Grainient
-                        color1={pillar.grainientColors.color1}
-                        color2={pillar.grainientColors.color2}
-                        color3={pillar.grainientColors.color3}
-                        timeSpeed={0.2}
-                        warpStrength={0.45}
-                        grainAmount={0.07}
-                        contrast={1.12}
+                    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-75">
+                      <Dither
+                        waveSpeed={0.03}
+                        waveFrequency={2.5}
+                        waveAmplitude={0.22}
+                        waveColor={pillar.ditherColor}
+                        backgroundColor={[0.04, 0.04, 0.05]}
+                        colorNum={4}
+                        pixelSize={2}
+                        enableMouseInteraction={false}
                       />
                       <div className="absolute inset-0 bg-neutral-950/40 pointer-events-none" />
                     </div>
@@ -292,17 +293,16 @@ export default function EvaluationWorkbenchSection() {
 
           {/* Right Column: Dynamic Inspection Console & Details */}
           <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-[#0c0d10] overflow-hidden min-h-[440px] sm:min-h-[470px] shadow-2xl shadow-black flex flex-col justify-between">
-            {/* Ambient Monochromatic Dither Canvas Background */}
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-80">
-              <Dither
-                waveSpeed={0.035}
-                waveFrequency={2.2}
-                waveAmplitude={0.28}
-                waveColor={currentPillar.ditherColor}
-                backgroundColor={[0.04, 0.04, 0.05]}
-                colorNum={4}
-                pixelSize={2}
-                enableMouseInteraction={false}
+            {/* Ambient Monochromatic Fluid Grain Shader Background on Console */}
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-85">
+              <Grainient
+                color1={currentPillar.grainientColors.color1}
+                color2={currentPillar.grainientColors.color2}
+                color3={currentPillar.grainientColors.color3}
+                timeSpeed={0.2}
+                warpStrength={0.45}
+                grainAmount={0.07}
+                contrast={1.15}
               />
             </div>
 

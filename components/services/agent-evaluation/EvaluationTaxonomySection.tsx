@@ -15,7 +15,7 @@ const DIMENSIONS = [
     category: '01 / COGNITIVE INTEGRITY',
     name: 'Reasoning & Faithfulness',
     summary: 'Testing step-by-step logic consistency, premise compliance, and hallucination emergence.',
-    grainientColors: { color1: '#09090b', color2: '#18181b', color3: '#272932' },
+    grainientColors: { color1: '#10141e', color2: '#20293d', color3: '#3b4b6e' },
     criteria: [
       'Multi-hop deduction validation',
       'Premise adherence without hallucinations',
@@ -27,7 +27,7 @@ const DIMENSIONS = [
     category: '02 / AGENTIC EXECUTION',
     name: 'Tool & Schema Execution',
     summary: 'Evaluating parameter accuracy, schema adherence, error recovery, and environmental safety.',
-    grainientColors: { color1: '#0b0c0e', color2: '#191b20', color3: '#2d303a' },
+    grainientColors: { color1: '#12181c', color2: '#223038', color3: '#3b5260' },
     criteria: [
       'JSON schema and parameter constraint precision',
       'Graceful error recovery on API 4xx/5xx responses',
@@ -39,7 +39,7 @@ const DIMENSIONS = [
     category: '03 / SYSTEM DEFENSE',
     name: 'Security & Boundary Defense',
     summary: 'Stress-testing agent resilience against adversarial inputs, prompt injection, and data leaks.',
-    grainientColors: { color1: '#0d0e11', color2: '#1b1d24', color3: '#313540' },
+    grainientColors: { color1: '#171322', color2: '#2d2344', color3: '#4f3e74' },
     criteria: [
       'Direct and indirect prompt injection resistance',
       'Jailbreak mitigation across multi-turn context',
@@ -51,7 +51,7 @@ const DIMENSIONS = [
     category: '04 / PRODUCTION OPERATION',
     name: 'Operational Resilience',
     summary: 'Measuring latency budgets, context degradation over long horizons, and token costs.',
-    grainientColors: { color1: '#101114', color2: '#1e2027', color3: '#353945' },
+    grainientColors: { color1: '#111816', color2: '#202f2b', color3: '#37524b' },
     criteria: [
       'Sub-second latency budget conformance',
       'Performance stability across 128k+ token horizons',
@@ -64,20 +64,20 @@ const DIMENSIONS = [
 function DimensionCard({ dim, idx }: { dim: (typeof DIMENSIONS)[number]; idx: number }) {
   return (
     <div
-      className="taxonomy-card relative p-8 rounded-md bg-neutral-900/60 border border-neutral-800 hover:border-neutral-600 transition-colors duration-300 flex flex-col justify-between overflow-hidden group shadow-sm hover:shadow-2xl hover:shadow-black/60 will-change-transform"
+      className="taxonomy-card relative p-8 rounded-md bg-neutral-950/40 border border-neutral-800 hover:border-neutral-600 transition-colors duration-300 flex flex-col justify-between overflow-hidden group shadow-sm hover:shadow-2xl hover:shadow-black/60 will-change-transform"
     >
-      {/* Dynamic monochromatic fluid Grainient as permanent card background */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-75 group-hover:opacity-100 transition-opacity duration-500">
+      {/* Dynamic fluid Grainient as permanent card background */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-90 group-hover:opacity-100 transition-opacity duration-500">
         <Grainient
           color1={dim.grainientColors.color1}
           color2={dim.grainientColors.color2}
           color3={dim.grainientColors.color3}
           timeSpeed={0.2}
-          warpStrength={0.45}
-          grainAmount={0.06}
-          contrast={1.15}
+          warpStrength={0.5}
+          grainAmount={0.065}
+          contrast={1.22}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-neutral-950/45 to-neutral-950/65 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/70 via-neutral-950/25 to-neutral-950/45 pointer-events-none" />
       </div>
 
       {/* Card Content */}

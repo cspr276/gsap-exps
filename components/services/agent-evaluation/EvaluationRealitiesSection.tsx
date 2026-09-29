@@ -2,11 +2,18 @@
 
 import React, { useRef } from 'react';
 import Image from 'next/image';
+import { ArrowRight } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+interface ExecutionStep {
+  label: string;
+  value: string;
+  isTerminal?: boolean;
+}
 
 interface ChapterItem {
   id: string;
@@ -19,7 +26,8 @@ interface ChapterItem {
   numberLabel: string;
   secondaryStat: string;
   secondaryLabel: string;
-  trace: string;
+  traceTitle: string;
+  traceSteps: ExecutionStep[];
   image: string;
 }
 
@@ -36,7 +44,12 @@ const CHAPTERS: ChapterItem[] = [
     numberLabel: 'COMPOUND 8-TURN ACCURACY',
     secondaryStat: '0.95⁸',
     secondaryLabel: 'EXPONENTIAL DECAY BASELINE',
-    trace: 'TURN 1 [95%] ─── TURN 4 [81%] ─── TURN 8 [66%]',
+    traceTitle: 'COMPOUND EXECUTION CHAIN',
+    traceSteps: [
+      { label: 'TURN 1', value: '95%' },
+      { label: 'TURN 4', value: '81%' },
+      { label: 'TURN 8', value: '66%', isTerminal: true },
+    ],
     image: '/services/reality-01.jpg',
   },
   {
@@ -51,7 +64,11 @@ const CHAPTERS: ChapterItem[] = [
     numberLabel: 'ENTERPRISE SCHEMA FIT',
     secondaryStat: '92% vs 12%',
     secondaryLabel: 'SYNTHETIC MMLU VS ENTERPRISE SAP',
-    trace: 'PUBLIC BENCHMARK [92%] ─── PRIVATE ERP / RBAC [12%]',
+    traceTitle: 'DOMAIN DRIFT SKEW',
+    traceSteps: [
+      { label: 'MMLU PUBLIC', value: '92%' },
+      { label: 'ENTERPRISE ERP', value: '12%', isTerminal: true },
+    ],
     image: '/services/reality-02.jpg',
   },
   {
@@ -66,7 +83,11 @@ const CHAPTERS: ChapterItem[] = [
     numberLabel: 'UNVALIDATED JUDGE DRIFT',
     secondaryStat: '+25% BIAS',
     secondaryLabel: 'SELF-PREFERENCE SCORE INFLATION',
-    trace: 'SELF-PREFERENCE [+25%] ─── VERBOSITY SKEW [+18%]',
+    traceTitle: 'UNVALIDATED JUDGE METRICS',
+    traceSteps: [
+      { label: 'SELF-PREFERENCE', value: '+25%' },
+      { label: 'VERBOSITY SKEW', value: '+18%', isTerminal: true },
+    ],
     image: '/services/reality-03.jpg',
   },
 ];
@@ -298,7 +319,7 @@ export default function EvaluationRealitiesSection() {
               workItemsRef.current[idx] = el;
             }}
             data-work="item"
-            className="work_item absolute inset-0 w-full h-screen bg-black flex flex-col justify-between py-10 px-8 sm:px-16 lg:px-24 overflow-hidden pointer-events-none"
+            className="work_item absolute inset-0 w-full h-screen bg-black flex flex-col justify-between py-8 sm:py-10 px-6 sm:px-10 lg:px-14 xl:px-16 overflow-hidden pointer-events-none"
             style={{
               zIndex: 10 + idx * 10,
               clipPath: 'inset(100% 0 0% 0)',
@@ -325,7 +346,7 @@ export default function EvaluationRealitiesSection() {
             </div>
 
             {/* Top Bar: Section Context Kicker (Small, elegant, monospace - identifies section) */}
-            <div className="relative z-10 w-full flex items-center justify-between pb-6 border-b border-white/10 text-xs font-mono tracking-widest text-neutral-400">
+            <div className="relative z-10 w-full flex items-center justify-between pb-5 border-b border-white/10 text-xs font-mono tracking-widest text-neutral-400">
               <div className="flex items-center gap-3">
                 <span className="text-white font-semibold tracking-wider">
                   THE EVALUATION GAP
@@ -341,42 +362,62 @@ export default function EvaluationRealitiesSection() {
             {/* Middle: Kinetic Numbers Track (Glides right to left across 195vh scroll) */}
             <div
               data-work="numbers"
-              className="work_video-wrapper relative z-10 my-auto py-6 will-change-transform overflow-visible"
+              className="work_video-wrapper relative z-10 my-auto py-4 will-change-transform overflow-visible"
             >
-              <div className="flex items-center gap-12 sm:gap-16 lg:gap-20 whitespace-nowrap">
+              <div className="flex items-center gap-6 sm:gap-8 lg:gap-10 xl:gap-12 whitespace-nowrap">
                 {/* Colossal Number */}
                 <div className="flex flex-col">
-                  <span className="font-mono text-7xl sm:text-9xl lg:text-[11rem] font-black text-white tracking-tighter leading-none drop-shadow-2xl">
+                  <span className="font-mono text-6xl sm:text-7xl lg:text-8xl xl:text-9xl font-black text-white tracking-tighter leading-none drop-shadow-2xl">
                     {item.bigNumber}
                   </span>
-                  <span className="font-mono text-xs sm:text-sm text-neutral-400 uppercase tracking-widest font-semibold mt-3">
+                  <span className="font-mono text-[11px] sm:text-xs text-neutral-400 uppercase tracking-widest font-semibold mt-2.5">
                     {item.numberLabel}
                   </span>
                 </div>
 
                 {/* Hairline Divider */}
-                <div className="h-28 w-px bg-white/20 shrink-0" />
+                <div className="h-16 lg:h-20 w-px bg-white/20 shrink-0" />
 
                 {/* Secondary Stat */}
                 <div className="flex flex-col">
-                  <span className="font-mono text-4xl sm:text-6xl font-extrabold text-neutral-200 tracking-tight">
+                  <span className="font-mono text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-neutral-200 tracking-tight">
                     {item.secondaryStat}
                   </span>
-                  <span className="font-mono text-xs text-neutral-400 uppercase tracking-widest font-semibold mt-2">
+                  <span className="font-mono text-[11px] sm:text-xs text-neutral-400 uppercase tracking-widest font-semibold mt-2">
                     {item.secondaryLabel}
                   </span>
                 </div>
 
                 {/* Hairline Divider */}
-                <div className="h-28 w-px bg-white/20 shrink-0" />
+                <div className="h-16 lg:h-20 w-px bg-white/20 shrink-0" />
 
-                {/* Execution Decay Path Trace */}
-                <div className="flex flex-col">
-                  <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 mb-2 font-semibold">
-                    BENCHMARK EXECUTION PATH
+                {/* Formal Telemetric Execution Steps Representation */}
+                <div className="flex flex-col justify-center">
+                  <span className="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-neutral-400 mb-2 font-semibold">
+                    {item.traceTitle}
                   </span>
-                  <div className="font-mono text-sm sm:text-base text-neutral-300 tracking-wider">
-                    {item.trace}
+                  <div className="flex items-center gap-2 sm:gap-2.5">
+                    {item.traceSteps.map((step, sIdx) => (
+                      <React.Fragment key={step.label}>
+                        <div
+                          className={`flex items-center gap-2 px-2.5 py-1.5 rounded border text-xs font-mono ${
+                            step.isTerminal
+                              ? 'bg-rose-500/10 border-rose-500/30 text-rose-200'
+                              : 'bg-white/[0.05] border-white/15 text-neutral-200'
+                          }`}
+                        >
+                          <span className="text-[10px] text-neutral-400 tracking-wider uppercase font-medium">
+                            {step.label}
+                          </span>
+                          <span className="font-bold text-white">
+                            {step.value}
+                          </span>
+                        </div>
+                        {sIdx < item.traceSteps.length - 1 && (
+                          <ArrowRight className="w-3.5 h-3.5 text-neutral-500 shrink-0" />
+                        )}
+                      </React.Fragment>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -387,7 +428,7 @@ export default function EvaluationRealitiesSection() {
               <div className="line-wrapper overflow-hidden">
                 <h2
                   data-line
-                  className="line font-display font-black text-5xl sm:text-7xl lg:text-8xl text-white uppercase tracking-tight leading-[0.92] will-change-transform"
+                  className="line font-display font-black text-4xl sm:text-6xl lg:text-7xl xl:text-8xl text-white uppercase tracking-tight leading-[0.92] will-change-transform"
                 >
                   {item.headlineLine1}
                 </h2>
@@ -395,15 +436,15 @@ export default function EvaluationRealitiesSection() {
               <div className="line-wrapper overflow-hidden mt-1.5">
                 <div
                   data-line
-                  className="line font-display font-black text-5xl sm:text-7xl lg:text-8xl text-neutral-400 uppercase tracking-tight leading-[0.92] will-change-transform"
+                  className="line font-display font-black text-4xl sm:text-6xl lg:text-7xl xl:text-8xl text-neutral-400 uppercase tracking-tight leading-[0.92] will-change-transform"
                 >
                   {item.headlineLine2}
                 </div>
               </div>
-              <div className="line-wrapper overflow-hidden mt-5">
+              <div className="line-wrapper overflow-hidden mt-4">
                 <p
                   data-line
-                  className="line font-sans text-base sm:text-xl text-neutral-300 font-normal max-w-2xl leading-relaxed will-change-transform"
+                  className="line font-sans text-sm sm:text-lg text-neutral-300 font-normal max-w-2xl leading-relaxed will-change-transform"
                 >
                   {item.subtitle}
                 </p>
@@ -452,8 +493,33 @@ export default function EvaluationRealitiesSection() {
                 {item.subtitle}
               </p>
 
-              <div className="pt-4 border-t border-white/10 font-mono text-xs text-neutral-400 tracking-wider">
-                {item.trace}
+              <div className="pt-4 border-t border-white/10">
+                <span className="font-mono text-[10px] text-neutral-500 uppercase tracking-widest font-semibold block mb-2">
+                  {item.traceTitle}
+                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {item.traceSteps.map((step, sIdx) => (
+                    <React.Fragment key={step.label}>
+                      <div
+                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded border text-xs font-mono ${
+                          step.isTerminal
+                            ? 'bg-rose-500/10 border-rose-500/30 text-rose-200'
+                            : 'bg-white/[0.05] border-white/15 text-neutral-200'
+                        }`}
+                      >
+                        <span className="text-[10px] text-neutral-400 tracking-wider uppercase">
+                          {step.label}
+                        </span>
+                        <span className="font-bold text-white">
+                          {step.value}
+                        </span>
+                      </div>
+                      {sIdx < item.traceSteps.length - 1 && (
+                        <ArrowRight className="w-3 h-3 text-neutral-500 shrink-0" />
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
               </div>
             </div>
           ))}
