@@ -253,6 +253,10 @@ export default function Dither({
       ro.disconnect();
       io.disconnect();
       document.removeEventListener('visibilitychange', onVisibility);
+      const loseExt = gl.getExtension('WEBGL_lose_context');
+      if (loseExt) {
+        loseExt.loseContext();
+      }
       try {
         container.removeChild(canvas);
       } catch {

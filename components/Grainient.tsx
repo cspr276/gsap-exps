@@ -254,17 +254,41 @@ const Grainient: React.FC<GrainientProps> = ({
     };
 
     const tryStart = () => {
-      if (isVisible && isPageVisible && raf === 0) raf = requestAnimationFrame(loop);
+      if (isVisible && isPageVisible && raf === 0) {
+        setSize();
+        raf = requestAnimationFrame(loop);
+      }
     };
     const tryStop = () => {
       if (raf !== 0) { cancelAnimationFrame(raf); raf = 0; }
     };
 
     const io = new IntersectionObserver(
-      ([entry]) => { isVisible = entry.isIntersecting; isVisible ? tryStart() : tryStop(); },
-      { threshold: 0 }
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible) {
+          tryStart();
+        } else {
+          tryStop();
+        }
+      },
+      { threshold: 0, rootMargin: '300px' }
     );
     io.observe(container);
+
+    // Robust scroll fallback for GSAP pinned/fixed/transformed containers
+    const onScroll = () => {
+      const rect = container.getBoundingClientRect();
+      const inView = rect.bottom > -200 && rect.top < window.innerHeight + 200;
+      if (inView && !isVisible) {
+        isVisible = true;
+        tryStart();
+      } else if (!inView && isVisible) {
+        isVisible = false;
+        tryStop();
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
 
     const onVisibility = () => {
       isPageVisible = !document.hidden;
@@ -272,14 +296,26 @@ const Grainient: React.FC<GrainientProps> = ({
     };
     document.addEventListener('visibilitychange', onVisibility);
 
+    const onContextLost = (e: Event) => {
+      e.preventDefault();
+      tryStop();
+    };
+    canvas.addEventListener('webglcontextlost', onContextLost);
+
     tryStart();
 
     return () => {
       tryStop();
       ro.disconnect();
       io.disconnect();
+      window.removeEventListener('scroll', onScroll);
       document.removeEventListener('visibilitychange', onVisibility);
+      canvas.removeEventListener('webglcontextlost', onContextLost);
       ctxMap.delete(container);
+      const loseExt = gl.getExtension('WEBGL_lose_context');
+      if (loseExt) {
+        loseExt.loseContext();
+      }
       try { container.removeChild(canvas); } catch { /* ignore */ }
     };
   }, []); // renderer created once
