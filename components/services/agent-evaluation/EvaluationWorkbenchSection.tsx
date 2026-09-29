@@ -206,9 +206,9 @@ export default function EvaluationWorkbenchSection() {
         {/* 2-Column Interactive Workbench */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
           {/* Left Column: 4 Pillar Navigation Cards with Vertical Laser Rail */}
-          <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col justify-between space-y-3 sm:space-y-3.5">
+          <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col gap-3 sm:gap-3.5">
             {/* Ambient Background Track for Laser Line (Desktop) */}
-            <div className="hidden lg:block absolute left-[-14px] top-2 bottom-2 w-[2px] bg-neutral-800 rounded-full overflow-hidden">
+            <div className="hidden lg:block absolute left-[-14px] top-2 bottom-2 w-[2px] bg-neutral-800 rounded-full overflow-hidden pointer-events-none">
               <div
                 ref={laserLineRef}
                 className="w-full h-full bg-white origin-top"
@@ -223,7 +223,7 @@ export default function EvaluationWorkbenchSection() {
                   key={pillar.id}
                   type="button"
                   onClick={() => handlePillarClick(idx)}
-                  className={`group relative overflow-hidden w-full text-left p-4 sm:p-5 rounded-md border transition-all duration-300 cursor-pointer ${
+                  className={`group relative overflow-hidden w-full flex-1 min-h-0 text-left px-4 py-3.5 sm:px-5 sm:py-4 rounded-md border transition-all duration-300 cursor-pointer flex flex-col justify-center ${
                     isActive
                       ? 'border-white/40 bg-neutral-900/90 shadow-xl shadow-black/80 text-white'
                       : 'bg-neutral-900/30 border-neutral-800 hover:border-neutral-700 hover:bg-neutral-900/60 text-neutral-400'
@@ -248,7 +248,7 @@ export default function EvaluationWorkbenchSection() {
 
                   <div className="relative z-10 flex items-start justify-between gap-3">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2.5 mb-1.5">
+                      <div className="flex items-center gap-2.5 mb-1">
                         <span className="font-mono text-xs font-bold text-neutral-400">
                           {String(idx + 1).padStart(2, '0')}
                         </span>
@@ -261,7 +261,7 @@ export default function EvaluationWorkbenchSection() {
                         </span>
                       </div>
                       <h3
-                        className={`font-display font-bold text-sm sm:text-base mb-1 transition-colors ${
+                        className={`font-display font-bold text-sm sm:text-base mb-0.5 transition-colors ${
                           isActive ? 'text-white' : 'text-neutral-300 group-hover:text-white'
                         }`}
                       >
