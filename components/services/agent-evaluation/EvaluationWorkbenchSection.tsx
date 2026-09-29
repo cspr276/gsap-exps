@@ -191,7 +191,7 @@ export default function EvaluationWorkbenchSection() {
     <section
       ref={sectionRef}
       id="workbench"
-      className="relative w-full min-h-screen lg:h-screen flex flex-col justify-center py-10 sm:py-12 lg:py-6 bg-[#09090b] text-white overflow-hidden"
+      className="relative z-30 w-full min-h-screen lg:h-screen flex flex-col justify-center py-10 sm:py-12 lg:py-6 bg-[#09090b] text-white overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col justify-center my-auto">
         {/* Section Header with balanced compact spacing */}

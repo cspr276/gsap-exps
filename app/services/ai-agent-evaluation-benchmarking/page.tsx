@@ -38,26 +38,29 @@ export default function AgentEvaluationPage() {
         {/* 2. Standout Curtain-Wipe Highlight Animation: The Evaluation Gap */}
         <EvaluationRealitiesSection />
 
-        {/* 3. High-Contrast Architectural Metrics Strip */}
-        <ServiceMetricsStrip />
+        {/* Continuous Solid Z-30 Stacking Layer: Metrics, Workbench, and all subsequent sections */}
+        <div className="relative z-30 bg-[#09090b]">
+          {/* 3. High-Contrast Architectural Metrics Strip */}
+          <ServiceMetricsStrip />
 
-        {/* 4. Interactive Evaluation Workbench (4 Pillars: Rubrics, Verifiers, Judges, Gates) */}
-        <EvaluationWorkbenchSection />
+          {/* 4. Interactive Evaluation Workbench (4 Pillars: Rubrics, Verifiers, Judges, Gates) */}
+          <EvaluationWorkbenchSection />
 
-        {/* 5. The 4 Evaluation Dimensions (50+ dimensions breakdown) */}
-        <EvaluationTaxonomySection />
+          {/* 5. The 4 Evaluation Dimensions (50+ dimensions breakdown) */}
+          <EvaluationTaxonomySection />
 
-        {/* 6. How We Deliver (Progressive 4-Step Engagement Grid) */}
-        <EvaluationDeliverySection />
+          {/* 6. How We Deliver (Progressive 4-Step Engagement Grid) */}
+          <EvaluationDeliverySection />
 
-        {/* 7. Frequently Asked Questions (Technical & Engagement) */}
-        <EvaluationFAQSection />
+          {/* 7. Frequently Asked Questions (Technical & Engagement) */}
+          <EvaluationFAQSection />
 
-        {/* 8. High-Contrast Conversion CTA */}
-        <ServiceCTASection />
+          {/* 8. High-Contrast Conversion CTA */}
+          <ServiceCTASection />
 
-        {/* Universal Footer */}
-        <Footer />
+          {/* Universal Footer */}
+          <Footer />
+        </div>
       </main>
     </SmoothScroll>
   );
