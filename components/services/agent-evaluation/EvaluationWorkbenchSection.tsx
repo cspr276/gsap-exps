@@ -206,7 +206,7 @@ export default function EvaluationWorkbenchSection() {
         {/* 2-Column Interactive Workbench */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
           {/* Left Column: 4 Pillar Navigation Cards with Vertical Laser Rail */}
-          <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col gap-3 sm:gap-3.5">
+          <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col gap-3 sm:gap-3.5 lg:h-[530px]">
             {/* Ambient Background Track for Laser Line (Desktop) */}
             <div className="hidden lg:block absolute left-[-14px] top-2 bottom-2 w-[2px] bg-neutral-800 rounded-full overflow-hidden pointer-events-none">
               <div
@@ -223,7 +223,7 @@ export default function EvaluationWorkbenchSection() {
                   key={pillar.id}
                   type="button"
                   onClick={() => handlePillarClick(idx)}
-                  className={`group relative overflow-hidden w-full flex-1 min-h-0 text-left px-4 py-3.5 sm:px-5 sm:py-4 rounded-md border transition-all duration-300 cursor-pointer flex flex-col justify-center ${
+                  className={`group relative overflow-hidden w-full flex-1 min-h-0 text-left px-4 py-3 sm:px-5 sm:py-3.5 rounded-md border transition-all duration-300 cursor-pointer flex flex-col justify-center ${
                     isActive
                       ? 'border-white/40 bg-neutral-900/90 shadow-xl shadow-black/80 text-white'
                       : 'bg-neutral-900/30 border-neutral-800 hover:border-neutral-700 hover:bg-neutral-900/60 text-neutral-400'
@@ -282,7 +282,7 @@ export default function EvaluationWorkbenchSection() {
           </div>
 
           {/* Right Column: Dynamic Inspection Console & Details */}
-          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-[#0c0d10] overflow-hidden min-h-[460px] sm:min-h-[500px] shadow-2xl shadow-black flex flex-col justify-between">
+          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-[#0c0d10] overflow-hidden min-h-[460px] lg:h-[530px] shadow-2xl shadow-black flex flex-col justify-between">
             {/* Ambient Monochromatic Fluid Grain Shader Background on Console */}
             <div className="absolute inset-0 z-0 pointer-events-none opacity-85">
               <Grainient
@@ -301,7 +301,7 @@ export default function EvaluationWorkbenchSection() {
             <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/85 via-neutral-950/30 to-neutral-950/50" />
 
             {/* Dynamic Content */}
-            <div className="relative z-10 p-6 sm:p-7 lg:p-8 flex flex-col justify-between h-full">
+            <div className="relative z-10 p-6 sm:p-7 lg:p-7 flex flex-col justify-between h-full">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentPillar.id}
@@ -309,14 +309,14 @@ export default function EvaluationWorkbenchSection() {
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
                   transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-col justify-between gap-6 sm:gap-8 h-full"
+                  className="flex flex-col justify-between gap-5 sm:gap-6 h-full"
                 >
                   <div>
-                    <h3 className="font-display font-bold text-xl sm:text-2xl lg:text-3xl text-white tracking-tight mb-3">
+                    <h3 className="font-display font-bold text-xl sm:text-2xl lg:text-3xl text-white tracking-tight mb-2.5">
                       {currentPillar.title}
                     </h3>
 
-                    <p className="font-sans text-sm sm:text-base text-neutral-300 leading-relaxed font-normal mb-5 max-w-2xl">
+                    <p className="font-sans text-sm sm:text-base text-neutral-300 leading-relaxed font-normal mb-4 max-w-2xl">
                       {currentPillar.description}
                     </p>
 
@@ -324,7 +324,7 @@ export default function EvaluationWorkbenchSection() {
                       {currentPillar.specs.map((spec) => (
                         <span
                           key={spec}
-                          className="font-mono text-[11px] text-neutral-200 bg-neutral-900/70 backdrop-blur-md border border-neutral-700/80 px-3 py-1.5 rounded-sm shadow-sm"
+                          className="font-mono text-[10px] sm:text-[11px] text-neutral-200 bg-neutral-900/70 backdrop-blur-md border border-neutral-700/80 px-2.5 py-1 rounded-sm shadow-sm"
                         >
                           {spec}
                         </span>
