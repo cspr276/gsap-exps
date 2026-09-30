@@ -107,7 +107,7 @@ export default function Footer() {
                 </span>
                 <ul className="space-y-3 text-sm text-neutral-400 font-normal">
                   <li>
-                    <a href="#about" className="hover:text-white transition-colors">
+                    <a href="/about" className="hover:text-white transition-colors">
                       About
                     </a>
                   </li>
