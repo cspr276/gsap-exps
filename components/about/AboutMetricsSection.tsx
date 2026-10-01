@@ -13,8 +13,6 @@ interface MetricItem {
   suffix?: string;
   formatComma?: boolean;
   label: string;
-  detail: string;
-  code: string;
 }
 
 const METRICS: MetricItem[] = [
@@ -22,31 +20,23 @@ const METRICS: MetricItem[] = [
     targetValue: 50,
     suffix: '+',
     label: 'Evaluation Dimensions',
-    detail: 'Multi-turn reasoning, tool execution, safety boundaries, and latency budgets.',
-    code: 'DIM_COVERAGE',
   },
   {
     targetValue: 1200,
     suffix: '+',
     formatComma: true,
     label: 'Calibrated Domain Experts',
-    detail: 'Credentialed specialists scoring and verifying enterprise reasoning traces.',
-    code: 'EXPERT_PANEL',
   },
   {
     targetValue: 100,
     suffix: '%',
-    label: 'Auditability & Traces',
-    detail: 'Seed-locked environment snapshots, raw tool calls, and cryptographic ledgers.',
-    code: 'TRACE_INTEGRITY',
+    label: 'Reproducible Audit Traces',
   },
   {
     targetValue: 24,
     prefix: '< ',
     suffix: 'hr',
     label: 'Regression Triage SLA',
-    detail: 'Automated delta alerts when models or system prompt templates drift.',
-    code: 'DELTA_ALERT',
   },
 ];
 
@@ -106,7 +96,7 @@ export default function AboutMetricsSection() {
       // Stagger metric columns upward
       gsap.fromTo(
         '.about-metric-col',
-        { opacity: 0, y: 24 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
@@ -128,7 +118,7 @@ export default function AboutMetricsSection() {
     <section
       id="metrics"
       ref={sectionRef}
-      className="relative z-20 w-full bg-white text-neutral-950 border-t border-b border-neutral-200 py-12 sm:py-16 shadow-[0_-30px_70px_rgba(0,0,0,0.85)] overflow-hidden"
+      className="relative z-20 w-full bg-white text-neutral-950 border-t border-b border-neutral-200 py-10 sm:py-14 shadow-[0_-30px_70px_rgba(0,0,0,0.85)] overflow-hidden"
     >
       {/* Laser line sweep along top border */}
       <div
@@ -138,7 +128,7 @@ export default function AboutMetricsSection() {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 lg:divide-x lg:divide-neutral-200">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 lg:divide-x lg:divide-neutral-200">
           {METRICS.map((metric, idx) => {
             const formattedVal = metric.formatComma
               ? counts[idx].toLocaleString()
@@ -147,28 +137,18 @@ export default function AboutMetricsSection() {
             return (
               <div
                 key={metric.label}
-                className="about-metric-col flex flex-col justify-between lg:px-8 first:lg:pl-0 last:lg:pr-0"
+                className="about-metric-col flex flex-col justify-between lg:px-8 first:lg:pl-0 last:lg:pr-0 text-center"
               >
-                <div>
-                  <div className="flex items-baseline justify-between mb-2">
-                    <span className="font-display font-extrabold text-4xl sm:text-5xl text-neutral-950 tracking-tight tabular-nums">
-                      {metric.prefix || ''}
-                      {formattedVal}
-                      {metric.suffix || ''}
-                    </span>
-                    <span className="font-mono text-[10px] text-neutral-400 uppercase tracking-widest hidden sm:inline">
-                      {metric.code}
-                    </span>
-                  </div>
-
-                  <span className="font-mono text-xs uppercase tracking-wider text-neutral-900 font-bold block mb-2">
-                    {metric.label}
+                <div className="mb-1">
+                  <span className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-neutral-950 tracking-tight tabular-nums">
+                    {metric.prefix || ''}
+                    {formattedVal}
+                    {metric.suffix || ''}
                   </span>
-
-                  <p className="font-sans text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal">
-                    {metric.detail}
-                  </p>
                 </div>
+                <span className="font-sans text-xs sm:text-sm text-neutral-500 font-medium">
+                  {metric.label}
+                </span>
               </div>
             );
           })}

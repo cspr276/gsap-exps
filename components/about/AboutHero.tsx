@@ -43,24 +43,11 @@ export default function AboutHero() {
           className="object-cover object-center brightness-[0.42] contrast-[1.08]"
         />
         <div className="absolute inset-0 bg-[#09090b]/45 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-transparent to-[#09090b]/70 pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#09090b] via-transparent to-[#09090b]/70 pointer-events-none" />
       </motion.div>
 
       {/* Main Centered Hero Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center flex flex-col items-center justify-center pt-24 pb-16 my-auto">
-        {/* Monospace Eyebrow */}
-        <motion.div
-          initial={{ opacity: 0, y: 20, filter: 'blur(6px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-          className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-sm bg-white/[0.06] border border-white/15 backdrop-blur-md mb-6"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-          <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-neutral-200 font-semibold">
-            ABOUT EVALIXA // THE ASSURANCE LAYER FOR FRONTIER AI
-          </span>
-        </motion.div>
-
         {/* Kinetic Main Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 36, filter: 'blur(10px)' }}
