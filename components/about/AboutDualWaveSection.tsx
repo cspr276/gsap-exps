@@ -22,7 +22,7 @@ const WAVE_PAIRS: WavePair[] = [
     id: '01',
     discipline: 'Agent Benchmarking',
     domain: 'Autonomous ERP & Finance',
-    code: 'EVAL_SUITE_v4.2',
+    code: 'EVAL_CORE_v4.2',
     metric: '0.00% Numerical Variance',
     image: '/services/ai-agent-evaluation.webp',
   },
@@ -70,7 +70,7 @@ const WAVE_PAIRS: WavePair[] = [
     id: '07',
     discipline: 'Readiness & Risk Audit',
     domain: 'Multi-Agent Swarms',
-    code: 'GOV_AUDIT_2026',
+    code: 'SWARM_GOV_2026',
     metric: '4-Tier Severity Matrix',
     image: '/cards/card_06.jpg',
   },
@@ -109,10 +109,74 @@ const WAVE_PAIRS: WavePair[] = [
   {
     id: '12',
     discipline: 'Fine-Tuning Loops',
-    domain: 'Proprietary Foundation Models',
+    domain: 'Foundation Models',
     code: 'SFT_PREFERENCE_01',
     metric: '+18.4% Task Pass Rate',
     image: '/services/ai-agent-evaluation.webp',
+  },
+  {
+    id: '13',
+    discipline: 'Multimodal Integrity',
+    domain: 'Autonomous Robotics',
+    code: 'VISION_ACTION_AUDIT',
+    metric: 'Sub-pixel Kinematic Bound',
+    image: '/services/reality-01.jpg',
+  },
+  {
+    id: '14',
+    discipline: 'Hallucination Traps',
+    domain: 'Medical Diagnostics',
+    code: 'FACTUALITY_LAB_PRO',
+    metric: '99.999% Grounding Score',
+    image: '/services/reality-02.jpg',
+  },
+  {
+    id: '15',
+    discipline: 'Sybil Attack Defense',
+    domain: 'Decentralized Networks',
+    code: 'CONSENSUS_SHIELD',
+    metric: 'Byzantine Fault Resistant',
+    image: '/services/benchmarking-frameworks.webp',
+  },
+  {
+    id: '16',
+    discipline: 'Context Poisoning Defense',
+    domain: 'Enterprise Knowledge Graphs',
+    code: 'RAG_INTEGRITY_INDEX',
+    metric: 'Zero Toxic Contamination',
+    image: '/cards/card_04.jpg',
+  },
+  {
+    id: '17',
+    discipline: 'Latency & SLA Guard',
+    domain: 'High-Frequency Trading',
+    code: 'P99_TELEMETRY_ENGINE',
+    metric: 'Microsecond Determinism',
+    image: '/cards/card_05.jpg',
+  },
+  {
+    id: '18',
+    discipline: 'Deterministic Rollback',
+    domain: 'Core Banking Engines',
+    code: 'STATE_VERIFY_LEDGER',
+    metric: '100% Reversible Traces',
+    image: '/cards/card_06.jpg',
+  },
+  {
+    id: '19',
+    discipline: 'Epistemic Uncertainty',
+    domain: 'Autonomous Navigation',
+    code: 'BAYESIAN_EVAL_UNIT',
+    metric: 'Calibrated Confidence',
+    image: '/cards/card_07.jpg',
+  },
+  {
+    id: '20',
+    discipline: 'Cryptographic Provenance',
+    domain: 'Sovereign National AI',
+    code: 'CHAIN_OF_CUSTODY',
+    metric: 'Hardware-Signed Enclave',
+    image: '/cards/card_08.jpg',
   },
 ];
 
@@ -121,7 +185,7 @@ export default function AboutDualWaveSection() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const leftColRef = useRef<HTMLDivElement>(null);
   const rightColRef = useRef<HTMLDivElement>(null);
-  const centerCardRef = useRef<HTMLDivElement>(null);
+  const centerThumbRef = useRef<HTMLDivElement>(null);
   const [focusedIdx, setFocusedIdx] = useState<number>(0);
 
   useGSAP(
@@ -129,53 +193,64 @@ export default function AboutDualWaveSection() {
       const wrapper = wrapperRef.current;
       const leftCol = leftColRef.current;
       const rightCol = rightColRef.current;
-      const centerCard = centerCardRef.current;
+      const centerThumb = centerThumbRef.current;
       if (!wrapper || !leftCol || !rightCol) return;
 
       const leftTexts = gsap.utils.toArray<HTMLElement>(
-        leftCol.querySelectorAll('.wave-item-left')
+        leftCol.querySelectorAll('.animated-wave-text')
       );
       const rightTexts = gsap.utils.toArray<HTMLElement>(
-        rightCol.querySelectorAll('.wave-item-right')
+        rightCol.querySelectorAll('.animated-wave-text')
       );
 
       if (!leftTexts.length || !rightTexts.length) return;
 
-      const waveNumber = 0.65;
-      const waveSpeed = 1.25;
+      // Authentic wave mathematics from Codrops reference:
+      // waveNumber = 12 creates ~11 items per cycle (-0.566 rad / step), giving a textbook harmonic curve
+      const waveNumber = 12;
+      const waveSpeed = 1.0;
 
+      // Quick-to setters for high-performance 60fps tracking
       const leftQuickSetters = leftTexts.map((el) =>
-        gsap.quickTo(el, 'x', { duration: 0.55, ease: 'power4.out' })
+        gsap.quickTo(el, 'x', { duration: 0.6, ease: 'power4.out' })
       );
       const rightQuickSetters = rightTexts.map((el) =>
-        gsap.quickTo(el, 'x', { duration: 0.55, ease: 'power4.out' })
+        gsap.quickTo(el, 'x', { duration: 0.6, ease: 'power4.out' })
       );
 
-      let leftRange = { minX: 0, maxX: 120 };
-      let rightRange = { minX: 0, maxX: 120 };
+      let leftRange = { minX: 0, maxX: 160 };
+      let rightRange = { minX: 0, maxX: 160 };
 
       const calculateRanges = () => {
         const maxLeftW = Math.max(...leftTexts.map((t) => t.offsetWidth));
         const maxRightW = Math.max(...rightTexts.map((t) => t.offsetWidth));
 
+        // Available horizontal travel distance inside each column
+        const leftAvail = leftCol.offsetWidth - maxLeftW;
+        const rightAvail = rightCol.offsetWidth - maxRightW;
+
+        // Ensure healthy amplitude so the curve is dramatic and fluid
+        const fallbackMax = Math.min(260, Math.max(80, window.innerWidth * 0.16));
         leftRange = {
           minX: 0,
-          maxX: Math.max(20, Math.min(180, leftCol.offsetWidth - maxLeftW)),
+          maxX: leftAvail > 60 ? leftAvail : fallbackMax,
         };
         rightRange = {
           minX: 0,
-          maxX: Math.max(20, Math.min(180, rightCol.offsetWidth - maxRightW)),
+          maxX: rightAvail > 60 ? rightAvail : fallbackMax,
         };
       };
 
-      const computeWaveX = (
+      const calculateWavePosition = (
         index: number,
         progress: number,
         minX: number,
         rangeSize: number
       ) => {
         const phase =
-          waveNumber * index + waveSpeed * progress * Math.PI * 2 - Math.PI / 2;
+          waveNumber * index +
+          waveSpeed * progress * Math.PI * 2 -
+          Math.PI / 2;
         const wave = Math.sin(phase);
         const cycleProgress = (wave + 1) / 2;
         return minX + cycleProgress * rangeSize;
@@ -186,80 +261,88 @@ export default function AboutDualWaveSection() {
         const rSize = rightRange.maxX - rightRange.minX;
 
         leftTexts.forEach((el, idx) => {
-          gsap.set(el, { x: computeWaveX(idx, 0, leftRange.minX, lSize) });
+          const x = calculateWavePosition(idx, 0, leftRange.minX, lSize) * 1;
+          gsap.set(el, { x });
         });
         rightTexts.forEach((el, idx) => {
-          gsap.set(el, { x: -computeWaveX(idx, 0, rightRange.minX, rSize) });
+          const x = calculateWavePosition(idx, 0, rightRange.minX, rSize) * -1;
+          gsap.set(el, { x });
         });
       };
 
       calculateRanges();
       setInitialPositions();
 
-      const findClosestToCenter = () => {
+      const findClosestToViewportCenter = () => {
         const viewportCenter = window.innerHeight / 2;
-        let closest = 0;
-        let minDist = Infinity;
+        let closestIndex = 0;
+        let minDistance = Infinity;
 
-        leftTexts.forEach((el, idx) => {
-          const rect = el.getBoundingClientRect();
-          const center = rect.top + rect.height / 2;
-          const dist = Math.abs(center - viewportCenter);
-          if (dist < minDist) {
-            minDist = dist;
-            closest = idx;
+        leftTexts.forEach((text, index) => {
+          const rect = text.getBoundingClientRect();
+          const elementCenter = rect.top + rect.height / 2;
+          const distance = Math.abs(elementCenter - viewportCenter);
+
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestIndex = index;
           }
         });
 
-        return closest;
+        return closestIndex;
       };
 
-      const st = ScrollTrigger.create({
+      const scrollTrigger = ScrollTrigger.create({
         trigger: wrapper,
         start: 'top bottom',
         end: 'bottom top',
         onUpdate: (self) => {
           const progress = self.progress;
-          const closest = findClosestToCenter();
-          setFocusedIdx(closest);
+          const closestIndex = findClosestToViewportCenter();
+          setFocusedIdx(closestIndex);
 
           const lSize = leftRange.maxX - leftRange.minX;
           const rSize = rightRange.maxX - rightRange.minX;
 
-          leftTexts.forEach((_, idx) => {
-            const x = computeWaveX(idx, progress, leftRange.minX, lSize);
-            leftQuickSetters[idx](x);
+          // Update left column (multiplier = 1: sweeps right towards center)
+          leftTexts.forEach((text, index) => {
+            const finalX =
+              calculateWavePosition(index, progress, leftRange.minX, lSize) * 1;
+            leftQuickSetters[index](finalX);
           });
 
-          rightTexts.forEach((_, idx) => {
-            const x = -computeWaveX(idx, progress, rightRange.minX, rSize);
-            rightQuickSetters[idx](x);
+          // Update right column (multiplier = -1: sweeps left towards center)
+          rightTexts.forEach((text, index) => {
+            const finalX =
+              calculateWavePosition(index, progress, rightRange.minX, rSize) * -1;
+            rightQuickSetters[index](finalX);
           });
 
-          if (centerCard) {
+          // Smoothly track center thumbnail in viewport center
+          if (centerThumb) {
             const wrapperRect = wrapper.getBoundingClientRect();
             const viewportCenter = window.innerHeight / 2;
-            const cardH = centerCard.offsetHeight;
-            const wrapperH = wrapper.offsetHeight;
+            const thumbHeight = centerThumb.offsetHeight;
+            const wrapperHeight = wrapper.offsetHeight;
 
-            const idealY = viewportCenter - wrapperRect.top - cardH / 2;
+            const idealY = viewportCenter - wrapperRect.top - thumbHeight / 2;
             const minY = 0;
-            const maxY = Math.max(0, wrapperH - cardH);
+            const maxY = Math.max(0, wrapperHeight - thumbHeight);
             const clampedY = Math.max(minY, Math.min(maxY, idealY));
 
-            gsap.set(centerCard, { y: clampedY });
+            gsap.set(centerThumb, { y: clampedY });
           }
         },
       });
 
-      const onResize = () => {
+      const handleResize = () => {
         calculateRanges();
       };
-      window.addEventListener('resize', onResize);
+      window.addEventListener('resize', handleResize);
 
       return () => {
-        st.kill();
-        window.removeEventListener('resize', onResize);
+        scrollTrigger.kill();
+        window.removeEventListener('resize', handleResize);
       };
     },
     { scope: sectionRef }
@@ -270,12 +353,12 @@ export default function AboutDualWaveSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-20 w-full bg-[#09090b] text-white py-24 sm:py-32 border-b border-neutral-900 overflow-hidden"
+      className="relative z-20 w-full bg-[#09090b] text-white py-20 sm:py-28 border-b border-neutral-900 overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12">
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-10 mb-14 border-b border-neutral-800/80 gap-4">
-          <div className="max-w-2xl">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-8 mb-10 border-b border-neutral-800/80 gap-4">
+          <div className="max-w-3xl">
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-2">
               02 // FULL-SPECTRUM COVERAGE
             </span>
@@ -285,29 +368,47 @@ export default function AboutDualWaveSection() {
           </div>
         </div>
 
-        {/* Dual-Wave Interactive Wrapper (Adapted from codrops-tutorial-text-animation-main) */}
+        {/* Column Navigation Indicators (Dedicated Sub-header row for exact row alignment) */}
+        <div className="flex flex-row justify-between items-center text-neutral-500 font-mono text-[11px] uppercase tracking-[0.22em] pb-6 mb-4 border-b border-neutral-800/50 select-none">
+          <div className="flex items-center gap-2">
+            <span className="text-neutral-400">←</span>
+            <span>ASSURANCE DISCIPLINES</span>
+          </div>
+          <div className="hidden lg:block text-neutral-600 text-[10px] tracking-widest">
+            // DUAL-WAVE HARMONIC MAPPING
+          </div>
+          <div className="flex items-center gap-2">
+            <span>PRODUCTION DOMAINS</span>
+            <span className="text-neutral-400">→</span>
+          </div>
+        </div>
+
+        {/* Dual-Wave Interactive Canvas */}
         <div
           ref={wrapperRef}
-          className="relative w-full flex flex-row justify-between items-start gap-6 lg:gap-[24vw] py-10 select-none"
+          className="relative w-full flex flex-row justify-between items-start gap-8 lg:gap-[20vw] xl:gap-[24vw] py-8 select-none"
         >
           {/* Left Wave Column: Core Disciplines */}
           <div
             ref={leftColRef}
-            className="flex-1 flex flex-col items-start gap-6 sm:gap-8 relative z-20"
+            className="flex-1 flex flex-col items-start gap-3 sm:gap-4 lg:gap-5 relative z-20"
           >
-            <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-neutral-500 mb-2 block">
-              ← ASSURANCE DISCIPLINES
-            </span>
             {WAVE_PAIRS.map((item, idx) => {
               const isFocused = idx === focusedIdx;
               return (
                 <div
                   key={item.id}
-                  className={`wave-item-left w-max font-display font-extrabold text-lg sm:text-2xl lg:text-3xl uppercase tracking-tight leading-none transition-colors duration-300 will-change-transform ${
-                    isFocused ? 'text-white' : 'text-neutral-700 hover:text-neutral-500'
+                  className={`animated-wave-text w-max whitespace-nowrap h-9 sm:h-11 lg:h-12 flex items-center font-display uppercase tracking-tight leading-none text-base sm:text-2xl lg:text-3xl transition-colors duration-300 will-change-transform ${
+                    isFocused
+                      ? 'text-white font-extrabold z-10'
+                      : 'text-neutral-600 font-medium hover:text-neutral-400'
                   }`}
                 >
-                  <span className="font-mono text-[10px] sm:text-xs mr-2.5 align-middle opacity-60">
+                  <span
+                    className={`font-mono text-[11px] sm:text-xs mr-3 align-middle transition-opacity duration-300 ${
+                      isFocused ? 'text-white opacity-100' : 'text-neutral-600 opacity-60'
+                    }`}
+                  >
                     {item.id}
                   </span>
                   {item.discipline}
@@ -316,41 +417,33 @@ export default function AboutDualWaveSection() {
             })}
           </div>
 
-          {/* Center Synchronized Inspection Card (Desktop) */}
-          <div className="hidden lg:flex absolute top-0 left-1/2 -translate-x-1/2 w-[280px] xl:w-[310px] z-10 pointer-events-none justify-center">
-            <div
-              ref={centerCardRef}
-              className="w-full rounded-md border border-white/20 bg-neutral-950/90 backdrop-blur-xl p-4 shadow-2xl shadow-black will-change-transform"
-            >
-              <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-neutral-800 font-mono text-[10px]">
-                <span className="text-neutral-400">{activePair.code}</span>
-                <span className="px-1.5 py-0.5 rounded-sm bg-white text-black font-bold">
-                  ACTIVE #{activePair.id}
+          {/* Center Floating Visual Poster (Clean Image with Bottom Overlay) */}
+          <div
+            ref={centerThumbRef}
+            className="hidden lg:block absolute top-0 left-1/2 -translate-x-1/2 w-[220px] xl:w-[260px] 2xl:w-[290px] aspect-[3/4] z-10 pointer-events-none will-change-transform"
+          >
+            <div className="relative w-full h-full rounded-xl overflow-hidden border border-white/15 bg-neutral-950 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)]">
+              <Image
+                src={activePair.image}
+                alt={activePair.discipline}
+                fill
+                sizes="(max-width: 1280px) 260px, 290px"
+                className="object-cover object-center grayscale contrast-125 brightness-90 transition-opacity duration-300"
+              />
+              {/* Sleek bottom gradient overlay */}
+              <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/25 to-transparent pointer-events-none" />
+
+              {/* Minimal overlaid telemetry label inside image */}
+              <div className="absolute bottom-4 left-4 right-4 flex flex-col gap-1 pointer-events-none">
+                <span className="font-mono text-[10px] text-neutral-400 uppercase tracking-widest block">
+                  {activePair.code}
                 </span>
-              </div>
-
-              <div className="relative w-full h-40 rounded-sm overflow-hidden mb-3.5 border border-neutral-800">
-                <Image
-                  src={activePair.image}
-                  alt={activePair.discipline}
-                  fill
-                  sizes="310px"
-                  className="object-cover object-center grayscale contrast-125 brightness-90 transition-all duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
-                <div className="absolute bottom-2.5 left-2.5 right-2.5">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-300 block">
-                    VERIFIED TARGET
-                  </span>
-                  <span className="font-display font-bold text-sm text-white leading-tight block">
-                    {activePair.domain}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-1 font-mono text-[11px]">
-                <span className="text-neutral-500">BENCHMARK:</span>
-                <span className="text-white font-semibold">{activePair.metric}</span>
+                <span className="font-display font-bold text-sm text-white leading-tight block truncate">
+                  {activePair.domain}
+                </span>
+                <span className="font-mono text-[11px] text-neutral-300 block">
+                  {activePair.metric}
+                </span>
               </div>
             </div>
           </div>
@@ -358,22 +451,25 @@ export default function AboutDualWaveSection() {
           {/* Right Wave Column: Enterprise Domains */}
           <div
             ref={rightColRef}
-            className="flex-1 flex flex-col items-end text-right gap-6 sm:gap-8 relative z-20"
+            className="flex-1 flex flex-col items-end text-right gap-3 sm:gap-4 lg:gap-5 relative z-20"
           >
-            <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-neutral-500 mb-2 block">
-              PRODUCTION DOMAINS →
-            </span>
             {WAVE_PAIRS.map((item, idx) => {
               const isFocused = idx === focusedIdx;
               return (
                 <div
                   key={item.id}
-                  className={`wave-item-right w-max font-display font-bold text-lg sm:text-2xl lg:text-3xl uppercase tracking-tight leading-none transition-colors duration-300 will-change-transform ${
-                    isFocused ? 'text-neutral-200' : 'text-neutral-800 hover:text-neutral-600'
+                  className={`animated-wave-text w-max whitespace-nowrap h-9 sm:h-11 lg:h-12 flex items-center justify-end font-display uppercase tracking-tight leading-none text-base sm:text-2xl lg:text-3xl transition-colors duration-300 will-change-transform ${
+                    isFocused
+                      ? 'text-white font-extrabold z-10'
+                      : 'text-neutral-600 font-medium hover:text-neutral-400'
                   }`}
                 >
                   {item.domain}
-                  <span className="font-mono text-[10px] sm:text-xs ml-2.5 align-middle opacity-60">
+                  <span
+                    className={`font-mono text-[11px] sm:text-xs ml-3 align-middle transition-opacity duration-300 ${
+                      isFocused ? 'text-white opacity-100' : 'text-neutral-600 opacity-60'
+                    }`}
+                  >
                     {item.id}
                   </span>
                 </div>
