@@ -168,7 +168,7 @@ export default function AboutOriginSection() {
     <section
       id="origin"
       ref={sectionRef}
-      className="relative z-20 w-full bg-white text-neutral-950 py-24 sm:py-32 border-t border-b border-neutral-200 shadow-[0_-30px_70px_rgba(0,0,0,0.85)] overflow-hidden"
+      className="relative z-20 w-full bg-white text-neutral-950 py-20 sm:py-28 border-b border-neutral-200 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Eyebrow */}

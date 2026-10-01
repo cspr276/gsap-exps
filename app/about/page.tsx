@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 import AboutHero from '@/components/about/AboutHero';
+import AboutMetricsSection from '@/components/about/AboutMetricsSection';
 import AboutOriginSection from '@/components/about/AboutOriginSection';
 import AboutDualWaveSection from '@/components/about/AboutDualWaveSection';
 import AboutStickyGridSection from '@/components/about/AboutStickyGridSection';
@@ -34,7 +35,10 @@ export default function AboutPage() {
 
         {/* Continuous Z-20 Stacking Layer */}
         <div className="relative z-20 bg-[#09090b]">
-          {/* 2. Origin, Thesis & Paradigm Shift (White — OnScrollTypography + OneElementScroll) */}
+          {/* 2. Institutional Telemetry Metrics Strip (Counter Increase Animation) */}
+          <AboutMetricsSection />
+
+          {/* 3. Origin, Thesis & Paradigm Shift (White — OnScrollTypography + OneElementScroll) */}
           <AboutOriginSection />
 
           {/* 3. Dual-Wave Capabilities & Enterprise Domains (Dark — DualWaveAnimation) */}
