@@ -50,23 +50,11 @@ export default function AboutHero() {
           className="object-cover object-center brightness-[0.42] contrast-[1.08]"
         />
         <div className="absolute inset-0 bg-[#09090b]/45 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-transparent to-[#09090b]/70 pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#09090b] via-transparent to-[#09090b]/70 pointer-events-none" />
       </motion.div>
 
       {/* Main Centered Hero Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center flex flex-col items-center justify-center pt-32 pb-12 my-auto">
-        {/* Monospace Eyebrow */}
-        <motion.div
-          initial={{ opacity: 0, y: 20, filter: 'blur(6px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-          className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-sm bg-white/[0.06] border border-white/15 backdrop-blur-md mb-6"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-          <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-neutral-200 font-semibold">
-            ABOUT EVALIXA // THE ASSURANCE LAYER FOR FRONTIER AI
-          </span>
-        </motion.div>
 
         {/* Kinetic Main Headline */}
         <motion.h1
@@ -122,21 +110,18 @@ export default function AboutHero() {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 w-full border-t border-white/10 bg-[#09090b]/80 backdrop-blur-md"
+        className="relative z-10 w-full  bg-[#09090b]/80 backdrop-blur-md"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 lg:divide-x lg:divide-white/10">
             {HERO_STATS.map((stat) => (
               <div
                 key={stat.code}
-                className="flex flex-col justify-between lg:px-8 first:lg:pl-0 last:lg:pr-0"
+                className="flex flex-col justify-between lg:px-8 first:lg:pl-0 last:lg:pr-0 text-center"
               >
-                <div className="flex items-baseline justify-between mb-1">
+                <div className="mb-1">
                   <span className="font-display font-extrabold text-2xl sm:text-3xl text-white tracking-tight tabular-nums">
                     {stat.value}
-                  </span>
-                  <span className="font-mono text-[10px] text-neutral-500 uppercase tracking-widest hidden sm:inline">
-                    {stat.code}
                   </span>
                 </div>
                 <span className="font-sans text-xs sm:text-sm text-neutral-400 font-normal">

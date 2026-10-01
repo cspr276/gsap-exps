@@ -283,17 +283,6 @@ export default function AboutDualWaveSection() {
               Core Disciplines Meets Critical Enterprise Domains.
             </h2>
           </div>
-
-          <div className="flex items-center gap-2 font-mono text-xs text-neutral-400">
-            <span className="text-white font-bold">
-              PAIR {activePair.id}
-            </span>
-            <span>/</span>
-            <span>{String(WAVE_PAIRS.length).padStart(2, '0')}</span>
-            <span className="text-neutral-500 ml-1 hidden sm:inline">
-              [DUAL-WAVE TELEMETRY]
-            </span>
-          </div>
         </div>
 
         {/* Dual-Wave Interactive Wrapper (Adapted from codrops-tutorial-text-animation-main) */}

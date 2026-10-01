@@ -199,14 +199,13 @@ export default function AboutTenetsSection() {
                 />
               </div>
 
-              <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/90 via-neutral-950/45 to-neutral-950/60" />
+              <div className="absolute inset-0 z-1 pointer-events-none bg-linear-to-t from-neutral-950/90 via-neutral-950/45 to-neutral-950/60" />
 
               <div className="relative z-10">
-                <div className="flex items-center justify-between pb-4 mb-5 border-b border-white/15">
+                <div className="flex items-center justify-between pb-4 mb-5 ">
                   <span className="font-mono text-xs uppercase tracking-widest text-neutral-200 font-semibold">
                     {tenet.code}
                   </span>
-                  <span className="w-2 h-2 rounded-full bg-white/40 group-hover:bg-white transition-colors" />
                 </div>
 
                 <h3 className="font-display font-bold text-xl sm:text-2xl text-white mb-3 tracking-tight">
@@ -218,7 +217,7 @@ export default function AboutTenetsSection() {
                 </p>
               </div>
 
-              <div className="relative z-10 pt-5 border-t border-white/15">
+              <div className="relative z-10 pt-5">
                 <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 block mb-3">
                   ENFORCED INVARIANTS:
                 </span>
