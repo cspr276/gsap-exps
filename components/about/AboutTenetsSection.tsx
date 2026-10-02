@@ -63,33 +63,13 @@ const TENETS = [
 
 export default function AboutTenetsSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const marqueeRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
       const section = sectionRef.current;
-      const marquee = marqueeRef.current;
       if (!section) return;
 
-      // 1. Scroll-scrubbed kinetic marquee (from Staggered3DGridAnimations & RotatingOnScrollAnimations)
-      if (marquee) {
-        gsap.fromTo(
-          marquee,
-          { xPercent: 10 },
-          {
-            xPercent: -35,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 1,
-            },
-          }
-        );
-      }
-
-      // 2. Staggered 3D Grid Card Animations (from Staggered3DGridAnimations-main)
+      // Staggered 3D Grid Card Animations (from Staggered3DGridAnimations-main)
       const cards = gsap.utils.toArray<HTMLElement>('.tenet-card');
       const mm = gsap.matchMedia();
 
@@ -151,16 +131,6 @@ export default function AboutTenetsSection() {
       ref={sectionRef}
       className="relative z-20 w-full py-24 sm:py-32 bg-[#09090b] text-white border-b border-neutral-900 overflow-hidden"
     >
-      {/* Background Scroll-Scrubbed Kinetic Marquee */}
-      <div className="w-full overflow-hidden mb-14 sm:mb-16 select-none pointer-events-none border-y border-neutral-900 py-4 bg-neutral-950/50">
-        <div
-          ref={marqueeRef}
-          className="whitespace-nowrap font-display font-black text-4xl sm:text-6xl lg:text-7xl uppercase tracking-tight text-neutral-900 will-change-transform"
-        >
-          DETERMINISTIC PROOF — ADVERSARIAL RIGOR — HUMAN CALIBRATION — ZERO BLACK BOXES — DETERMINISTIC PROOF — ADVERSARIAL RIGOR
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-2xl mb-14">

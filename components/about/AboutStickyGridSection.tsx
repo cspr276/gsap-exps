@@ -4,53 +4,45 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowUpRight, ShieldCheck, Users, Lock } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
 interface LabCard {
   id: string;
-  code: string;
+  category: string;
   title: string;
-  tagline: string;
   desc: string;
   image: string;
   metricLabel: string;
   metricValue: string;
-  icon: React.ElementType;
 }
 
 const LAB_CARDS: LabCard[] = [
   {
     id: '01',
-    code: 'LAB_ENV // SANDBOX_01',
-    title: 'The Adversarial Simulation Sandbox',
-    tagline: 'HARDWARE-ISOLATED EXECUTION ENCLAVE',
+    category: 'ISOLATED EXECUTION ENCLAVE',
+    title: 'Adversarial Simulation Sandbox',
     desc: 'Hardware-isolated WASM runtimes where autonomous agents are subjected to continuous prompt injection, multi-turn privilege escalation, and tool-call mutation without external network escape.',
     image: '/services/reality-01.jpg',
-    metricLabel: 'ESCAPE CONTAINMENT',
-    metricValue: '0.000% Verified',
-    icon: ShieldCheck,
+    metricLabel: 'Containment SLA',
+    metricValue: '0.000% Verified Escapes',
   },
   {
     id: '02',
-    code: 'LAB_ENV // CALIBRATION_02',
-    title: 'The Psychometric Calibration Chamber',
-    tagline: 'TRIPLE-BLIND DOMAIN EXPERT ADJUDICATION',
+    category: 'DOMAIN SPECIALIST ADJUDICATION',
+    title: 'Psychometric Calibration Chamber',
     desc: 'Over 1,200 credentialed physicians, attorneys, and financial analysts score reasoning traces using mathematical inter-annotator statistical agreement, eliminating subjective bias.',
     image: '/cards/card_04.jpg',
-    metricLabel: 'INTER-RATER AGREEMENT',
+    metricLabel: 'Inter-Rater Agreement',
     metricValue: 'Krippendorff α = 0.94',
-    icon: Users,
   },
   {
     id: '03',
-    code: 'LAB_ENV // LEDGER_03',
-    title: 'The Cryptographic Trace Ledger',
-    tagline: 'IMMUTABLE AUDITABILITY & ROOT-CAUSE TRIAGE',
+    category: 'CRYPTOGRAPHIC AUDIT LEDGER',
+    title: 'Deterministic Trace Ledger',
     desc: 'Seed-locked execution snapshots, raw tool calls, and cryptographic hash ledgers record every decision trace for rapid regression triage, enterprise compliance, and forensic replay.',
     image: '/services/reality-02.jpg',
-    metricLabel: 'REGRESSION SLA',
-    metricValue: '< 24hr Root Cause',
-    icon: Lock,
+    metricLabel: 'Regression Triage',
+    metricValue: '< 24hr Root Cause SLA',
   },
 ];
 
@@ -67,14 +59,9 @@ export default function AboutStickyGridSection() {
             transition={{ duration: 0.5 }}
             className="max-w-3xl"
           >
-            <div className="flex items-center gap-3 mb-3">
-              <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-sm bg-neutral-950 text-white uppercase tracking-widest">
-                03 // INSIDE EVALIXA LABS
-              </span>
-              <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold">
-                INFRASTRUCTURE & METHODOLOGY
-              </span>
-            </div>
+            <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-3">
+              03 // INSIDE EVALIXA LABS
+            </span>
             <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-neutral-950 tracking-tight leading-tight">
               Built by Security Researchers, ML Engineers & Domain Specialists.
             </h2>
@@ -91,71 +78,65 @@ export default function AboutStickyGridSection() {
           </motion.p>
         </div>
 
-        {/* 3 Clean Lab Environment Cards */}
+        {/* 3 Clean Bento Cards matching WhyEvalixaSection style */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-14">
-          {LAB_CARDS.map((card, idx) => {
-            const Icon = card.icon;
-            return (
-              <motion.div
-                key={card.id}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="group rounded-xl border border-neutral-200 bg-[#fafafa] hover:border-neutral-900 transition-all duration-300 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-lg hover:shadow-neutral-950/5"
-              >
+          {LAB_CARDS.map((card, idx) => (
+            <motion.div
+              key={card.id}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              className="group relative rounded-md border border-neutral-200/90 bg-neutral-950 p-7 sm:p-8 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl hover:border-neutral-400 transition-all duration-300"
+            >
+              {/* Background Architectural Image with Dark Gradient Overlay */}
+              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <Image
+                  src={card.image}
+                  alt={card.title}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 400px"
+                  className="w-full h-full object-cover object-center group-hover:scale-105 opacity-80 group-hover:opacity-90 transition-all duration-700 ease-out grayscale contrast-125"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/35" />
+              </div>
+
+              {/* Foreground Card Content */}
+              <div className="relative z-10 flex flex-col justify-between h-full min-h-[300px]">
                 <div>
-                  {/* Card Visual Header */}
-                  <div className="relative w-full h-48 sm:h-52 overflow-hidden bg-neutral-900">
-                    <Image
-                      src={card.image}
-                      alt={card.title}
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 400px"
-                      className="object-cover object-center grayscale contrast-125 brightness-90 group-hover:scale-105 transition-transform duration-500 ease-out"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/40 to-transparent" />
-                    
-                    {/* Floating Monospace Tag inside Image */}
-                    <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
-                      <span className="font-mono text-[10px] text-white/90 font-bold bg-neutral-950/80 backdrop-blur-xs px-2.5 py-1 rounded-sm border border-white/15 uppercase tracking-wider">
-                        {card.code}
-                      </span>
-                      <div className="w-7 h-7 rounded-sm bg-neutral-950/80 backdrop-blur-xs border border-white/15 flex items-center justify-center text-white">
-                        <Icon className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-
-                    <div className="absolute bottom-3 left-3 right-3">
-                      <span className="font-mono text-[9px] uppercase tracking-widest text-neutral-300 block">
-                        {card.tagline}
-                      </span>
-                    </div>
+                  {/* Top Row: Monospace Index & Category */}
+                  <div className="flex items-center justify-between pb-4 mb-5 border-b border-white/15">
+                    <span className="font-mono text-xs font-bold tracking-widest text-neutral-200 uppercase">
+                      {card.id}
+                    </span>
+                    <span className="font-mono text-[11px] tracking-wider text-neutral-300 uppercase">
+                      {card.category}
+                    </span>
                   </div>
 
-                  {/* Card Body */}
-                  <div className="p-6 sm:p-7">
-                    <h3 className="font-display font-bold text-lg sm:text-xl text-neutral-950 tracking-tight leading-snug mb-3">
-                      {card.title}
-                    </h3>
-                    <p className="font-sans text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal">
-                      {card.desc}
-                    </p>
-                  </div>
+                  {/* Heading */}
+                  <h3 className="font-display font-bold text-white tracking-tight mb-3 text-xl sm:text-2xl leading-snug">
+                    {card.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-neutral-300 font-normal leading-relaxed text-xs sm:text-sm">
+                    {card.desc}
+                  </p>
                 </div>
 
-                {/* Card Footer Metric */}
-                <div className="p-6 sm:p-7 pt-0 border-t border-neutral-200 mt-2 flex items-center justify-between font-mono text-[11px]">
-                  <span className="text-neutral-500 uppercase tracking-wider text-[10px]">
+                {/* Clean Bottom Metric Bar */}
+                <div className="pt-5 mt-6 border-t border-white/15 flex items-center justify-between font-mono text-xs text-neutral-400">
+                  <span className="uppercase tracking-wider text-[11px]">
                     {card.metricLabel}
                   </span>
-                  <span className="font-bold text-neutral-950 bg-white px-2.5 py-1 rounded-sm border border-neutral-300 shadow-xs">
+                  <span className="font-semibold text-white">
                     {card.metricValue}
                   </span>
                 </div>
-              </motion.div>
-            );
-          })}
+              </div>
+            </motion.div>
+          ))}
         </div>
 
         {/* Section Footer CTA */}
@@ -168,9 +149,9 @@ export default function AboutStickyGridSection() {
         >
           <Link
             href="/services/ai-agent-evaluation-benchmarking"
-            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-md bg-neutral-950 text-white font-mono text-xs uppercase tracking-wider font-semibold hover:bg-neutral-800 transition-all shadow-md shadow-neutral-950/15"
+            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-md bg-neutral-950 text-white font-mono text-xs uppercase tracking-wider font-semibold hover:bg-neutral-800 transition-colors shadow-sm"
           >
-            <span>Inspect Our Flagship Evaluation Engine</span>
+            <span>Inspect Flagship Evaluation Engine</span>
             <ArrowUpRight className="w-4 h-4 text-white" />
           </Link>
         </motion.div>
