@@ -200,13 +200,10 @@ export default function AboutDualWaveSection() {
         </div>
 
         {/* Column Navigation Sub-header (Row-Aligned) */}
-        <div className="grid grid-cols-2 lg:grid-cols-12 items-center text-neutral-500 font-mono text-[11px] uppercase tracking-[0.22em] pb-6 mb-6 border-b border-neutral-800/50 select-none">
+        <div className="flex justify-between items-center text-neutral-500 font-mono text-[11px] uppercase tracking-[0.22em] pb-6 mb-6 border-b border-neutral-800/50 select-none">
           <div className="col-span-1 lg:col-span-5 flex items-center gap-2">
             <span className="text-neutral-400">←</span>
             <span>ASSURANCE DISCIPLINES</span>
-          </div>
-          <div className="hidden lg:block lg:col-span-2 text-center text-neutral-600 text-[10px] tracking-widest">
-            // DUAL-WAVE MAPPING
           </div>
           <div className="col-span-1 lg:col-span-5 flex items-center justify-end gap-2">
             <span>PRODUCTION DOMAINS</span>
@@ -290,17 +287,13 @@ export default function AboutDualWaveSection() {
                 alt={activePair.discipline}
                 fill
                 sizes="(max-width: 1280px) 220px, 250px"
-                className="object-cover object-center grayscale contrast-125 brightness-90 transition-opacity duration-300"
+                className="object-cover object-center  brightness-90 transition-opacity duration-300"
               />
               {/* Sleek bottom gradient overlay */}
               <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/25 to-transparent pointer-events-none" />
 
               {/* Minimal overlaid telemetry label inside image */}
               <div className="absolute bottom-4 left-4 right-4 flex flex-col gap-1 pointer-events-none">
-                <div className="flex items-center justify-between font-mono text-[10px] text-neutral-400 uppercase tracking-widest">
-                  <span>{activePair.code}</span>
-                  <span className="text-white/80 font-bold">#{activePair.id}</span>
-                </div>
                 <span className="font-display font-bold text-sm text-white leading-tight block truncate">
                   {activePair.domain}
                 </span>
