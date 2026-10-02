@@ -96,7 +96,7 @@ export default function AboutStickyGridSection() {
                   alt={card.title}
                   fill
                   sizes="(max-width: 1024px) 100vw, 400px"
-                  className="w-full h-full object-cover object-center group-hover:scale-105 opacity-80 group-hover:opacity-90 transition-all duration-700 ease-out grayscale contrast-125"
+                  className="w-full h-full object-cover object-center group-hover:scale-105 opacity-80 group-hover:opacity-90 transition-all duration-700 ease-out contrast-125"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/35" />
               </div>
@@ -105,12 +105,9 @@ export default function AboutStickyGridSection() {
               <div className="relative z-10 flex flex-col justify-between h-full min-h-[300px]">
                 <div>
                   {/* Top Row: Monospace Index & Category */}
-                  <div className="flex items-center justify-between pb-4 mb-5 border-b border-white/15">
+                  <div className="flex items-center justify-between pb-4 mb-5">
                     <span className="font-mono text-xs font-bold tracking-widest text-neutral-200 uppercase">
                       {card.id}
-                    </span>
-                    <span className="font-mono text-[11px] tracking-wider text-neutral-300 uppercase">
-                      {card.category}
                     </span>
                   </div>
 
@@ -126,7 +123,7 @@ export default function AboutStickyGridSection() {
                 </div>
 
                 {/* Clean Bottom Metric Bar */}
-                <div className="pt-5 mt-6 border-t border-white/15 flex items-center justify-between font-mono text-xs text-neutral-400">
+                <div className="pt-5 mt-6 flex items-center justify-between font-mono text-xs text-neutral-400">
                   <span className="uppercase tracking-wider text-[11px]">
                     {card.metricLabel}
                   </span>
