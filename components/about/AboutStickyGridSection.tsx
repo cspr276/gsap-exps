@@ -1,236 +1,160 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
+import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
-
-// Curated 6 core lab capability cards (3 columns × 2 rows)
-// Streamlined from 12 items to prevent card clutter and guarantee clean parting
-const LAB_GRID_ITEMS = [
-  { id: '01', label: 'ADVERSARIAL RED-TEAM', image: '/services/reality-01.jpg' },
-  { id: '02', label: 'SANDBOX ISOLATION', image: '/services/hero-datacenter.jpg' },
-  { id: '03', label: 'EXPERT CALIBRATION', image: '/cards/card_04.jpg' },
-  { id: '04', label: 'TRACE INTEGRITY', image: '/services/reality-02.jpg' },
-  { id: '05', label: 'CI/CD DRIFT GATE', image: '/cards/card_05.jpg' },
-  { id: '06', label: 'REASONING BENCHMARKS', image: '/services/ai-agent-evaluation.webp' },
+const LAB_PILLARS = [
+  {
+    id: '01',
+    category: 'ADVERSARIAL SECURITY',
+    title: 'Offensive AI Red-Teamers',
+    description:
+      'Continuous automated jailbreak synthesis, multi-turn prompt injection defense, and systemic boundary testing against frontier LLMs.',
+    image: '/services/reality-01.jpg',
+  },
+  {
+    id: '02',
+    category: 'DETERMINISTIC EVALUATION',
+    title: 'Distributed Systems Architects',
+    description:
+      'Isolated sandbox runners, zero-regression drift telemetry, and cryptographic audit ledgers ensuring reproducible verification at scale.',
+    image: '/services/hero-datacenter.jpg',
+  },
+  {
+    id: '03',
+    category: 'EXPERT HUMAN PANEL',
+    title: 'Calibrated Domain Fellows',
+    description:
+      '1,200+ credentialed clinical, legal, and quantitative specialists scoring multi-step tool calls and domain-specific enterprise reasoning.',
+    image: '/cards/card_04.jpg',
+  },
 ];
 
 export default function AboutStickyGridSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      const section = sectionRef.current;
-      const grid = gridRef.current;
-      const content = contentRef.current;
-      if (!section || !grid || !content) return;
-
-      const mm = gsap.matchMedia();
-
-      mm.add('(min-width: 1024px)', () => {
-        const items = gsap.utils.toArray<HTMLElement>(
-          grid.querySelectorAll('.sticky-grid-item')
-        );
-        if (!items.length) return;
-
-        // Group into 3 columns:
-        // Col 0: items [0, 3] (left)
-        // Col 1: items [1, 4] (middle)
-        // Col 2: items [2, 5] (right)
-        const columns: HTMLElement[][] = [[], [], []];
-        items.forEach((item, index) => {
-          columns[index % 3].push(item);
-        });
-
-        // Initial states:
-        // Text is completely hidden while cards are assembled so no text bleeds through
-        gsap.set(content, { opacity: 0, scale: 0.96, y: 16 });
-        gsap.set(items, { opacity: 1, scale: 1 });
-
-        const wh = window.innerHeight;
-        const dy = wh + 200;
-
-        // Master pinned scroll timeline
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            id: 'about-sticky-grid',
-            trigger: section,
-            start: 'top top',
-            end: '+=2000',
-            pin: true,
-            scrub: 0.8,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          },
-        });
-
-        // Phase 1: Grid columns enter from top & bottom into the center
-        tl.from(
-          columns[0],
-          { y: -dy, duration: 1.0, ease: 'power1.inOut' },
-          'enter'
-        );
-        tl.from(
-          columns[1],
-          { y: dy, duration: 1.0, ease: 'power1.inOut' },
-          'enter'
-        );
-        tl.from(
-          columns[2],
-          { y: -dy, duration: 1.0, ease: 'power1.inOut' },
-          'enter'
-        );
-
-        // Brief hold so user sees the assembled lab grid
-        tl.to({}, { duration: 0.25 });
-
-        // Phase 2: Grid zooms up & cards part ways, completely clearing the frame
-        tl.to(
-          grid,
-          {
-            scale: 2.1,
-            duration: 1.2,
-            ease: 'power3.inOut',
-          },
-          'part'
-        );
-
-        // Left column flies left and fades to 0
-        tl.to(
-          columns[0],
-          {
-            xPercent: -80,
-            opacity: 0,
-            duration: 1.1,
-            ease: 'power3.inOut',
-          },
-          'part'
-        );
-
-        // Right column flies right and fades to 0
-        tl.to(
-          columns[2],
-          {
-            xPercent: 80,
-            opacity: 0,
-            duration: 1.1,
-            ease: 'power3.inOut',
-          },
-          'part'
-        );
-
-        // Center column top card flies UP and fades out
-        if (columns[1][0]) {
-          tl.to(
-            columns[1][0],
-            {
-              yPercent: -150,
-              opacity: 0,
-              duration: 1.0,
-              ease: 'power2.inOut',
-            },
-            'part'
-          );
-        }
-
-        // Center column bottom card flies DOWN and fades out
-        if (columns[1][1]) {
-          tl.to(
-            columns[1][1],
-            {
-              yPercent: 150,
-              opacity: 0,
-              duration: 1.0,
-              ease: 'power2.inOut',
-            },
-            'part'
-          );
-        }
-
-        // Phase 3: The clean, uncluttered center content reveals in pristine white space
-        tl.to(
-          content,
-          {
-            opacity: 1,
-            scale: 1,
-            y: 0,
-            duration: 0.85,
-            ease: 'power2.out',
-          },
-          'part+=0.4'
-        );
-      });
-    },
-    { scope: sectionRef }
-  );
-
   return (
     <section
-      ref={sectionRef}
-      className="relative z-20 w-full min-h-screen lg:h-screen bg-white text-neutral-950 border-b border-neutral-200 flex items-center justify-center overflow-hidden py-20 lg:py-0"
+      id="labs"
+      className="relative z-20 w-full bg-white text-neutral-950 border-b border-neutral-200 py-24 sm:py-32 overflow-hidden"
     >
-      {/* Center Unveiled Content (Clean, Focused, No Tag Clutter) */}
-      <div
-        ref={contentRef}
-        className="relative z-20 max-w-3xl mx-auto px-4 sm:px-6 text-center flex flex-col items-center justify-center pointer-events-auto"
+      {/* Subtle Atmospheric Frame with Smooth Scale Zoom (mirrors AboutHero animation) */}
+      <motion.div
+        initial={{ opacity: 0.35, scale: 1.08 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true, margin: '-100px' }}
+        transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
+        className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none origin-center"
       >
-        <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 font-semibold mb-4 block">
-          03 // INSIDE EVALIXA LABS
-        </span>
+        <div className="absolute inset-0 bg-radial-[circle_at_top,_var(--tw-gradient-stops)] from-neutral-100/80 via-white to-white" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e5e5e5_1px,transparent_1px),linear-gradient(to_bottom,#e5e5e5_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] opacity-35" />
+      </motion.div>
 
-        <h2 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl text-neutral-950 tracking-tight leading-[1.08] mb-6 max-w-2xl">
+      {/* Main Centered Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
+        {/* Monospace Eyebrow Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 20, filter: 'blur(6px)' }}
+          whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+          className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-sm bg-neutral-100 border border-neutral-300 backdrop-blur-md mb-6"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-neutral-950 animate-pulse" />
+          <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-neutral-700 font-semibold">
+            03 // INSIDE EVALIXA LABS
+          </span>
+        </motion.div>
+
+        {/* Kinetic Main Headline */}
+        <motion.h2
+          initial={{ opacity: 0, y: 36, filter: 'blur(10px)' }}
+          whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.9, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl text-neutral-950 tracking-tight leading-[1.08] mb-6 max-w-4xl"
+        >
           Built by Security Researchers, ML Engineers & Domain Specialists.
-        </h2>
+        </motion.h2>
 
-        <p className="font-sans text-sm sm:text-base lg:text-lg text-neutral-600 leading-relaxed max-w-xl mb-8 font-normal">
+        {/* Lede Paragraph */}
+        <motion.p
+          initial={{ opacity: 0, y: 28, filter: 'blur(6px)' }}
+          whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.85, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+          className="font-sans text-base sm:text-lg lg:text-xl text-neutral-600 leading-relaxed max-w-2xl mx-auto mb-14 font-normal"
+        >
           Our teams operate at the intersection of offensive AI security, distributed evaluation infrastructure, and human-in-the-loop calibration — turning fragile model outputs into auditable enterprise systems.
-        </p>
+        </motion.p>
 
-        <Link
-          href="/services/ai-agent-evaluation-benchmarking"
-          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-md bg-neutral-950 text-white font-mono text-xs uppercase tracking-wider font-semibold hover:bg-neutral-800 transition-all shadow-lg shadow-neutral-950/15"
-        >
-          <span>Inspect Our Flagship Engine</span>
-          <ArrowUpRight className="w-4 h-4 text-white" />
-        </Link>
-      </div>
-
-      {/* 3×2 Grid Overlay (Desktop Pinned Interaction) */}
-      <div className="hidden lg:flex absolute inset-0 z-10 items-center justify-center pointer-events-none">
-        <div
-          ref={gridRef}
-          className="w-[720px] xl:w-[780px] grid grid-cols-3 gap-6 will-change-transform"
-        >
-          {LAB_GRID_ITEMS.map((item) => (
-            <div
-              key={item.id}
-              className="sticky-grid-item relative w-full aspect-square rounded-md overflow-hidden border border-neutral-300 bg-neutral-900 shadow-xl will-change-transform"
+        {/* 3 Core Capability Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 w-full mb-14 text-left">
+          {LAB_PILLARS.map((pillar, idx) => (
+            <motion.div
+              key={pillar.id}
+              initial={{ opacity: 0, y: 32, filter: 'blur(8px)' }}
+              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{
+                duration: 0.85,
+                delay: 0.28 + idx * 0.12,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="group relative rounded-xl overflow-hidden border border-neutral-200 bg-white shadow-sm hover:shadow-xl hover:border-neutral-400 transition-all duration-300 flex flex-col justify-between"
             >
-              <Image
-                src={item.image}
-                alt={item.label}
-                fill
-                sizes="260px"
-                className="object-cover object-center grayscale contrast-125 brightness-80"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between font-mono text-[10px] text-white">
-                <span className="font-bold opacity-70">#{item.id}</span>
-                <span className="tracking-wider uppercase font-semibold truncate ml-2">
-                  {item.label}
-                </span>
+              {/* Card Image Banner */}
+              <div className="relative w-full aspect-[16/10] overflow-hidden bg-neutral-950">
+                <Image
+                  src={pillar.image}
+                  alt={pillar.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover object-center grayscale contrast-125 brightness-90 group-hover:scale-105 transition-transform duration-500 ease-out"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-neutral-950/80 via-transparent to-transparent pointer-events-none" />
+
+                {/* Overlaid Pill Badge */}
+                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between font-mono text-[10px] text-white">
+                  <span className="font-semibold px-2 py-0.5 rounded-xs bg-white/20 backdrop-blur-md">
+                    {pillar.category}
+                  </span>
+                  <span className="opacity-80 font-bold">#{pillar.id}</span>
+                </div>
               </div>
-            </div>
+
+              {/* Card Body */}
+              <div className="p-6 flex flex-col flex-1 justify-between">
+                <div>
+                  <h3 className="font-display font-bold text-xl text-neutral-950 tracking-tight mb-2.5">
+                    {pillar.title}
+                  </h3>
+                  <p className="font-sans text-sm text-neutral-600 leading-relaxed font-normal">
+                    {pillar.description}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
           ))}
         </div>
+
+        {/* Action CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 24, scale: 0.96 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.75, delay: 0.44, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-wrap items-center justify-center gap-4"
+        >
+          <Link
+            href="/services/ai-agent-evaluation-benchmarking"
+            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-md bg-neutral-950 text-white font-mono text-xs uppercase tracking-wider font-semibold hover:bg-neutral-800 transition-all shadow-xl shadow-neutral-950/15"
+          >
+            <span>Inspect Our Flagship Engine</span>
+            <ArrowUpRight className="w-4 h-4 text-white stroke-[2.5]" />
+          </Link>
+        </motion.div>
       </div>
     </section>
   );
