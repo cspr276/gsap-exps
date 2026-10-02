@@ -22,7 +22,7 @@ const WAVE_PAIRS: WavePair[] = [
     id: '01',
     discipline: 'Agent Benchmarking',
     domain: 'Autonomous ERP & Finance',
-    code: 'EVAL_CORE_v4.2',
+    code: 'EVAL_SUITE_v4.2',
     metric: '0.00% Numerical Variance',
     image: '/services/ai-agent-evaluation.webp',
   },
@@ -114,70 +114,6 @@ const WAVE_PAIRS: WavePair[] = [
     metric: '+18.4% Task Pass Rate',
     image: '/services/ai-agent-evaluation.webp',
   },
-  {
-    id: '13',
-    discipline: 'Multimodal Integrity',
-    domain: 'Autonomous Robotics',
-    code: 'VISION_ACTION_AUDIT',
-    metric: 'Sub-pixel Kinematic Bound',
-    image: '/services/reality-01.jpg',
-  },
-  {
-    id: '14',
-    discipline: 'Hallucination Traps',
-    domain: 'Medical Diagnostics',
-    code: 'FACTUALITY_LAB_PRO',
-    metric: '99.999% Grounding Score',
-    image: '/services/reality-02.jpg',
-  },
-  {
-    id: '15',
-    discipline: 'Sybil Attack Defense',
-    domain: 'Decentralized Networks',
-    code: 'CONSENSUS_SHIELD',
-    metric: 'Byzantine Fault Resistant',
-    image: '/services/benchmarking-frameworks.webp',
-  },
-  {
-    id: '16',
-    discipline: 'Context Poisoning Defense',
-    domain: 'Enterprise Knowledge Graphs',
-    code: 'RAG_INTEGRITY_INDEX',
-    metric: 'Zero Toxic Contamination',
-    image: '/cards/card_04.jpg',
-  },
-  {
-    id: '17',
-    discipline: 'Latency & SLA Guard',
-    domain: 'High-Frequency Trading',
-    code: 'P99_TELEMETRY_ENGINE',
-    metric: 'Microsecond Determinism',
-    image: '/cards/card_05.jpg',
-  },
-  {
-    id: '18',
-    discipline: 'Deterministic Rollback',
-    domain: 'Core Banking Engines',
-    code: 'STATE_VERIFY_LEDGER',
-    metric: '100% Reversible Traces',
-    image: '/cards/card_06.jpg',
-  },
-  {
-    id: '19',
-    discipline: 'Epistemic Uncertainty',
-    domain: 'Autonomous Navigation',
-    code: 'BAYESIAN_EVAL_UNIT',
-    metric: 'Calibrated Confidence',
-    image: '/cards/card_07.jpg',
-  },
-  {
-    id: '20',
-    discipline: 'Cryptographic Provenance',
-    domain: 'Sovereign National AI',
-    code: 'CHAIN_OF_CUSTODY',
-    metric: 'Hardware-Signed Enclave',
-    image: '/cards/card_08.jpg',
-  },
 ];
 
 export default function AboutDualWaveSection() {
@@ -205,12 +141,13 @@ export default function AboutDualWaveSection() {
 
       if (!leftTexts.length || !rightTexts.length) return;
 
-      // Authentic wave mathematics from Codrops reference:
-      // waveNumber = 12 creates ~11 items per cycle (-0.566 rad / step), giving a textbook harmonic curve
-      const waveNumber = 12;
+      // Harmonic wave frequency tailored for 12 items:
+      // Math.PI / 4 (~0.785 rad/step) yields an 8-item full wavelength.
+      // Across 12 items, this paints 1.5 complete, organic harmonic cycles (crest -> trough -> crest).
+      const waveFrequency = Math.PI / 4;
       const waveSpeed = 1.0;
 
-      // Quick-to setters for high-performance 60fps tracking
+      // Quick-to setters for buttery 60fps tracking
       const leftQuickSetters = leftTexts.map((el) =>
         gsap.quickTo(el, 'x', { duration: 0.6, ease: 'power4.out' })
       );
@@ -225,19 +162,18 @@ export default function AboutDualWaveSection() {
         const maxLeftW = Math.max(...leftTexts.map((t) => t.offsetWidth));
         const maxRightW = Math.max(...rightTexts.map((t) => t.offsetWidth));
 
-        // Available horizontal travel distance inside each column
         const leftAvail = leftCol.offsetWidth - maxLeftW;
         const rightAvail = rightCol.offsetWidth - maxRightW;
 
-        // Ensure healthy amplitude so the curve is dramatic and fluid
-        const fallbackMax = Math.min(260, Math.max(80, window.innerWidth * 0.16));
+        // Ensure a healthy, prominent wave amplitude (between 120px and 220px on desktop)
+        const targetAmp = Math.min(220, Math.max(80, window.innerWidth * 0.13));
         leftRange = {
           minX: 0,
-          maxX: leftAvail > 60 ? leftAvail : fallbackMax,
+          maxX: leftAvail > 60 ? Math.min(leftAvail, targetAmp) : targetAmp,
         };
         rightRange = {
           minX: 0,
-          maxX: rightAvail > 60 ? rightAvail : fallbackMax,
+          maxX: rightAvail > 60 ? Math.min(rightAvail, targetAmp) : targetAmp,
         };
       };
 
@@ -248,7 +184,7 @@ export default function AboutDualWaveSection() {
         rangeSize: number
       ) => {
         const phase =
-          waveNumber * index +
+          waveFrequency * index +
           waveSpeed * progress * Math.PI * 2 -
           Math.PI / 2;
         const wave = Math.sin(phase);
@@ -304,14 +240,14 @@ export default function AboutDualWaveSection() {
           const lSize = leftRange.maxX - leftRange.minX;
           const rSize = rightRange.maxX - rightRange.minX;
 
-          // Update left column (multiplier = 1: sweeps right towards center)
+          // Left column: curves inward towards center (multiplier = 1)
           leftTexts.forEach((text, index) => {
             const finalX =
               calculateWavePosition(index, progress, leftRange.minX, lSize) * 1;
             leftQuickSetters[index](finalX);
           });
 
-          // Update right column (multiplier = -1: sweeps left towards center)
+          // Right column: curves inward towards center (multiplier = -1)
           rightTexts.forEach((text, index) => {
             const finalX =
               calculateWavePosition(index, progress, rightRange.minX, rSize) * -1;
@@ -355,7 +291,7 @@ export default function AboutDualWaveSection() {
       ref={sectionRef}
       className="relative z-20 w-full bg-[#09090b] text-white py-20 sm:py-28 border-b border-neutral-900 overflow-hidden"
     >
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12">
+      <div className="max-w-[1500px] mx-auto px-4 sm:px-8 lg:px-12">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-8 mb-10 border-b border-neutral-800/80 gap-4">
           <div className="max-w-3xl">
@@ -369,7 +305,7 @@ export default function AboutDualWaveSection() {
         </div>
 
         {/* Column Navigation Indicators (Dedicated Sub-header row for exact row alignment) */}
-        <div className="flex flex-row justify-between items-center text-neutral-500 font-mono text-[11px] uppercase tracking-[0.22em] pb-6 mb-4 border-b border-neutral-800/50 select-none">
+        <div className="flex flex-row justify-between items-center text-neutral-500 font-mono text-[11px] uppercase tracking-[0.22em] pb-6 mb-6 border-b border-neutral-800/50 select-none">
           <div className="flex items-center gap-2">
             <span className="text-neutral-400">←</span>
             <span>ASSURANCE DISCIPLINES</span>
@@ -386,19 +322,19 @@ export default function AboutDualWaveSection() {
         {/* Dual-Wave Interactive Canvas */}
         <div
           ref={wrapperRef}
-          className="relative w-full flex flex-row justify-between items-start gap-8 lg:gap-[20vw] xl:gap-[24vw] py-8 select-none"
+          className="relative w-full flex flex-row justify-between items-start gap-8 lg:gap-[20vw] xl:gap-[24vw] py-4 select-none"
         >
           {/* Left Wave Column: Core Disciplines */}
           <div
             ref={leftColRef}
-            className="flex-1 flex flex-col items-start gap-3 sm:gap-4 lg:gap-5 relative z-20"
+            className="flex-1 flex flex-col items-start gap-4 sm:gap-6 lg:gap-7 relative z-20"
           >
             {WAVE_PAIRS.map((item, idx) => {
               const isFocused = idx === focusedIdx;
               return (
                 <div
                   key={item.id}
-                  className={`animated-wave-text w-max whitespace-nowrap h-9 sm:h-11 lg:h-12 flex items-center font-display uppercase tracking-tight leading-none text-base sm:text-2xl lg:text-3xl transition-colors duration-300 will-change-transform ${
+                  className={`animated-wave-text w-max whitespace-nowrap h-11 sm:h-12 lg:h-14 flex items-center font-display uppercase tracking-tight leading-none text-base sm:text-2xl lg:text-3xl transition-colors duration-300 will-change-transform ${
                     isFocused
                       ? 'text-white font-extrabold z-10'
                       : 'text-neutral-600 font-medium hover:text-neutral-400'
@@ -420,14 +356,14 @@ export default function AboutDualWaveSection() {
           {/* Center Floating Visual Poster (Clean Image with Bottom Overlay) */}
           <div
             ref={centerThumbRef}
-            className="hidden lg:block absolute top-0 left-1/2 -translate-x-1/2 w-[220px] xl:w-[260px] 2xl:w-[290px] aspect-[3/4] z-10 pointer-events-none will-change-transform"
+            className="hidden lg:block absolute top-0 left-1/2 -translate-x-1/2 w-[230px] xl:w-[270px] 2xl:w-[290px] aspect-[3/4] z-10 pointer-events-none will-change-transform"
           >
             <div className="relative w-full h-full rounded-xl overflow-hidden border border-white/15 bg-neutral-950 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)]">
               <Image
                 src={activePair.image}
                 alt={activePair.discipline}
                 fill
-                sizes="(max-width: 1280px) 260px, 290px"
+                sizes="(max-width: 1280px) 270px, 290px"
                 className="object-cover object-center grayscale contrast-125 brightness-90 transition-opacity duration-300"
               />
               {/* Sleek bottom gradient overlay */}
@@ -435,9 +371,10 @@ export default function AboutDualWaveSection() {
 
               {/* Minimal overlaid telemetry label inside image */}
               <div className="absolute bottom-4 left-4 right-4 flex flex-col gap-1 pointer-events-none">
-                <span className="font-mono text-[10px] text-neutral-400 uppercase tracking-widest block">
-                  {activePair.code}
-                </span>
+                <div className="flex items-center justify-between font-mono text-[10px] text-neutral-400 uppercase tracking-widest">
+                  <span>{activePair.code}</span>
+                  <span className="text-white/80 font-bold">#{activePair.id}</span>
+                </div>
                 <span className="font-display font-bold text-sm text-white leading-tight block truncate">
                   {activePair.domain}
                 </span>
@@ -451,14 +388,14 @@ export default function AboutDualWaveSection() {
           {/* Right Wave Column: Enterprise Domains */}
           <div
             ref={rightColRef}
-            className="flex-1 flex flex-col items-end text-right gap-3 sm:gap-4 lg:gap-5 relative z-20"
+            className="flex-1 flex flex-col items-end text-right gap-4 sm:gap-6 lg:gap-7 relative z-20"
           >
             {WAVE_PAIRS.map((item, idx) => {
               const isFocused = idx === focusedIdx;
               return (
                 <div
                   key={item.id}
-                  className={`animated-wave-text w-max whitespace-nowrap h-9 sm:h-11 lg:h-12 flex items-center justify-end font-display uppercase tracking-tight leading-none text-base sm:text-2xl lg:text-3xl transition-colors duration-300 will-change-transform ${
+                  className={`animated-wave-text w-max whitespace-nowrap h-11 sm:h-12 lg:h-14 flex items-center justify-end font-display uppercase tracking-tight leading-none text-base sm:text-2xl lg:text-3xl transition-colors duration-300 will-change-transform ${
                     isFocused
                       ? 'text-white font-extrabold z-10'
                       : 'text-neutral-600 font-medium hover:text-neutral-400'
