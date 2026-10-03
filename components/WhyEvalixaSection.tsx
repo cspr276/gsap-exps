@@ -1,8 +1,14 @@
 'use client';
 
+import React, { useRef } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { FileCheck, Scale, Users, ShieldCheck, Target, Activity } from 'lucide-react';
-import Image from 'next/image';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const BENTO_CARDS = [
   {
@@ -14,7 +20,7 @@ const BENTO_CARDS = [
     icon: FileCheck,
     image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
     cols: 'lg:col-span-7',
-    featured: true
+    featured: true,
   },
   {
     num: '02',
@@ -25,7 +31,7 @@ const BENTO_CARDS = [
     icon: ShieldCheck,
     image: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80',
     cols: 'lg:col-span-5',
-    featured: false
+    featured: false,
   },
   {
     num: '03',
@@ -36,7 +42,7 @@ const BENTO_CARDS = [
     icon: Scale,
     image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
     cols: 'lg:col-span-4',
-    featured: false
+    featured: false,
   },
   {
     num: '04',
@@ -47,7 +53,7 @@ const BENTO_CARDS = [
     icon: Target,
     image: 'https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=800&q=80',
     cols: 'lg:col-span-4',
-    featured: false
+    featured: false,
   },
   {
     num: '05',
@@ -58,7 +64,7 @@ const BENTO_CARDS = [
     icon: Users,
     image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
     cols: 'lg:col-span-4',
-    featured: false
+    featured: false,
   },
   {
     num: '06',
@@ -70,15 +76,94 @@ const BENTO_CARDS = [
     image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
     cols: 'lg:col-span-12',
     featured: true,
-    isWide: true
-  }
+    isWide: true,
+  },
+];
+
+// Layout-aligned 3D offsets for clean non-colliding entrance matching bento geometry
+const CARD_TRAJECTORIES = [
+  { x: -50, y: 35, rotateX: 12, rotateZ: -1.5 }, // Card 0: Row 1 Left (7 cols)
+  { x: 50, y: 35, rotateX: 12, rotateZ: 1.5 },   // Card 1: Row 1 Right (5 cols)
+  { x: -45, y: 35, rotateX: 12, rotateZ: -1.5 }, // Card 2: Row 2 Left (4 cols)
+  { x: 0, y: 45, rotateX: 14, rotateZ: 0 },      // Card 3: Row 2 Center (4 cols)
+  { x: 45, y: 35, rotateX: 12, rotateZ: 1.5 },   // Card 4: Row 2 Right (4 cols)
+  { x: 0, y: 40, rotateX: 10, rotateZ: 0 },      // Card 5: Row 3 Full Width (12 cols)
 ];
 
 export default function WhyEvalixaSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      const grid = gridRef.current;
+      if (!section || !grid) return;
+
+      const cards = gsap.utils.toArray<HTMLElement>('.why-bento-card', grid);
+      const mm = gsap.matchMedia();
+
+      // Desktop: natural 1:1 scroll tracking with scrub: true & ease: 'none'
+      mm.add('(min-width: 768px)', () => {
+        cards.forEach((card, idx) => {
+          const trajectory = CARD_TRAJECTORIES[idx] || { x: 0, y: 35, rotateX: 10, rotateZ: 0 };
+          gsap.fromTo(
+            card,
+            {
+              x: trajectory.x,
+              y: trajectory.y,
+              rotateX: trajectory.rotateX,
+              rotateZ: trajectory.rotateZ,
+              opacity: 0.15,
+            },
+            {
+              x: 0,
+              y: 0,
+              rotateX: 0,
+              rotateZ: 0,
+              opacity: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 88%',
+                end: 'top 58%',
+                scrub: true,
+                invalidateOnRefresh: true,
+              },
+            }
+          );
+        });
+      });
+
+      // Mobile
+      mm.add('(max-width: 767px)', () => {
+        cards.forEach((card) => {
+          gsap.fromTo(
+            card,
+            { y: 30, opacity: 0.2 },
+            {
+              y: 0,
+              opacity: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 90%',
+                end: 'top 65%',
+                scrub: true,
+              },
+            }
+          );
+        });
+      });
+    },
+    { scope: sectionRef }
+  );
+
   return (
     <section
+      ref={sectionRef}
       id="why-evalixa"
-      className="relative w-full bg-white text-neutral-950 py-24 sm:py-28 lg:py-32 border-t border-neutral-200/80 transition-colors"
+      className="relative w-full bg-white text-neutral-950 py-24 sm:py-28 lg:py-32 border-t border-neutral-200/80 transition-colors overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20">
         {/* Section Header */}
@@ -114,45 +199,39 @@ export default function WhyEvalixaSection() {
           </motion.p>
         </div>
 
-        {/* Bento Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-1 lg:gap-2 items-stretch">
-          {BENTO_CARDS.map((card, idx) => {
+        {/* Bento Grid Layout with 1:1 Scroll Sync */}
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-1 lg:gap-2 items-stretch"
+          style={{ perspective: '1200px' }}
+        >
+          {BENTO_CARDS.map((card) => {
             return (
-              <motion.div
+              <div
                 key={card.num}
-                initial={{ opacity: 0, y: 52, scale: 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, amount: 0.12 }}
-                whileHover={{ transition: { type: 'spring', stiffness: 320, damping: 18 } }}
-                transition={{
-                  type: 'spring',
-                  stiffness: 125,
-                  damping: 13,
-                  mass: 0.85,
-                  delay: (idx % 3) * 0.08
-                }}
-                className={`${card.cols} group relative rounded-md border border-neutral-200/90 bg-neutral-50/50 hover:bg-white p-8 sm:p-9 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl hover:border-neutral-300 transition-colors duration-300`}
+                className={`${card.cols} why-bento-card group relative rounded-md border border-neutral-200/90 bg-neutral-950 p-8 sm:p-9 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl hover:border-neutral-500 transition-[border-color,box-shadow] duration-200 will-change-transform`}
               >
-                {/* Background Curated Architectural Image with Soft White Gradient Overlay */}
+                {/* Background Curated Architectural Image with Dark Gradient Overlay */}
                 <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                   <Image
                     src={card.image}
                     alt={card.title}
                     fill
-                    className="w-full h-full object-cover object-center group-hover:scale-105 opacity-80 group-hover:opacity-90 transition-all duration-700 ease-out"
+                    sizes="(max-width: 1024px) 100vw, 600px"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 opacity-80 group-hover:opacity-90 transition-transform duration-700 ease-out"
                   />
-                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/50 to-black/25" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30" />
                 </div>
 
                 {/* Foreground Card Content */}
-                <div className="relative z-10 flex flex-col justify-between h-full p-2">
+                <div className="relative z-10 flex flex-col justify-between h-full p-2 min-h-[260px]">
                   <div>
                     {/* Top Row: Monospace Index & Category */}
-                    <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center justify-between mb-5 pb-3 border-b border-white/15">
                       <span className="font-mono text-xs sm:text-sm font-bold tracking-widest text-neutral-100 uppercase">
                         {card.num}
                       </span>
-                      <span className="font-mono text-[11px] tracking-wider text-neutral-200 uppercase">
+                      <span className="font-mono text-[11px] tracking-wider text-neutral-300 uppercase">
                         {card.category}
                       </span>
                     </div>
@@ -175,8 +254,18 @@ export default function WhyEvalixaSection() {
                       {card.desc}
                     </p>
                   </div>
+
+                  {/* Clean Bottom Metric Bar */}
+                  <div className="pt-4 mt-6 border-t border-white/15 flex items-center justify-between font-mono text-xs">
+                    <span className="text-neutral-400 uppercase tracking-wider text-[11px]">
+                      Metric
+                    </span>
+                    <span className="font-semibold text-white">
+                      {card.metric}
+                    </span>
+                  </div>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>

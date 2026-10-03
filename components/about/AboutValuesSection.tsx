@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -14,6 +15,7 @@ interface ValueCard {
   desc: string;
   highlight: string;
   cols: string;
+  image: string;
 }
 
 const VALUES_CARDS: ValueCard[] = [
@@ -24,6 +26,7 @@ const VALUES_CARDS: ValueCard[] = [
     desc: 'Every project is led by senior practitioners who stay involved from initial threat modeling to final release gates. No handoffs to junior replacements halfway through. Leadership here is active, hands-on participation in the work and direct accountability for outcomes.',
     highlight: 'Direct Founder & Principal Involvement',
     cols: 'col-span-12 lg:col-span-7',
+    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
   },
   {
     id: '02',
@@ -32,6 +35,7 @@ const VALUES_CARDS: ValueCard[] = [
     desc: 'We build deterministic test harnesses, gold-standard rubrics, and automated verifiers designed to remain dependable long after initial launch. Zero throwaway scripts or superficial audit summaries.',
     highlight: 'Deterministic Invariant Longevity',
     cols: 'col-span-12 lg:col-span-5',
+    image: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80',
   },
   {
     id: '03',
@@ -40,6 +44,7 @@ const VALUES_CARDS: ValueCard[] = [
     desc: 'We share edge-case vulnerabilities, adversarial exploit chains, and confidence intervals early so engineering leaders make release decisions from unvarnished empirical evidence.',
     highlight: 'Zero Sugarcoating Policy',
     cols: 'col-span-12 md:col-span-6 lg:col-span-4',
+    image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
   },
   {
     id: '04',
@@ -48,6 +53,7 @@ const VALUES_CARDS: ValueCard[] = [
     desc: 'Operating across Europe, Asia, and North America without a single rigid headquarters. Engagements are planned around client timezone overlap, senior availability, and rigorous async documentation.',
     highlight: 'Multi-Region Timezone Overlap',
     cols: 'col-span-12 md:col-span-6 lg:col-span-4',
+    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
   },
   {
     id: '05',
@@ -56,6 +62,7 @@ const VALUES_CARDS: ValueCard[] = [
     desc: 'Cloud infrastructure, observability enclaves, and developer tooling relationships validated in enterprise production, deployed only where specialist tooling adds direct client value.',
     highlight: 'Enterprise-Vetted Tooling',
     cols: 'col-span-12 md:col-span-6 lg:col-span-4',
+    image: 'https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=800&q=80',
   },
   {
     id: '06',
@@ -64,6 +71,7 @@ const VALUES_CARDS: ValueCard[] = [
     desc: 'Success is measured by reduced production regression deltas and verified containment, not by billing hours or shipping unchecked code. Healthy, focused teams build dependable systems and maintain high velocity without chaotic fire drills.',
     highlight: 'Measurable Production Impact',
     cols: 'col-span-12',
+    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
   },
 ];
 
@@ -150,7 +158,7 @@ export default function AboutValuesSection() {
     <section
       ref={sectionRef}
       id="values"
-      className="relative z-20 w-full bg-[#fafafa] text-neutral-950 py-24 sm:py-32 border-b border-neutral-200 overflow-hidden"
+      className="relative z-20 w-full bg-white text-neutral-950 py-24 sm:py-32 border-b border-neutral-200 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -169,7 +177,7 @@ export default function AboutValuesSection() {
           </p>
         </div>
 
-        {/* Bento Grid with Tight Gaps (gap-2.5 sm:gap-3) and Immediate 1:1 Scroll Sync */}
+        {/* Bento Grid with Background Architectural Images and 1:1 Scroll Sync */}
         <div
           ref={gridRef}
           className="grid grid-cols-1 md:grid-cols-12 gap-2.5 sm:gap-3"
@@ -178,38 +186,53 @@ export default function AboutValuesSection() {
           {VALUES_CARDS.map((card) => (
             <div
               key={card.id}
-              className={`${card.cols} value-bento-card group rounded-md border border-neutral-200/90 bg-white hover:border-neutral-400 hover:shadow-lg transition-[border-color,box-shadow] duration-200 p-6 sm:p-7 flex flex-col justify-between shadow-xs will-change-transform`}
+              className={`${card.cols} value-bento-card group relative rounded-md border border-neutral-800 bg-neutral-950 p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl hover:border-neutral-500 transition-[border-color,box-shadow] duration-200 will-change-transform`}
             >
-              <div>
-                {/* Top Row: Index + Category */}
-                <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-neutral-100">
-                  <span className="font-mono text-xs font-bold text-neutral-900">
-                    {card.id}
-                  </span>
-                  <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
-                    {card.category}
-                  </span>
-                </div>
-
-                {/* Heading */}
-                <h3 className="font-display font-bold text-lg sm:text-xl text-neutral-950 tracking-tight leading-snug mb-2.5">
-                  {card.title}
-                </h3>
-
-                {/* Description */}
-                <p className="font-sans text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal">
-                  {card.desc}
-                </p>
+              {/* Background Architectural Image with Dark Gradient Overlay */}
+              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <Image
+                  src={card.image}
+                  alt={card.title}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 600px"
+                  className="w-full h-full object-cover object-center group-hover:scale-105 opacity-80 group-hover:opacity-90 transition-transform duration-700 ease-out contrast-125"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/35" />
               </div>
 
-              {/* Bottom Feature Line */}
-              <div className="mt-6 pt-3.5 border-t border-neutral-100 flex items-center justify-between font-mono text-xs">
-                <span className="text-neutral-400 uppercase tracking-wider text-[11px]">
-                  Standard
-                </span>
-                <span className="font-semibold text-neutral-900">
-                  {card.highlight}
-                </span>
+              {/* Foreground Card Content */}
+              <div className="relative z-10 flex flex-col justify-between h-full min-h-[220px]">
+                <div>
+                  {/* Top Row: Index + Category */}
+                  <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/15">
+                    <span className="font-mono text-xs font-bold text-neutral-300">
+                      {card.id}
+                    </span>
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-400 font-semibold">
+                      {card.category}
+                    </span>
+                  </div>
+
+                  {/* Heading */}
+                  <h3 className="font-display font-bold text-lg sm:text-xl text-white tracking-tight leading-snug mb-2.5">
+                    {card.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="font-sans text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal">
+                    {card.desc}
+                  </p>
+                </div>
+
+                {/* Bottom Feature Line */}
+                <div className="mt-6 pt-3.5 border-t border-white/15 flex items-center justify-between font-mono text-xs">
+                  <span className="text-neutral-400 uppercase tracking-wider text-[11px]">
+                    Standard
+                  </span>
+                  <span className="font-semibold text-white">
+                    {card.highlight}
+                  </span>
+                </div>
               </div>
             </div>
           ))}
