@@ -1,13 +1,12 @@
 'use client';
 
 import React, { useState, useMemo, useRef } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { blogPosts } from '@/data/blogPosts';
-import { ArrowRight, ArrowUpRight, Search, X, Image as ImageIcon } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Search, X } from 'lucide-react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -216,11 +215,14 @@ export default function BlogsEditorialSection() {
         {/* Empty State */}
         {filteredBlogs.length === 0 && (
           <div className="py-20 text-center border border-neutral-800 rounded-lg bg-neutral-900/30 space-y-4">
-            <p className="font-mono text-xs uppercase tracking-widest text-neutral-500">
-              NO MATCHING GUIDES FOUND
-            </p>
+            <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 block">
+              NO MATCHES FOUND
+            </span>
+            <h3 className="font-display font-bold text-xl text-white">
+              No guides match your search criteria.
+            </h3>
             <p className="font-sans text-neutral-400 text-sm max-w-md mx-auto">
-              No guides matched &ldquo;{searchQuery}&rdquo; in category &ldquo;{selectedCategory}&rdquo;. Try clearing your search term or picking another category.
+              Try adjusting your keyword or resetting category filters to browse all published research.
             </p>
             <button
               onClick={() => {
@@ -234,162 +236,117 @@ export default function BlogsEditorialSection() {
           </div>
         )}
 
-        {/* Featured / Lead Guide Spotlight (Entire card clickable via Link) */}
+        {/* Featured / Lead Guide Spotlight (Open Natural Editorial Layout, identical to Articles) */}
         {featuredBlog && (
-          <div className="border border-neutral-800 rounded-xl bg-neutral-900/40 relative overflow-hidden group hover:border-neutral-700 transition-colors">
+          <div className="pb-16 border-b border-neutral-800">
             <Link
               href={featuredBlog.path}
-              className="block p-8 sm:p-12 hover:text-white transition-colors cursor-pointer"
+              className="group block space-y-6 hover:text-white transition-colors cursor-pointer"
             >
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                <div className="lg:col-span-7 space-y-6">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className="px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800 text-neutral-300 font-mono text-xs uppercase tracking-wider">
-                      {featuredBlog.category}
-                    </span>
-                    <span className="text-neutral-600 font-mono text-xs">•</span>
-                    <span className="font-mono text-xs text-neutral-400">
-                      {featuredBlog.readTime}
-                    </span>
-                    <span className="text-neutral-600 font-mono text-xs">•</span>
-                    <span className="font-mono text-xs text-neutral-400">
-                      {featuredBlog.publishDate}
-                    </span>
-                  </div>
+              <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-neutral-400">
+                <span className="px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800 text-neutral-300">
+                  {featuredBlog.category}
+                </span>
+                <span>•</span>
+                <span>{featuredBlog.publishDate}</span>
+                <span>•</span>
+                <span>{featuredBlog.readTime}</span>
+              </div>
 
-                  <h3 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-tight group-hover:text-neutral-200 transition-colors">
-                    {featuredBlog.title}
-                  </h3>
+              <h3 className="font-display font-extrabold text-2xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight group-hover:text-neutral-200 transition-colors">
+                {featuredBlog.title}
+              </h3>
 
-                  <p className="font-sans text-neutral-300 text-base sm:text-lg leading-relaxed line-clamp-3">
-                    {featuredBlog.intro}
-                  </p>
+              <p className="font-sans text-base sm:text-lg text-neutral-400 leading-relaxed max-w-4xl">
+                {featuredBlog.intro}
+              </p>
 
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    {featuredBlog.tags.slice(0, 4).map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2.5 py-1 rounded bg-neutral-800/80 border border-neutral-700/60 text-xs text-neutral-300 font-mono"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="pt-4">
-                    <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-white font-semibold group-hover:text-neutral-300 transition-colors">
-                      <span>Read Guide</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <div className="flex flex-wrap items-center justify-between gap-4 pt-4">
+                <div className="flex flex-wrap gap-2">
+                  {featuredBlog.tags.slice(0, 4).map((tag) => (
+                    <span
+                      key={tag}
+                      className="font-mono text-[11px] text-neutral-400 bg-neutral-900/80 border border-neutral-800 px-2.5 py-1 rounded"
+                    >
+                      {tag}
                     </span>
-                  </div>
+                  ))}
                 </div>
 
-                {/* Cover Media: Unsplash Photo or Schematic Placeholder */}
-                <div className="lg:col-span-5">
-                  {featuredBlog.coverImage ? (
-                    <div className="relative aspect-16/10 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-950">
-                      <Image
-                        src={featuredBlog.coverImage}
-                        alt={featuredBlog.coverImageAlt || featuredBlog.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-700 brightness-90 contrast-105"
-                      />
-                      <div className="absolute inset-0 bg-linear-to-t from-neutral-950/80 via-transparent to-transparent pointer-events-none" />
-                    </div>
-                  ) : (
-                    <div className="relative aspect-16/10 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-950/80 flex flex-col items-center justify-center p-6 text-center space-y-3 group-hover:border-neutral-700 transition-colors">
-                      <div className="w-10 h-10 rounded-lg border border-neutral-800 bg-neutral-900 flex items-center justify-center text-neutral-400 group-hover:text-white transition-colors">
-                        <ImageIcon className="w-5 h-5" />
-                      </div>
-                      <div className="space-y-1">
-                        <span className="font-mono text-[11px] uppercase tracking-widest text-neutral-400 block">
-                          IMAGE PLACEHOLDER // ARCHITECTURAL SCHEMATIC
-                        </span>
-                        <span className="font-sans text-xs text-neutral-400 block">
-                          Autonomous agents networked across enterprise systems
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <span className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-white group-hover:translate-x-1 transition-transform">
+                  <span>Read Guide</span>
+                  <ArrowRight className="w-4 h-4" />
+                </span>
               </div>
             </Link>
           </div>
         )}
 
-        {/* Secondary Guide Stream (Entire row clickable via Link, identical to Articles) */}
+        {/* Secondary Guide Stream (Natural Rows with Bare Arrow Icon, identical to Articles) */}
         {listBlogs.length > 0 && (
-          <div className="space-y-6 pt-4">
-            <div className="flex items-center justify-between pb-4 border-b border-neutral-800 text-xs font-mono uppercase tracking-widest text-neutral-400">
-              <span>{isFiltering ? 'Matching Guides' : 'Further Reading'}</span>
-              <span>Index / Domain</span>
-            </div>
+          <div className="divide-y divide-neutral-800">
+            {listBlogs.map((post, idx) => {
+              const globalIdx = blogPosts.findIndex((p) => p.slug === post.slug) + 1;
+              const displayIndex = String(globalIdx).padStart(2, '0');
 
-            <div className="divide-y divide-neutral-800">
-              {listBlogs.map((post, index) => {
-                const globalIndex = blogPosts.findIndex((p) => p.slug === post.slug);
-                const displayIndex = String(globalIndex + 1).padStart(2, '0');
-
-                return (
-                  <article
-                    key={post.slug}
-                    ref={(el) => {
-                      rowRefs.current[index] = el;
-                    }}
-                    className="py-10 sm:py-12 group hover:bg-neutral-900/30 -mx-4 px-4 sm:-mx-6 sm:px-6 transition-colors rounded-lg cursor-pointer"
+              return (
+                <article
+                  key={post.slug}
+                  ref={(el) => {
+                    rowRefs.current[idx] = el;
+                  }}
+                  className="py-12 sm:py-16 first:pt-0 last:pb-0"
+                >
+                  <Link
+                    href={post.path}
+                    className="group flex flex-col md:flex-row md:items-start justify-between gap-6 hover:text-white transition-colors cursor-pointer"
                   >
-                    <Link
-                      href={post.path}
-                      className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start block"
-                    >
-                      {/* Left: Canonical Index & Meta */}
-                      <div className="lg:col-span-3 space-y-2">
-                        <span className="font-mono text-xl sm:text-2xl font-bold text-neutral-500 group-hover:text-white transition-colors block">
-                          {displayIndex}
-                        </span>
-                        <div className="flex flex-wrap items-center gap-2 pt-1">
-                          <span className="font-mono text-xs uppercase tracking-wider px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-300">
-                            {post.category}
+                    {/* Index Column */}
+                    <div className="flex items-baseline gap-4 md:w-36 shrink-0">
+                      <span className="font-mono text-3xl sm:text-4xl font-extrabold text-neutral-400 group-hover:text-white transition-colors">
+                        {displayIndex}
+                      </span>
+                      <span className="font-mono text-xs uppercase tracking-wider text-neutral-400">
+                        {post.category}
+                      </span>
+                    </div>
+
+                    {/* Content Column */}
+                    <div className="flex-1 min-w-0 space-y-3">
+                      <div className="flex items-center gap-3 text-xs font-mono text-neutral-400">
+                        <span>{post.readTime}</span>
+                        <span>•</span>
+                        <span>{post.publishDate}</span>
+                      </div>
+
+                      <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight leading-snug group-hover:text-neutral-200 transition-colors">
+                        {post.title}
+                      </h3>
+
+                      <p className="font-sans text-sm sm:text-base text-neutral-400 leading-relaxed max-w-3xl line-clamp-3">
+                        {post.intro}
+                      </p>
+
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        {post.tags.slice(0, 3).map((tag) => (
+                          <span
+                            key={tag}
+                            className="font-mono text-[11px] text-neutral-400 bg-neutral-900/60 border border-neutral-800 px-2 py-0.5 rounded"
+                          >
+                            {tag}
                           </span>
-                        </div>
-                        <div className="font-mono text-xs text-neutral-400 space-x-2">
-                          <span>{post.readTime}</span>
-                          <span>•</span>
-                          <span>{post.publishDate}</span>
-                        </div>
+                        ))}
                       </div>
+                    </div>
 
-                      {/* Center: Title & Intro */}
-                      <div className="lg:col-span-8 space-y-3">
-                        <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight group-hover:text-neutral-200 transition-colors">
-                          {post.title}
-                        </h3>
-                        <p className="font-sans text-neutral-400 text-sm sm:text-base leading-relaxed line-clamp-2">
-                          {post.intro}
-                        </p>
-                        <div className="flex flex-wrap gap-2 pt-2">
-                          {post.tags.slice(0, 3).map((tag) => (
-                            <span
-                              key={tag}
-                              className="text-[11px] font-mono text-neutral-400"
-                            >
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Right: Quick Action Arrow */}
-                      <div className="lg:col-span-1 flex lg:justify-end items-center pt-2 lg:pt-0">
-                        <div className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 group-hover:text-white group-hover:border-neutral-600 transition-all">
-                          <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                        </div>
-                      </div>
-                    </Link>
-                  </article>
-                );
-              })}
-            </div>
+                    {/* Arrow Action (Bare Icon, No Box / Circle) */}
+                    <div className="hidden md:flex items-center justify-end w-12 pt-2">
+                      <ArrowUpRight className="w-5 h-5 text-neutral-400 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                    </div>
+                  </Link>
+                </article>
+              );
+            })}
           </div>
         )}
       </div>
