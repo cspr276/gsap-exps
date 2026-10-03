@@ -8,6 +8,7 @@ import Footer from '@/components/Footer';
 import CareersCTASection from '@/components/careers/CareersCTASection';
 import { CAREER_ROLES, CAREER_ROLE_BY_SLUG, CAREERS_EMAIL } from '@/data/careerRoles';
 import CareerApplyClientForm from './CareerApplyClientForm';
+import ScrollToTopOnMount from './ScrollToTopOnMount';
 import {
   MapPin,
   Clock,
@@ -65,6 +66,7 @@ export default async function CareerRolePage({ params }: PageProps) {
 
   return (
     <SmoothScroll>
+      <ScrollToTopOnMount />
       <main className="relative min-h-screen bg-[#09090b] text-white selection:bg-neutral-800 selection:text-white">
         <Navbar />
 

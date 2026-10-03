@@ -1,7 +1,11 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const CULTURE_PILLARS = [
   {
@@ -25,17 +29,41 @@ const CULTURE_PILLARS = [
 ];
 
 export default function CareersCultureSection() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const cards = gsap.utils.toArray<HTMLElement>('.culture-card');
+      cards.forEach((card) => {
+        gsap.fromTo(
+          card,
+          { y: 45, opacity: 0.15 },
+          {
+            y: 0,
+            opacity: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 90%',
+              end: 'top 55%',
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          }
+        );
+      });
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section className="relative z-20 w-full py-20 sm:py-28 bg-[#fbfbfb] text-neutral-900 border-b border-neutral-200">
+    <section
+      ref={sectionRef}
+      className="relative z-20 w-full py-20 sm:py-28 bg-[#fbfbfb] text-neutral-900 border-b border-neutral-200"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-3xl mb-12"
-        >
+        <div className="max-w-3xl mb-12">
           <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-3">
             LIFE, BENEFITS & GROWTH
           </span>
@@ -45,22 +73,14 @@ export default function CareersCultureSection() {
           <p className="font-sans text-base sm:text-lg text-neutral-600 leading-relaxed font-normal">
             We operate with a startup mindset: fast feedback, transparent communication, and delivery cycles designed to keep momentum high without sacrificing engineering depth.
           </p>
-        </motion.div>
+        </div>
 
-        {/* 3 Compact Editorial Cards matching ManifestoSection */}
+        {/* 3 Compact Editorial Cards with Natural 1:1 Scroll Scrub */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8 border-t border-neutral-200/90">
-          {CULTURE_PILLARS.map((pillar, idx) => (
-            <motion.div
+          {CULTURE_PILLARS.map((pillar) => (
+            <div
               key={pillar.num}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{
-                duration: 0.55,
-                delay: idx * 0.1,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="p-6 sm:p-7 rounded-md border border-neutral-200/90 bg-white hover:border-neutral-300 hover:shadow-md transition-all duration-300 flex flex-col justify-between shadow-sm"
+              className="culture-card p-6 sm:p-7 rounded-md border border-neutral-200/90 bg-white hover:border-neutral-300 hover:shadow-md transition-shadow duration-300 flex flex-col justify-between shadow-sm will-change-transform"
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -76,7 +96,7 @@ export default function CareersCultureSection() {
                   {pillar.desc}
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

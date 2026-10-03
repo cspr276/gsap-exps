@@ -1,10 +1,14 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { Search, MapPin, Clock, Calendar, ArrowRight, X, Mail } from 'lucide-react';
 import { CAREER_ROLES, CAREERS_EMAIL } from '@/data/careerRoles';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const CATEGORIES = [
   { id: 'all', label: 'All Tracks' },
@@ -19,6 +23,8 @@ const CATEGORIES = [
 export default function CareersOpenPositionsSection() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
 
   const filteredRoles = useMemo(() => {
     return CAREER_ROLES.filter((role) => {
@@ -39,8 +45,38 @@ export default function CareersOpenPositionsSection() {
     });
   }, [selectedCategory, searchQuery]);
 
+  // Smooth beginning-to-end scroll scrub for job cards
+  useGSAP(
+    () => {
+      const container = cardsContainerRef.current;
+      if (!container) return;
+
+      const cards = gsap.utils.toArray<HTMLElement>('.career-job-card', container);
+      cards.forEach((card) => {
+        gsap.fromTo(
+          card,
+          { y: 36, opacity: 0.15 },
+          {
+            y: 0,
+            opacity: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 95%',
+              end: 'top 65%',
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          }
+        );
+      });
+    },
+    { scope: sectionRef, dependencies: [filteredRoles] }
+  );
+
   return (
     <section
+      ref={sectionRef}
       id="open-positions"
       className="relative z-20 w-full py-24 sm:py-32 bg-[#09090b] text-white border-b border-neutral-900"
     >
@@ -48,13 +84,7 @@ export default function CareersOpenPositionsSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
           {/* Left Column: Sticky / Pinned Filter and Summary Box */}
           <aside className="lg:col-span-4 lg:sticky lg:top-28 space-y-6">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="p-7 rounded-md bg-neutral-950 border border-neutral-800"
-            >
+            <div className="p-7 rounded-md bg-neutral-950 border border-neutral-800">
               <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-3">
                 OPENINGS LEDGER
               </span>
@@ -131,19 +161,13 @@ export default function CareersOpenPositionsSection() {
                   <span>{CAREERS_EMAIL}</span>
                 </a>
               </div>
-            </motion.div>
+            </div>
           </aside>
 
           {/* Right Column: Search Bar at Top + Proper Job Cards Below */}
           <div className="lg:col-span-8 space-y-6">
             {/* Top Search Bar */}
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full"
-            >
+            <div className="relative w-full">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500 pointer-events-none" />
               <input
                 type="text"
@@ -161,7 +185,7 @@ export default function CareersOpenPositionsSection() {
                   <X className="w-4 h-4" />
                 </button>
               )}
-            </motion.div>
+            </div>
 
             {/* Results Counter */}
             <div className="flex items-center justify-between text-xs font-mono text-neutral-500 px-1">
@@ -181,81 +205,72 @@ export default function CareersOpenPositionsSection() {
               )}
             </div>
 
-            {/* Proper Job Opening Cards */}
+            {/* Proper Job Opening Cards with GSAP scroll scrub */}
             {filteredRoles.length > 0 ? (
-              <div className="space-y-4">
-                <AnimatePresence mode="popLayout">
-                  {filteredRoles.map((role) => (
-                    <motion.div
-                      key={role.slug}
-                      layout
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.98 }}
-                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              <div ref={cardsContainerRef} className="space-y-4">
+                {filteredRoles.map((role) => (
+                  <div key={role.slug} className="career-job-card will-change-transform">
+                    <Link
+                      href={`/careers/${role.slug}`}
+                      className="group block p-7 rounded-md bg-neutral-950 border border-neutral-800 hover:border-neutral-500/80 transition-all duration-300 shadow-xl cursor-pointer"
                     >
-                      <Link
-                        href={`/careers/${role.slug}`}
-                        className="group block p-7 rounded-md bg-neutral-950 border border-neutral-800 hover:border-neutral-500/80 transition-all duration-300 shadow-xl cursor-pointer"
-                      >
-                        {/* Header: Track & Openings Badge */}
-                        <div className="flex items-center justify-between mb-3.5">
-                          <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
-                            {role.team}
-                          </span>
-                          <span className="font-mono text-[11px] px-2.5 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-300 font-medium">
-                            {role.openings} {role.openings === 1 ? 'opening' : 'openings'}
-                          </span>
+                      {/* Header: Track & Openings Badge */}
+                      <div className="flex items-center justify-between mb-3.5">
+                        <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
+                          {role.team}
+                        </span>
+                        <span className="font-mono text-[11px] px-2.5 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-300 font-medium">
+                          {role.openings} {role.openings === 1 ? 'opening' : 'openings'}
+                        </span>
+                      </div>
+
+                      {/* Role Title */}
+                      <h3 className="font-display font-bold text-xl sm:text-2xl text-white mb-2.5 tracking-tight group-hover:text-neutral-200 transition-colors">
+                        {role.title}
+                      </h3>
+
+                      {/* Summary */}
+                      <p className="font-sans text-sm text-neutral-400 leading-relaxed mb-5 font-normal">
+                        {role.summary}
+                      </p>
+
+                      {/* Facts Bar */}
+                      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 py-3 border-y border-neutral-900 text-xs text-neutral-400 font-sans mb-4">
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5 text-neutral-500 shrink-0" />
+                          <span>{role.location}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5 text-neutral-500 shrink-0" />
+                          <span>{role.experience}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="w-3.5 h-3.5 text-neutral-500 shrink-0" />
+                          <span>Review: {role.deadline}</span>
+                        </div>
+                      </div>
+
+                      {/* Skills pills & Action CTA */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
+                        <div className="flex flex-wrap gap-1.5">
+                          {role.skills.map((skill) => (
+                            <span
+                              key={skill}
+                              className="font-mono text-[10px] px-2.5 py-1 rounded bg-neutral-900 text-neutral-400 border border-neutral-800/80"
+                            >
+                              {skill}
+                            </span>
+                          ))}
                         </div>
 
-                        {/* Role Title */}
-                        <h3 className="font-display font-bold text-xl sm:text-2xl text-white mb-2.5 tracking-tight group-hover:text-neutral-200 transition-colors">
-                          {role.title}
-                        </h3>
-
-                        {/* Summary */}
-                        <p className="font-sans text-sm text-neutral-400 leading-relaxed mb-5 font-normal">
-                          {role.summary}
-                        </p>
-
-                        {/* Facts Bar */}
-                        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 py-3 border-y border-neutral-900 text-xs text-neutral-400 font-sans mb-4">
-                          <div className="flex items-center gap-1.5">
-                            <MapPin className="w-3.5 h-3.5 text-neutral-500 shrink-0" />
-                            <span>{role.location}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <Clock className="w-3.5 h-3.5 text-neutral-500 shrink-0" />
-                            <span>{role.experience}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <Calendar className="w-3.5 h-3.5 text-neutral-500 shrink-0" />
-                            <span>Review: {role.deadline}</span>
-                          </div>
+                        <div className="inline-flex items-center gap-2 text-xs font-semibold text-white group-hover:text-neutral-200 shrink-0">
+                          <span>Apply for this role</span>
+                          <ArrowRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
                         </div>
-
-                        {/* Skills pills & Action CTA */}
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
-                          <div className="flex flex-wrap gap-1.5">
-                            {role.skills.map((skill) => (
-                              <span
-                                key={skill}
-                                className="font-mono text-[10px] px-2.5 py-1 rounded bg-neutral-900 text-neutral-400 border border-neutral-800/80"
-                              >
-                                {skill}
-                              </span>
-                            ))}
-                          </div>
-
-                          <div className="inline-flex items-center gap-2 text-xs font-semibold text-white group-hover:text-neutral-200 shrink-0">
-                            <span>Apply for this role</span>
-                            <ArrowRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
-                          </div>
-                        </div>
-                      </Link>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
+                      </div>
+                    </Link>
+                  </div>
+                ))}
               </div>
             ) : (
               <div className="p-12 rounded-md bg-neutral-950 border border-neutral-900 text-center">

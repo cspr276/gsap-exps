@@ -1,9 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { motion } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { Eye, MessageSquareCode, Laptop, FileCheck2 } from 'lucide-react';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const Grainient = dynamic(() => import('@/components/Grainient'), { ssr: false });
 
@@ -47,17 +51,45 @@ const STEPS = [
 ];
 
 export default function CareersHiringProcessSection() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const grid = gridRef.current;
+      if (!grid) return;
+
+      const cards = gsap.utils.toArray<HTMLElement>('.eval-step-card', grid);
+      cards.forEach((card) => {
+        gsap.fromTo(
+          card,
+          { y: 50, opacity: 0.15 },
+          {
+            y: 0,
+            opacity: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 92%',
+              end: 'top 58%',
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          }
+        );
+      });
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section className="relative z-20 w-full py-24 sm:py-32 bg-[#09090b] text-white border-b border-neutral-900">
+    <section
+      ref={sectionRef}
+      className="relative z-20 w-full py-24 sm:py-32 bg-[#09090b] text-white border-b border-neutral-900"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-3xl mb-16"
-        >
+        <div className="max-w-3xl mb-16">
           <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-3">
             HOW WE EVALUATE
           </span>
@@ -67,24 +99,19 @@ export default function CareersHiringProcessSection() {
           <p className="font-sans text-base sm:text-lg text-neutral-400 leading-relaxed font-normal">
             We hold our interview process to the same standards we bring to client benchmarks: fast feedback, zero unnecessary bureaucracy, and deep respect for your time.
           </p>
-        </motion.div>
+        </div>
 
         {/* 4-Step Segmented Process Rail: No gap, divide lines, bare icons in same line as top, slight Grainient shaders */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 rounded-md border border-neutral-800 divide-y md:divide-y-0 md:divide-x divide-neutral-800 bg-neutral-950 overflow-hidden shadow-2xl">
-          {STEPS.map((step, index) => {
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 rounded-md border border-neutral-800 divide-y md:divide-y-0 md:divide-x divide-neutral-800 bg-neutral-950 overflow-hidden shadow-2xl"
+        >
+          {STEPS.map((step) => {
             const Icon = step.icon;
             return (
-              <motion.div
+              <div
                 key={step.step}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-40px' }}
-                transition={{
-                  duration: 0.6,
-                  delay: index * 0.1,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-                className="group relative p-8 sm:p-9 flex flex-col justify-between overflow-hidden will-change-transform hover:bg-neutral-900/30 transition-colors"
+                className="eval-step-card group relative p-8 sm:p-9 flex flex-col justify-between overflow-hidden will-change-transform hover:bg-neutral-900/30 transition-colors"
               >
                 {/* Subtle Monochrome Grainient Shader Background */}
                 <div className="absolute inset-0 z-0 pointer-events-none opacity-45 group-hover:opacity-70 transition-opacity duration-700">
@@ -128,7 +155,7 @@ export default function CareersHiringProcessSection() {
                 <div className="relative z-10 mt-8 pt-4 border-t border-neutral-800/80 font-mono text-[11px] text-neutral-400">
                   <span>✓ {step.invariant}</span>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>
