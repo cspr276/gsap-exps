@@ -23,7 +23,7 @@ export default function CaseStudiesHero() {
       id="case-studies-hero"
       className="sticky top-0 z-0 w-full min-h-screen lg:h-screen flex flex-col justify-center items-center overflow-hidden bg-[#09090b] text-white"
     >
-      {/* Atmospheric Photographic Frame matching rest of site */}
+      {/* Atmospheric Background matching careers and services */}
       <motion.div
         initial={{ opacity: 0.4, scale: 1.1 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -35,24 +35,14 @@ export default function CaseStudiesHero() {
           alt="Evalixa Case Studies"
           fill
           priority
-          className="object-cover object-center brightness-[0.38] contrast-[1.12]"
+          className="object-cover object-center brightness-[0.40] contrast-[1.10]"
         />
-        <div className="absolute inset-0 bg-[#09090b]/50 pointer-events-none" />
-        <div className="absolute inset-0 bg-linear-to-t from-[#09090b] via-transparent to-[#09090b]/75 pointer-events-none" />
+        <div className="absolute inset-0 bg-[#09090b]/45 pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#09090b] via-transparent to-[#09090b]/70 pointer-events-none" />
       </motion.div>
 
       {/* Main Centered Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center flex flex-col items-center justify-center pt-24 pb-16 my-auto">
-        {/* Monospace Eyebrow */}
-        <motion.span
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-4"
-        >
-          INSIGHTS // CASE STUDIES
-        </motion.span>
-
         {/* Main Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 36, filter: 'blur(10px)' }}
@@ -81,14 +71,14 @@ export default function CaseStudiesHero() {
           initial={{ opacity: 0, y: 24, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.75, delay: 0.34, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-wrap items-center justify-center gap-4 mb-14"
+          className="flex flex-wrap items-center justify-center gap-4"
         >
           <a
             href="#case-studies-ledger"
             onClick={scrollToLedger}
             className="inline-flex items-center gap-2 px-6 py-3.5 rounded-md bg-white text-black font-mono text-xs uppercase tracking-wider font-semibold hover:bg-neutral-200 transition-all shadow-xl shadow-black/50 cursor-pointer"
           >
-            <span>Explore 3 In-Depth Studies</span>
+            <span>Explore Case Studies</span>
             <ArrowDown className="w-3.5 h-3.5 text-black stroke-[2.5]" />
           </a>
 
@@ -99,33 +89,6 @@ export default function CaseStudiesHero() {
             <span>Schedule Scoping Call</span>
             <ArrowUpRight className="w-3.5 h-3.5 text-neutral-400" />
           </Link>
-        </motion.div>
-
-        {/* Evidence Pattern Metric Strip */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.44, ease: [0.16, 1, 0.3, 1] }}
-          className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8 border-t border-neutral-800/80 w-full max-w-3xl"
-        >
-          <div className="flex flex-col items-center">
-            <span className="font-mono text-sm font-bold text-neutral-400">01</span>
-            <span className="font-mono text-xs text-neutral-300 uppercase tracking-wider mt-1">
-              Risk Surface Mapped
-            </span>
-          </div>
-          <div className="flex flex-col items-center">
-            <span className="font-mono text-sm font-bold text-neutral-400">02</span>
-            <span className="font-mono text-xs text-neutral-300 uppercase tracking-wider mt-1">
-              Reviewer Evidence Captured
-            </span>
-          </div>
-          <div className="flex flex-col items-center">
-            <span className="font-mono text-sm font-bold text-neutral-400">03</span>
-            <span className="font-mono text-xs text-neutral-300 uppercase tracking-wider mt-1">
-              Regression Suite Handed Over
-            </span>
-          </div>
         </motion.div>
       </div>
     </section>

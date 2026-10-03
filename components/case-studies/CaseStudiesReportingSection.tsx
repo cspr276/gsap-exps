@@ -53,7 +53,7 @@ export default function CaseStudiesReportingSection() {
 
       gsap.fromTo(
         grid,
-        { y: 40, opacity: 0.15 },
+        { y: 35, opacity: 0.15 },
         {
           y: 0,
           opacity: 1,
@@ -76,14 +76,11 @@ export default function CaseStudiesReportingSection() {
       className="relative z-20 bg-[#09090b] text-white py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-b border-neutral-800"
     >
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
+        {/* Section Header - Clean, no circle dot */}
         <div className="max-w-3xl mb-16 sm:mb-20">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="w-2 h-2 rounded-full bg-neutral-400" />
-            <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold">
-              EVALUATION REPORTING // AUDIT INTEGRITY
-            </span>
-          </div>
+          <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-3">
+            EVALUATION REPORTING // AUDIT INTEGRITY
+          </span>
           <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight mb-6">
             How we report outcomes to boards and regulators.
           </h2>
@@ -92,10 +89,10 @@ export default function CaseStudiesReportingSection() {
           </p>
         </div>
 
-        {/* 4-Item Segmented Grid with Ambient Grainient */}
+        {/* 4-Item Segmented Grid with subtle border radius and bare icons */}
         <div
           ref={gridRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border border-neutral-800 rounded-2xl overflow-hidden bg-neutral-900/40 divide-y md:divide-y-0 md:divide-x divide-neutral-800 backdrop-blur-sm"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border border-neutral-800 rounded-lg overflow-hidden bg-neutral-900/40 divide-y md:divide-y-0 md:divide-x divide-neutral-800 backdrop-blur-sm"
         >
           {REPORTING_PILLARS.map((pillar) => {
             const Icon = pillar.icon;
@@ -115,13 +112,12 @@ export default function CaseStudiesReportingSection() {
                 </div>
 
                 <div className="relative z-10">
+                  {/* Index and Bare Icon in the same line with no box/bg */}
                   <div className="flex items-center justify-between mb-8">
                     <span className="font-mono text-xs font-bold text-neutral-400 tracking-widest">
                       {pillar.index}
                     </span>
-                    <div className="w-8 h-8 rounded-lg bg-neutral-800/80 border border-neutral-700/60 flex items-center justify-center text-neutral-300">
-                      <Icon className="w-4 h-4 stroke-[1.8]" />
-                    </div>
+                    <Icon className="w-5 h-5 text-neutral-400 stroke-[1.8]" />
                   </div>
 
                   <h3 className="font-display font-bold text-lg text-white tracking-tight mb-3">
@@ -133,11 +129,11 @@ export default function CaseStudiesReportingSection() {
                   </p>
                 </div>
 
-                <div className="relative z-10 pt-4 border-t border-neutral-800/80 flex items-center justify-between">
-                  <span className="font-mono text-[10px] text-neutral-400 uppercase tracking-wider">
+                <div className="relative z-10 pt-4 border-t border-neutral-800/80 flex flex-col gap-1">
+                  <span className="font-mono text-[10px] text-neutral-500 uppercase tracking-wider">
                     Standard
                   </span>
-                  <span className="font-mono text-xs font-semibold text-neutral-300">
+                  <span className="font-mono text-xs font-medium text-neutral-300">
                     {pillar.invariant}
                   </span>
                 </div>

@@ -71,14 +71,11 @@ export default function CaseStudiesMethodSection() {
       className="relative z-20 bg-[#fbfbfb] text-neutral-900 border-b border-neutral-300 py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
+        {/* Section Header - Clean, no circle dot */}
         <div className="max-w-3xl mb-16 sm:mb-20">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-2 h-2 rounded-full bg-neutral-900" />
-            <span className="font-mono text-xs uppercase tracking-widest text-neutral-600 font-semibold">
-              Evaluation Methodology // Verification Invariants
-            </span>
-          </div>
+          <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-3">
+            Evaluation Methodology // Verification Invariants
+          </span>
 
           <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-neutral-950 tracking-tight leading-[1.12] mb-6">
             Traceable evidence, not marketing post-mortems.
@@ -89,7 +86,7 @@ export default function CaseStudiesMethodSection() {
           </p>
         </div>
 
-        {/* 3 Pillars Grid */}
+        {/* 3 Pillars Grid - Clean rounded-lg, bare icons without box or background */}
         <div
           ref={cardsRef}
           className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
@@ -99,16 +96,14 @@ export default function CaseStudiesMethodSection() {
             return (
               <div
                 key={p.step}
-                className="bg-white border border-neutral-200/90 rounded-xl p-8 flex flex-col justify-between shadow-xs hover:border-neutral-400 transition-colors"
+                className="bg-white border border-neutral-200/90 rounded-lg p-7 sm:p-8 flex flex-col justify-between shadow-xs hover:border-neutral-400 transition-colors"
               >
                 <div>
                   <div className="flex items-center justify-between mb-6">
                     <span className="font-mono text-xs font-bold text-neutral-400 tracking-wider">
                       {p.step} // {p.phase}
                     </span>
-                    <div className="w-9 h-9 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-800">
-                      <Icon className="w-4 h-4 stroke-[2]" />
-                    </div>
+                    <Icon className="w-5 h-5 text-neutral-700 stroke-[1.8]" />
                   </div>
 
                   <h3 className="font-display font-bold text-xl text-neutral-950 tracking-tight mb-3">
