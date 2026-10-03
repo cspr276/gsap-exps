@@ -190,8 +190,8 @@ export default function AboutDualWaveSection() {
       const dt = (now - lastTime) / 1000;
       lastTime = now;
 
-      // Smooth constant angular velocity: ~0.13 rad/s
-      angle += dt * 0.13;
+      // Increased angular velocity: ~0.22 rad/s (~28s per full rotation)
+      angle += dt * 0.22;
 
       const { rx, ry } = orbitRadii;
 
