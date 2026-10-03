@@ -5,37 +5,36 @@ import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { ArrowDown } from 'lucide-react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PART 1: ORBITAL IMAGES CONFIGURATION (Oval rotation around center headline)
+// PART 1: DIAGONAL ORBITAL IMAGES CONFIGURATION
 // ─────────────────────────────────────────────────────────────────────────────
 interface OrbitItem {
   id: string;
   image: string;
   title: string;
-  baseSize: number; // in px on desktop
+  baseSize: number; // in px
 }
 
 const ORBIT_ITEMS: OrbitItem[] = [
   { id: 'o1', image: '/services/reality-01.jpg', title: 'Clinical Diagnostics', baseSize: 110 },
-  { id: 'o2', image: '/services/hero-datacenter.jpg', title: 'Compute Clusters', baseSize: 75 },
-  { id: 'o3', image: '/cards/card_06.jpg', title: 'Orbital Telemetry', baseSize: 95 },
-  { id: 'o4', image: '/services/reality-02.jpg', title: 'Silicon Hardware', baseSize: 70 },
-  { id: 'o5', image: '/services/ai-agent-evaluation.webp', title: 'Autonomous Systems', baseSize: 115 },
-  { id: 'o6', image: '/cards/card_04.jpg', title: 'Simulation Physics', baseSize: 85 },
-  { id: 'o7', image: '/services/reality-03.jpg', title: 'Robotics & Vision', baseSize: 105 },
-  { id: 'o8', image: '/cards/card_05.jpg', title: 'Cryptographic Security', baseSize: 75 },
-  { id: 'o9', image: '/services/benchmarking-frameworks.webp', title: 'Empirical Metrics', baseSize: 100 },
-  { id: 'o10', image: '/cards/card_07.jpg', title: 'WASM Sandboxes', baseSize: 70 },
-  { id: 'o11', image: '/cards/card_08.jpg', title: 'Optical Sensors', baseSize: 90 },
-  { id: 'o12', image: '/services/hero-bg.webp', title: 'Frontier Neural Models', baseSize: 80 },
+  { id: 'o2', image: '/services/hero-datacenter.jpg', title: 'Compute Clusters', baseSize: 110 },
+  { id: 'o3', image: '/cards/card_06.jpg', title: 'Orbital Telemetry', baseSize: 110 },
+  { id: 'o4', image: '/services/reality-02.jpg', title: 'Silicon Hardware', baseSize: 110 },
+  { id: 'o5', image: '/services/ai-agent-evaluation.webp', title: 'Autonomous Systems', baseSize: 110 },
+  { id: 'o6', image: '/cards/card_04.jpg', title: 'Simulation Physics', baseSize: 110 },
+  { id: 'o7', image: '/services/reality-03.jpg', title: 'Robotics & Vision', baseSize: 110 },
+  { id: 'o8', image: '/cards/card_05.jpg', title: 'Cryptographic Security', baseSize: 110 },
+  { id: 'o9', image: '/services/benchmarking-frameworks.webp', title: 'Empirical Metrics', baseSize: 110 },
+  { id: 'o10', image: '/cards/card_07.jpg', title: 'WASM Sandboxes', baseSize: 110 },
+  { id: 'o11', image: '/cards/card_08.jpg', title: 'Optical Sensors', baseSize: 110 },
+  { id: 'o12', image: '/services/hero-bg.webp', title: 'Frontier Neural Models', baseSize: 110 },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PART 2: DUAL WAVE MATRIX WITH VARIABLE IMAGE SIZES
+// PART 2: DUAL WAVE MATRIX (Uniform Center Image Size)
 // ─────────────────────────────────────────────────────────────────────────────
 interface WavePair {
   id: string;
@@ -44,8 +43,6 @@ interface WavePair {
   code: string;
   metric: string;
   image: string;
-  aspectClass: string;
-  widthClass: string;
 }
 
 const WAVE_PAIRS: WavePair[] = [
@@ -56,8 +53,6 @@ const WAVE_PAIRS: WavePair[] = [
     code: 'EVAL_SUITE_v4.2',
     metric: '0.00% Numerical Variance',
     image: '/services/ai-agent-evaluation.webp',
-    aspectClass: 'aspect-[16/10]',
-    widthClass: 'w-[260px] xl:w-[290px]',
   },
   {
     id: '02',
@@ -66,8 +61,6 @@ const WAVE_PAIRS: WavePair[] = [
     code: 'REDTEAM_VECTOR_09',
     metric: '100% Jailbreak Containment',
     image: '/services/reality-01.jpg',
-    aspectClass: 'aspect-[3/4]',
-    widthClass: 'w-[200px] xl:w-[220px]',
   },
   {
     id: '03',
@@ -76,8 +69,6 @@ const WAVE_PAIRS: WavePair[] = [
     code: 'INGRESS_SHIELD_LIVE',
     metric: '< 12ms Detection Latency',
     image: '/services/reality-02.jpg',
-    aspectClass: 'aspect-square',
-    widthClass: 'w-[220px] xl:w-[240px]',
   },
   {
     id: '04',
@@ -86,8 +77,6 @@ const WAVE_PAIRS: WavePair[] = [
     code: 'CI_CD_GATE_88',
     metric: 'Zero Silent Drift Escapes',
     image: '/services/benchmarking-frameworks.webp',
-    aspectClass: 'aspect-[16/9]',
-    widthClass: 'w-[280px] xl:w-[310px]',
   },
   {
     id: '05',
@@ -96,8 +85,6 @@ const WAVE_PAIRS: WavePair[] = [
     code: 'EXPERT_ALIGN_v3',
     metric: 'Krippendorff α = 0.94',
     image: '/cards/card_04.jpg',
-    aspectClass: 'aspect-[4/5]',
-    widthClass: 'w-[210px] xl:w-[230px]',
   },
   {
     id: '06',
@@ -106,8 +93,6 @@ const WAVE_PAIRS: WavePair[] = [
     code: 'CORPUS_CERTIFIED',
     metric: 'Triple-Blind Verified',
     image: '/cards/card_05.jpg',
-    aspectClass: 'aspect-square',
-    widthClass: 'w-[220px] xl:w-[240px]',
   },
   {
     id: '07',
@@ -116,8 +101,6 @@ const WAVE_PAIRS: WavePair[] = [
     code: 'SWARM_GOV_2026',
     metric: '4-Tier Severity Matrix',
     image: '/cards/card_06.jpg',
-    aspectClass: 'aspect-[16/9]',
-    widthClass: 'w-[280px] xl:w-[310px]',
   },
   {
     id: '08',
@@ -126,8 +109,6 @@ const WAVE_PAIRS: WavePair[] = [
     code: 'WASM_ISOLATION',
     metric: 'Deterministic State Proof',
     image: '/cards/card_07.jpg',
-    aspectClass: 'aspect-[3/4]',
-    widthClass: 'w-[200px] xl:w-[220px]',
   },
   {
     id: '09',
@@ -136,8 +117,6 @@ const WAVE_PAIRS: WavePair[] = [
     code: 'EXFIL_BLOCK_v2',
     metric: '99.98% Payload Recall',
     image: '/cards/card_08.jpg',
-    aspectClass: 'aspect-square',
-    widthClass: 'w-[220px] xl:w-[240px]',
   },
   {
     id: '10',
@@ -146,8 +125,6 @@ const WAVE_PAIRS: WavePair[] = [
     code: 'TOOL_CALL_SPEC',
     metric: '100% Idempotent Calls',
     image: '/services/reality-03.jpg',
-    aspectClass: 'aspect-[4/3]',
-    widthClass: 'w-[250px] xl:w-[270px]',
   },
   {
     id: '11',
@@ -156,8 +133,6 @@ const WAVE_PAIRS: WavePair[] = [
     code: 'CONTEXT_128K_EVAL',
     metric: 'Multi-Turn Stability',
     image: '/services/hero-datacenter.jpg',
-    aspectClass: 'aspect-[16/10]',
-    widthClass: 'w-[270px] xl:w-[290px]',
   },
   {
     id: '12',
@@ -166,13 +141,11 @@ const WAVE_PAIRS: WavePair[] = [
     code: 'SFT_PREFERENCE_01',
     metric: '+18.4% Task Pass Rate',
     image: '/services/hero-bg.webp',
-    aspectClass: 'aspect-[3/4]',
-    widthClass: 'w-[200px] xl:w-[220px]',
   },
 ];
 
 // Clean symmetric harmonic curve offsets (in px) for the 12 items.
-// Starts and ends at the exact same point (0px), peaking symmetrically at 44px in the center.
+// Starts and ends at the exact same point (0px), arching inward symmetrically up to 44px.
 const CURVE_OFFSETS = [0, 12, 24, 34, 41, 44, 44, 41, 34, 24, 12, 0];
 
 export default function AboutDualWaveSection() {
@@ -183,18 +156,18 @@ export default function AboutDualWaveSection() {
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [focusedIdx, setFocusedIdx] = useState<number>(0);
 
-  // Responsive ellipse radii for generous clearance around center headline
-  const [orbitRadii, setOrbitRadii] = useState({ rx: 560, ry: 250 });
+  // Responsive radii for diagonal ellipse
+  const [orbitRadii, setOrbitRadii] = useState({ rx: 580, ry: 250 });
 
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
       if (width < 640) {
-        setOrbitRadii({ rx: 185, ry: 155 });
+        setOrbitRadii({ rx: 195, ry: 155 });
       } else if (width < 1024) {
-        setOrbitRadii({ rx: 360, ry: 195 });
+        setOrbitRadii({ rx: 380, ry: 195 });
       } else {
-        setOrbitRadii({ rx: 560, ry: 250 });
+        setOrbitRadii({ rx: 580, ry: 250 });
       }
     };
 
@@ -203,18 +176,23 @@ export default function AboutDualWaveSection() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Continuous, smooth orbital rotation (Completely independent of scroll)
+  // Continuous, smooth orbital rotation decoupled completely from scroll
   useEffect(() => {
     let reqId: number;
     let angle = 0;
     let lastTime = performance.now();
     const totalItems = ORBIT_ITEMS.length;
 
+    // Diagonal tilt: -18 degrees (slanted diagonally from bottom-left up to top-right like reference image)
+    const TILT_RAD = (-18 * Math.PI) / 180;
+    const cosTilt = Math.cos(TILT_RAD);
+    const sinTilt = Math.sin(TILT_RAD);
+
     const tick = (now: number) => {
       const dt = (now - lastTime) / 1000;
       lastTime = now;
 
-      // Constant rotational velocity: 0.085 radians per second
+      // Constant angular velocity: ~0.085 rad/s
       angle += dt * 0.085;
 
       const { rx, ry } = orbitRadii;
@@ -225,18 +203,27 @@ export default function AboutDualWaveSection() {
         const baseAngle = (index / totalItems) * Math.PI * 2;
         const theta = baseAngle + angle;
 
-        const x = rx * Math.cos(theta);
-        const y = ry * Math.sin(theta);
+        // Position on horizontal ellipse
+        const x0 = rx * Math.cos(theta);
+        const y0 = ry * Math.sin(theta);
 
-        // Depth perspective based on vertical position
-        // When in front (sin > 0), larger scale & opacity. When in back (sin < 0), smaller.
-        const depth = (Math.sin(theta) + 1) / 2; // 0 (back) to 1 (front)
-        const scale = 0.75 + depth * 0.42; // 0.75 to 1.17
-        const opacity = 0.6 + depth * 0.4;
-        const zIndex = Math.round(depth * 30);
+        // Rotate by diagonal tilt
+        const x = x0 * cosTilt - y0 * sinTilt;
+        const y = x0 * sinTilt + y0 * cosTilt;
 
-        el.style.transform = `translate3d(calc(-50% + ${x}px), calc(-50% + ${y}px), 0px) scale(${scale})`;
-        el.style.opacity = `${opacity}`;
+        // Perspective sizing:
+        // Comparatively large at left side (x < 0), decreasing as it goes to right (x > 0),
+        // and increasing as it comes back to left.
+        const nx = Math.max(-1, Math.min(1, x / rx));
+        const progress = (1 - nx) / 2; // 1.0 at far left, 0.0 at far right
+
+        // Scale: from 0.46x (small on right) up to 1.45x (large on left)
+        const scale = 0.46 + progress * 0.99;
+        const opacity = 0.65 + progress * 0.35;
+        const zIndex = Math.round(progress * 30) + 1;
+
+        el.style.transform = `translate3d(calc(-50% + ${x.toFixed(1)}px), calc(-50% + ${y.toFixed(1)}px), 0px) scale(${scale.toFixed(3)})`;
+        el.style.opacity = `${opacity.toFixed(2)}`;
         el.style.zIndex = `${zIndex}`;
       });
 
@@ -307,13 +294,14 @@ export default function AboutDualWaveSection() {
       className="relative z-20 w-full bg-[#09090b] text-white border-b border-neutral-900 overflow-hidden select-none"
     >
       {/* ─────────────────────────────────────────────────────────────
-          PART 1: ELLIPTICAL ORBIT HEADER (Continuous Idle Rotation)
+          PART 1: DIAGONAL OVAL ROTATION SECTION
+          Clean typography matching website theme, no borders, subtle radius
           ───────────────────────────────────────────────────────────── */}
-      <div className="relative w-full min-h-[85vh] sm:min-h-[92vh] flex items-center justify-center overflow-hidden py-24 sm:py-32 border-b border-neutral-900/60">
+      <div className="relative w-full min-h-[82vh] sm:min-h-[88vh] flex items-center justify-center overflow-hidden py-24 sm:py-32 border-b border-neutral-900/60">
         {/* Subtle radial ambient spotlight */}
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.06)_0%,transparent_68%)]" />
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.04)_0%,transparent_70%)]" />
 
-        {/* Orbit Track Container: Images revolve smoothly on an elliptical path */}
+        {/* Orbit Track Container: Images revolve smoothly on a diagonal elliptical path */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {ORBIT_ITEMS.map((item, index) => (
             <div
@@ -321,57 +309,39 @@ export default function AboutDualWaveSection() {
               ref={(el) => {
                 orbitItemsRef.current[index] = el;
               }}
-              className="absolute top-1/2 left-1/2 will-change-transform pointer-events-auto group cursor-pointer"
+              className="absolute top-1/2 left-1/2 will-change-transform pointer-events-auto"
             >
               <div
                 style={{
-                  width: `${Math.round(item.baseSize * (orbitRadii.rx / 560))}px`,
-                  height: `${Math.round(item.baseSize * (orbitRadii.rx / 560))}px`,
+                  width: `${Math.round(item.baseSize * (orbitRadii.rx / 580))}px`,
+                  height: `${Math.round(item.baseSize * (orbitRadii.rx / 580))}px`,
                 }}
-                className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-white/15 bg-neutral-900 shadow-[0_16px_36px_rgba(0,0,0,0.85)] transition-all duration-300 group-hover:scale-110 group-hover:border-white/40 group-hover:shadow-black"
+                className="relative rounded-lg overflow-hidden bg-neutral-900 shadow-[0_12px_28px_rgba(0,0,0,0.7)] transition-transform duration-200"
               >
                 <Image
                   src={item.image}
                   alt={item.title}
                   fill
-                  sizes="130px"
-                  className="object-cover object-center brightness-[0.88] group-hover:brightness-105 transition-[filter] duration-300"
+                  sizes="180px"
+                  className="object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
               </div>
             </div>
           ))}
         </div>
 
-        {/* Center Content: Headline & Action */}
-        <div className="relative z-30 max-w-2xl mx-auto px-4 text-center pointer-events-auto">
-          <span className="font-mono text-xs uppercase tracking-[0.28em] text-neutral-400 font-semibold block mb-4">
-            FRONTIER INTELLIGENCE &bull; ASSURANCE SUITE
-          </span>
-
-          <h2 className="font-display font-medium text-4xl sm:text-6xl md:text-7xl text-white tracking-tight leading-[1.08] mb-6">
+        {/* Center Content: Pure website typography, no tags, no buttons */}
+        <div className="relative z-30 max-w-3xl mx-auto px-4 text-center pointer-events-auto">
+          <h2 className="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-[76px] text-white tracking-tight leading-[1.08] drop-shadow-md">
             Autonomous Systems
             <br />
-            <span className="font-sans font-medium text-white">Verified in </span>
-            <span className="font-serif italic font-normal text-[#c7af93]">Production</span>
+            <span className="text-neutral-400 font-bold">Verified in Production</span>
           </h2>
-
-          <p className="font-sans text-xs sm:text-sm text-neutral-400 max-w-md mx-auto leading-relaxed mb-8">
-            From regulated banking and healthcare to sovereign defense and distributed swarms — explore how Evalixa benchmarks and secures autonomous agents.
-          </p>
-
-          <a
-            href="#wave-matrix"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black hover:bg-neutral-200 text-xs font-mono uppercase tracking-wider font-semibold transition-all shadow-xl hover:scale-105 cursor-pointer"
-          >
-            <span>Explore Matrix</span>
-            <ArrowDown className="w-3.5 h-3.5" />
-          </a>
         </div>
       </div>
 
       {/* ─────────────────────────────────────────────────────────────
-          PART 2: DUAL WAVE SYNCHRONIZED MATRIX WITH VARIABLE IMAGE SIZES
+          PART 2: DUAL WAVE SYNCHRONIZED MATRIX (Uniform Center Image Size)
           ───────────────────────────────────────────────────────────── */}
       <div id="wave-matrix" className="w-full py-20 sm:py-28">
         <div className="max-w-[1500px] mx-auto px-4 sm:px-8 lg:px-12">
@@ -425,7 +395,7 @@ export default function AboutDualWaveSection() {
                     </div>
                   </div>
 
-                  {/* Center Column Spacer for Floating Variable-Size Poster */}
+                  {/* Center Column Spacer: Reserved space for the floating portrait poster */}
                   <div className="hidden lg:block lg:col-span-2 pointer-events-none" />
 
                   {/* Right Domain Column: curves inward symmetrically */}
@@ -452,30 +422,28 @@ export default function AboutDualWaveSection() {
               );
             })}
 
-            {/* Center Floating Variable-Size Poster (Adapts dimensions per active item) */}
+            {/* Center Floating Visual Poster (Uniform Fixed Size for all items) */}
             <div
               ref={centerThumbRef}
-              className="hidden lg:block absolute top-0 left-1/2 -translate-x-1/2 z-10 pointer-events-none will-change-transform transition-all duration-300 ease-out"
+              className="hidden lg:block absolute top-0 left-1/2 -translate-x-1/2 w-[220px] xl:w-[250px] aspect-[3/4] z-10 pointer-events-none will-change-transform"
             >
-              <div
-                className={`relative rounded-xl overflow-hidden border border-white/15 bg-neutral-950 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)] transition-all duration-300 ${activePair.widthClass} ${activePair.aspectClass}`}
-              >
+              <div className="relative w-full h-full rounded-xl overflow-hidden border border-white/15 bg-neutral-950 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)]">
                 <Image
                   src={activePair.image}
                   alt={activePair.discipline}
                   fill
-                  sizes="340px"
+                  sizes="(max-width: 1280px) 220px, 250px"
                   className="object-cover object-center brightness-90 transition-opacity duration-300"
                 />
-                {/* Subtle gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+                {/* Sleek bottom gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent pointer-events-none" />
 
-                {/* Overlaid telemetry label */}
-                <div className="absolute bottom-3.5 left-3.5 right-3.5 flex flex-col gap-0.5 pointer-events-none">
-                  <span className="font-display font-bold text-xs sm:text-sm text-white leading-tight truncate">
+                {/* Minimal overlaid telemetry label inside image */}
+                <div className="absolute bottom-4 left-4 right-4 flex flex-col gap-1 pointer-events-none">
+                  <span className="font-display font-bold text-sm text-white leading-tight block truncate">
                     {activePair.domain}
                   </span>
-                  <span className="font-mono text-[10px] text-neutral-300 block">
+                  <span className="font-mono text-[11px] text-neutral-300 block">
                     {activePair.metric}
                   </span>
                 </div>
