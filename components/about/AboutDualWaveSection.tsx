@@ -19,16 +19,18 @@ interface OrbitItem {
 }
 
 const ORBIT_ITEMS: OrbitItem[] = [
-  { id: 'o1', image: '/services/reality-01.jpg', title: 'Clinical Diagnostics', baseSize: 92 },
-  { id: 'o2', image: '/services/hero-datacenter.jpg', title: 'Compute Clusters', baseSize: 92 },
-  { id: 'o3', image: '/cards/card_06.jpg', title: 'Orbital Telemetry', baseSize: 92 },
-  { id: 'o4', image: '/services/reality-02.jpg', title: 'Silicon Hardware', baseSize: 92 },
-  { id: 'o5', image: '/services/ai-agent-evaluation.webp', title: 'Autonomous Systems', baseSize: 92 },
-  { id: 'o6', image: '/cards/card_04.jpg', title: 'Simulation Physics', baseSize: 92 },
-  { id: 'o7', image: '/services/reality-03.jpg', title: 'Robotics & Vision', baseSize: 92 },
-  { id: 'o8', image: '/cards/card_05.jpg', title: 'Cryptographic Security', baseSize: 92 },
-  { id: 'o9', image: '/services/benchmarking-frameworks.webp', title: 'Empirical Metrics', baseSize: 92 },
-  { id: 'o10', image: '/cards/card_08.jpg', title: 'Optical Sensors', baseSize: 92 },
+  { id: 'o1', image: '/services/reality-01.jpg', title: 'Clinical Diagnostics', baseSize: 88 },
+  { id: 'o2', image: '/services/hero-datacenter.jpg', title: 'Compute Clusters', baseSize: 88 },
+  { id: 'o3', image: '/cards/card_06.jpg', title: 'Orbital Telemetry', baseSize: 88 },
+  { id: 'o4', image: '/services/reality-02.jpg', title: 'Silicon Hardware', baseSize: 88 },
+  { id: 'o5', image: '/services/ai-agent-evaluation.webp', title: 'Autonomous Systems', baseSize: 88 },
+  { id: 'o6', image: '/cards/card_04.jpg', title: 'Simulation Physics', baseSize: 88 },
+  { id: 'o7', image: '/services/reality-03.jpg', title: 'Robotics & Vision', baseSize: 88 },
+  { id: 'o8', image: '/cards/card_05.jpg', title: 'Cryptographic Security', baseSize: 88 },
+  { id: 'o9', image: '/services/benchmarking-frameworks.webp', title: 'Empirical Metrics', baseSize: 88 },
+  { id: 'o10', image: '/cards/card_07.jpg', title: 'WASM Sandboxes', baseSize: 88 },
+  { id: 'o11', image: '/cards/card_08.jpg', title: 'Optical Sensors', baseSize: 88 },
+  { id: 'o12', image: '/services/hero-bg.webp', title: 'Frontier Neural Models', baseSize: 88 },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -155,17 +157,17 @@ export default function AboutDualWaveSection() {
   const [focusedIdx, setFocusedIdx] = useState<number>(0);
 
   // Responsive radii for diagonal ellipse closely framing headline
-  const [orbitRadii, setOrbitRadii] = useState({ rx: 485, ry: 235 });
+  const [orbitRadii, setOrbitRadii] = useState({ rx: 495, ry: 240 });
 
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
       if (width < 640) {
-        setOrbitRadii({ rx: 180, ry: 140 });
+        setOrbitRadii({ rx: 185, ry: 145 });
       } else if (width < 1024) {
-        setOrbitRadii({ rx: 345, ry: 180 });
+        setOrbitRadii({ rx: 355, ry: 185 });
       } else {
-        setOrbitRadii({ rx: 485, ry: 235 });
+        setOrbitRadii({ rx: 495, ry: 240 });
       }
     };
 
@@ -215,8 +217,8 @@ export default function AboutDualWaveSection() {
         const nx = Math.max(-1, Math.min(1, x / rx));
         const progress = (1 - nx) / 2; // 1.0 at far left, 0.0 at far right
 
-        // Scale: from 0.46x (small on right) up to 1.10x (comfortably large on left without collision)
-        const scale = 0.46 + progress * 0.64;
+        // Scale: from 0.46x (small on right) up to 1.04x (harmonious on left with generous clearance)
+        const scale = 0.46 + progress * 0.58;
         const opacity = 0.65 + progress * 0.35;
         const zIndex = Math.round(progress * 30) + 1;
 
@@ -311,8 +313,8 @@ export default function AboutDualWaveSection() {
             >
               <div
                 style={{
-                  width: `${Math.round(item.baseSize * (orbitRadii.rx / 485))}px`,
-                  height: `${Math.round(item.baseSize * (orbitRadii.rx / 485))}px`,
+                  width: `${Math.round(item.baseSize * (orbitRadii.rx / 495))}px`,
+                  height: `${Math.round(item.baseSize * (orbitRadii.rx / 495))}px`,
                 }}
                 className="relative rounded-lg overflow-hidden bg-neutral-900 shadow-[0_12px_28px_rgba(0,0,0,0.7)] transition-transform duration-200"
               >
