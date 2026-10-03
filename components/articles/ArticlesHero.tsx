@@ -21,7 +21,7 @@ export default function ArticlesHero() {
   return (
     <section
       id="articles-hero"
-      className="relative w-full min-h-[75vh] lg:min-h-[80vh] flex flex-col justify-center items-center overflow-hidden bg-[#09090b] text-white"
+      className="relative w-full min-h-[75vh] lg:min-h-[85vh] flex flex-col justify-center items-center overflow-hidden bg-[#09090b] text-white"
     >
       {/* Background Frame */}
       <motion.div
@@ -35,7 +35,7 @@ export default function ArticlesHero() {
           alt="Evalixa Articles"
           fill
           priority
-          className="object-cover object-center brightness-[0.35] contrast-[1.12]"
+          className="object-cover object-center brightness-[0.55] contrast-[1.12]"
         />
         <div className="absolute inset-0 bg-[#09090b]/55 pointer-events-none" />
         <div className="absolute inset-0 bg-linear-to-t from-[#09090b] via-transparent to-[#09090b]/80 pointer-events-none" />
