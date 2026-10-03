@@ -116,9 +116,9 @@ const WAVE_PAIRS: WavePair[] = [
   },
 ];
 
-// Clean harmonic curve offsets (in px) for the 12 items.
-// Maximum displacement is bounded to 45px so text never encroaches into the center column.
-const CURVE_OFFSETS = [0, 8, 26, 41, 44, 32, 13, 2, 5, 20, 38, 45];
+// Clean symmetric harmonic curve offsets (in px) for the 12 items.
+// Starts and ends at the same point (0px), smoothly arching inward to peak at the middle rows (44px).
+const CURVE_OFFSETS = [0, 12, 24, 34, 41, 44, 44, 41, 34, 24, 12, 0];
 
 export default function AboutDualWaveSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -183,6 +183,7 @@ export default function AboutDualWaveSection() {
 
   return (
     <section
+      id="coverage-dual-wave"
       ref={sectionRef}
       className="relative z-20 w-full bg-[#09090b] text-white py-20 sm:py-28 border-b border-neutral-900 overflow-hidden"
     >
