@@ -53,27 +53,37 @@ export default function BlogsEditorialSection() {
 
   useGSAP(
     () => {
-      rowRefs.current.forEach((row, index) => {
+      // When searching or filtering, eliminate scroll-tied scrub to prevent glitching
+      if (isFiltering) {
+        rowRefs.current.forEach((row) => {
+          if (row) {
+            gsap.set(row, { y: 0, opacity: 1 });
+          }
+        });
+        return;
+      }
+
+      // Unfiltered initial scroll: one-shot reveal, never fights with scroll position
+      rowRefs.current.forEach((row) => {
         if (!row) return;
         gsap.fromTo(
           row,
-          { y: 25, opacity: 0.2 },
+          { y: 20, opacity: 0 },
           {
             y: 0,
             opacity: 1,
-            ease: 'none',
+            duration: 0.5,
+            ease: 'power2.out',
             scrollTrigger: {
-              id: `blog-row-${index}`,
               trigger: row,
               start: 'top 92%',
-              end: 'top 65%',
-              scrub: 1,
+              once: true,
             },
           }
         );
       });
     },
-    { dependencies: [filteredBlogs.length, selectedCategory, searchQuery], scope: containerRef }
+    { dependencies: [filteredBlogs.length, selectedCategory, searchQuery, isFiltering], scope: containerRef }
   );
 
   return (
@@ -88,7 +98,7 @@ export default function BlogsEditorialSection() {
           {/* Main Title & Lede */}
           <div className="lg:col-span-7 space-y-4">
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block">
-              RESEARCH REPOSITORY // 5 PUBLISHED GUIDES
+              RESEARCH REPOSITORY // {filteredBlogs.length} {filteredBlogs.length === 1 ? 'PUBLISHED GUIDE' : 'PUBLISHED GUIDES'}
             </span>
             <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight">
               Rigorous field research for engineering teams.
@@ -102,7 +112,7 @@ export default function BlogsEditorialSection() {
           <div className="lg:col-span-5 grid grid-cols-3 gap-6 pt-4 lg:pt-0 lg:border-l lg:border-neutral-800 lg:pl-10">
             <div>
               <span className="font-mono text-2xl sm:text-3xl font-extrabold text-white block">
-                05
+                {String(filteredBlogs.length).padStart(2, '0')}
               </span>
               <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 block mt-1">
                 Deep Guides
@@ -138,7 +148,7 @@ export default function BlogsEditorialSection() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search guides by title, keyword, or concept..."
-                className="w-full pl-10 pr-10 py-3 bg-neutral-900/90 border border-neutral-700/80 rounded-lg text-sm text-white placeholder-neutral-400 focus:outline-none focus:border-neutral-400 transition-colors font-sans"
+                className="w-full pl-10 pr-10 py-2.5 bg-neutral-900/90 border border-neutral-700/80 rounded-lg text-xs sm:text-sm text-white placeholder-neutral-400 focus:outline-none focus:border-neutral-400 transition-colors font-sans"
               />
               {searchQuery && (
                 <button
@@ -168,8 +178,8 @@ export default function BlogsEditorialSection() {
             </div>
           </div>
 
-          {/* Category Filter Pills */}
-          <div className="flex flex-wrap items-center gap-2 pt-2">
+          {/* Category Filter Buttons (Crisp rounded-md geometry) */}
+          <div className="flex flex-wrap items-center gap-2 pt-1">
             {CATEGORIES.map((cat) => {
               const isSelected = selectedCategory === cat;
               const count =
@@ -181,15 +191,15 @@ export default function BlogsEditorialSection() {
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-2 ${
+                  className={`px-3 py-1.5 rounded-md text-xs font-mono tracking-wider transition-all duration-150 cursor-pointer flex items-center gap-2 ${
                     isSelected
-                      ? 'bg-white text-black font-semibold shadow-md'
-                      : 'bg-neutral-900/80 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 border border-neutral-800'
+                      ? 'bg-white text-black font-semibold shadow-xs'
+                      : 'bg-neutral-900/60 text-neutral-400 hover:text-white hover:border-neutral-700 border border-neutral-800'
                   }`}
                 >
                   <span>{cat}</span>
                   <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                    className={`text-[10px] px-1.5 py-0.5 rounded ${
                       isSelected
                         ? 'bg-neutral-200 text-neutral-900'
                         : 'bg-neutral-800 text-neutral-400'
@@ -206,10 +216,10 @@ export default function BlogsEditorialSection() {
         {/* Empty State */}
         {filteredBlogs.length === 0 && (
           <div className="py-20 text-center border border-neutral-800 rounded-lg bg-neutral-900/30 space-y-4">
-            <p className="font-mono text-sm text-neutral-400 uppercase tracking-widest">
-              No matching guides found
+            <p className="font-mono text-xs uppercase tracking-widest text-neutral-500">
+              NO MATCHING GUIDES FOUND
             </p>
-            <p className="font-sans text-neutral-500 text-sm max-w-md mx-auto">
+            <p className="font-sans text-neutral-400 text-sm max-w-md mx-auto">
               No guides matched &ldquo;{searchQuery}&rdquo; in category &ldquo;{selectedCategory}&rdquo;. Try clearing your search term or picking another category.
             </p>
             <button
@@ -217,23 +227,20 @@ export default function BlogsEditorialSection() {
                 setSearchQuery('');
                 setSelectedCategory('All');
               }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-white text-black font-mono text-xs uppercase tracking-wider font-semibold hover:bg-neutral-200 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-neutral-800 hover:bg-neutral-700 text-white font-mono text-xs uppercase tracking-wider transition-colors"
             >
               Reset Filters
             </button>
           </div>
         )}
 
-        {/* Lead Guide Feature Spotlight (Shown when not filtering) */}
+        {/* Featured / Lead Guide Feature Spotlight (Shown when viewing default unfiltered state) */}
         {featuredBlog && (
           <div className="border border-neutral-800 rounded-xl p-8 sm:p-12 bg-neutral-900/40 relative overflow-hidden group hover:border-neutral-700 transition-colors">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
               <div className="lg:col-span-7 space-y-6">
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="px-2.5 py-1 rounded bg-white text-black font-mono text-xs uppercase tracking-wider font-semibold">
-                    01 // LEAD GUIDE
-                  </span>
-                  <span className="font-mono text-xs uppercase tracking-wider text-neutral-400">
+                  <span className="px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800 text-neutral-300 font-mono text-xs uppercase tracking-wider">
                     {featuredBlog.category}
                   </span>
                   <span className="text-neutral-600 font-mono text-xs">•</span>
@@ -270,9 +277,9 @@ export default function BlogsEditorialSection() {
                 <div className="pt-4">
                   <Link
                     href={featuredBlog.path}
-                    className="inline-flex items-center gap-2 text-sm font-mono uppercase tracking-wider text-white font-semibold group/btn hover:text-neutral-300 transition-colors"
+                    className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-white font-semibold group/btn hover:text-neutral-300 transition-colors"
                   >
-                    <span>Read Lead Guide</span>
+                    <span>Read Guide</span>
                     <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                   </Link>
                 </div>
@@ -316,7 +323,7 @@ export default function BlogsEditorialSection() {
                     className="py-10 sm:py-12 group hover:bg-neutral-900/30 -mx-4 px-4 sm:-mx-6 sm:px-6 transition-colors rounded-lg"
                   >
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-                      {/* Left: Index & Meta */}
+                      {/* Left: Canonical Index & Meta */}
                       <div className="lg:col-span-3 space-y-2">
                         <span className="font-mono text-xl sm:text-2xl font-bold text-neutral-500 group-hover:text-white transition-colors block">
                           {displayIndex}

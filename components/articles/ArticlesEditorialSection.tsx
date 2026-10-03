@@ -54,27 +54,37 @@ export default function ArticlesEditorialSection() {
 
   useGSAP(
     () => {
-      rowRefs.current.forEach((row, index) => {
+      // When searching or filtering, eliminate scroll-tied scrub to prevent glitching
+      if (isFiltering) {
+        rowRefs.current.forEach((row) => {
+          if (row) {
+            gsap.set(row, { y: 0, opacity: 1 });
+          }
+        });
+        return;
+      }
+
+      // Unfiltered initial scroll: one-shot reveal, never fights with scroll position
+      rowRefs.current.forEach((row) => {
         if (!row) return;
         gsap.fromTo(
           row,
-          { y: 25, opacity: 0.2 },
+          { y: 20, opacity: 0 },
           {
             y: 0,
             opacity: 1,
-            ease: 'none',
+            duration: 0.5,
+            ease: 'power2.out',
             scrollTrigger: {
-              id: `article-row-${index}`,
               trigger: row,
               start: 'top 92%',
-              end: 'top 65%',
-              scrub: 1,
+              once: true,
             },
           }
         );
       });
     },
-    { dependencies: [filteredArticles.length, selectedCategory, searchQuery], scope: containerRef }
+    { dependencies: [filteredArticles.length, selectedCategory, searchQuery, isFiltering], scope: containerRef }
   );
 
   return (
@@ -89,7 +99,7 @@ export default function ArticlesEditorialSection() {
           {/* Main Title & Lede */}
           <div className="lg:col-span-7 space-y-4">
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block">
-              EDITORIAL LIBRARY // 6 ARTICLES
+              EDITORIAL LIBRARY // {filteredArticles.length} {filteredArticles.length === 1 ? 'ARTICLE' : 'ARTICLES'}
             </span>
             <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight">
               In-depth analysis for technology leaders.
@@ -151,21 +161,35 @@ export default function ArticlesEditorialSection() {
             </span>
           </div>
 
-          {/* Category Filter Pills */}
+          {/* Category Filter Pills (Clean rounded-md geometry) */}
           <div className="flex flex-wrap items-center gap-2 pt-1">
             {CATEGORIES.map((cat) => {
               const isActive = selectedCategory === cat;
+              const count =
+                cat === 'All'
+                  ? articlePosts.length
+                  : articlePosts.filter((a) => a.category === cat).length;
+
               return (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 rounded-md font-mono text-xs tracking-wider transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-md font-mono text-xs tracking-wider transition-all cursor-pointer flex items-center gap-2 ${
                     isActive
                       ? 'bg-white text-black font-semibold shadow-xs'
                       : 'bg-neutral-900/60 border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700'
                   }`}
                 >
-                  {cat}
+                  <span>{cat}</span>
+                  <span
+                    className={`text-[10px] px-1.5 py-0.5 rounded ${
+                      isActive
+                        ? 'bg-neutral-200 text-neutral-900'
+                        : 'bg-neutral-800 text-neutral-400'
+                    }`}
+                  >
+                    {count}
+                  </span>
                 </button>
               );
             })}
@@ -199,9 +223,6 @@ export default function ArticlesEditorialSection() {
         {/* Featured / Lead Article Spotlight (Shown when viewing default unfiltered state) */}
         {featuredArticle && (
           <div className="pb-16 border-b border-neutral-800">
-            <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-6">
-              01 // LEAD ESSAY
-            </span>
             <Link
               href={featuredArticle.path}
               className="group block space-y-6 hover:text-white transition-colors"
@@ -237,7 +258,7 @@ export default function ArticlesEditorialSection() {
                 </div>
 
                 <span className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-white group-hover:translate-x-1 transition-transform">
-                  <span>Read Lead Article</span>
+                  <span>Read Article</span>
                   <ArrowRight className="w-4 h-4" />
                 </span>
               </div>
@@ -248,63 +269,68 @@ export default function ArticlesEditorialSection() {
         {/* Secondary Articles Natural Rows */}
         {listArticles.length > 0 && (
           <div className="divide-y divide-neutral-800">
-            {listArticles.map((article, idx) => (
-              <article
-                key={article.slug}
-                ref={(el) => {
-                  rowRefs.current[idx] = el;
-                }}
-                className="py-12 sm:py-16 first:pt-0 last:pb-0"
-              >
-                <Link
-                  href={article.path}
-                  className="group flex flex-col md:flex-row md:items-start justify-between gap-6 hover:text-white transition-colors"
+            {listArticles.map((article, idx) => {
+              const globalIdx = articlePosts.findIndex((a) => a.slug === article.slug) + 1;
+              const displayIndex = String(globalIdx).padStart(2, '0');
+
+              return (
+                <article
+                  key={article.slug}
+                  ref={(el) => {
+                    rowRefs.current[idx] = el;
+                  }}
+                  className="py-12 sm:py-16 first:pt-0 last:pb-0"
                 >
-                  {/* Index Column */}
-                  <div className="flex items-baseline gap-4 md:w-36 shrink-0">
-                    <span className="font-mono text-3xl sm:text-4xl font-extrabold text-neutral-400 group-hover:text-white transition-colors">
-                      {String((featuredArticle ? idx + 2 : idx + 1)).padStart(2, '0')}
-                    </span>
-                    <span className="font-mono text-xs uppercase tracking-wider text-neutral-400">
-                      {article.category}
-                    </span>
-                  </div>
-
-                  {/* Article Content */}
-                  <div className="flex-1 min-w-0 space-y-3">
-                    <div className="flex items-center gap-3 text-xs font-mono text-neutral-400">
-                      <span>{article.readTime}</span>
-                      <span>•</span>
-                      <span>{article.publishDate}</span>
+                  <Link
+                    href={article.path}
+                    className="group flex flex-col md:flex-row md:items-start justify-between gap-6 hover:text-white transition-colors"
+                  >
+                    {/* Index Column */}
+                    <div className="flex items-baseline gap-4 md:w-36 shrink-0">
+                      <span className="font-mono text-3xl sm:text-4xl font-extrabold text-neutral-400 group-hover:text-white transition-colors">
+                        {displayIndex}
+                      </span>
+                      <span className="font-mono text-xs uppercase tracking-wider text-neutral-400">
+                        {article.category}
+                      </span>
                     </div>
 
-                    <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight leading-snug group-hover:text-neutral-200 transition-colors">
-                      {article.title}
-                    </h3>
+                    {/* Article Content */}
+                    <div className="flex-1 min-w-0 space-y-3">
+                      <div className="flex items-center gap-3 text-xs font-mono text-neutral-400">
+                        <span>{article.readTime}</span>
+                        <span>•</span>
+                        <span>{article.publishDate}</span>
+                      </div>
 
-                    <p className="font-sans text-sm sm:text-base text-neutral-400 leading-relaxed max-w-3xl line-clamp-3">
-                      {article.intro}
-                    </p>
+                      <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight leading-snug group-hover:text-neutral-200 transition-colors">
+                        {article.title}
+                      </h3>
 
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      {article.tags.slice(0, 3).map((tag) => (
-                        <span
-                          key={tag}
-                          className="font-mono text-[11px] text-neutral-400 bg-neutral-900/60 border border-neutral-800 px-2 py-0.5 rounded"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                      <p className="font-sans text-sm sm:text-base text-neutral-400 leading-relaxed max-w-3xl line-clamp-3">
+                        {article.intro}
+                      </p>
+
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        {article.tags.slice(0, 3).map((tag) => (
+                          <span
+                            key={tag}
+                            className="font-mono text-[11px] text-neutral-400 bg-neutral-900/60 border border-neutral-800 px-2 py-0.5 rounded"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Arrow Action */}
-                  <div className="hidden md:flex items-center justify-end w-12 pt-2">
-                    <ArrowUpRight className="w-5 h-5 text-neutral-400 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-                  </div>
-                </Link>
-              </article>
-            ))}
+                    {/* Arrow Action */}
+                    <div className="hidden md:flex items-center justify-end w-12 pt-2">
+                      <ArrowUpRight className="w-5 h-5 text-neutral-400 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                    </div>
+                  </Link>
+                </article>
+              );
+            })}
           </div>
         )}
       </div>
