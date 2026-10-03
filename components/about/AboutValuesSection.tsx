@@ -67,6 +67,16 @@ const VALUES_CARDS: ValueCard[] = [
   },
 ];
 
+// Layout-calibrated 3D trajectories to eliminate cross-cutting and messy overlaps
+const CARD_TRAJECTORIES = [
+  { x: -70, y: 55, rotateX: 16, rotateZ: -2 }, // Card 0: Row 1 Left
+  { x: 70, y: 55, rotateX: 16, rotateZ: 2 },   // Card 1: Row 1 Right
+  { x: -60, y: 50, rotateX: 16, rotateZ: -2 }, // Card 2: Row 2 Left
+  { x: 0, y: 65, rotateX: 18, rotateZ: 0 },    // Card 3: Row 2 Center (Clean vertical glide)
+  { x: 60, y: 50, rotateX: 16, rotateZ: 2 },   // Card 4: Row 2 Right
+  { x: 0, y: 55, rotateX: 14, rotateZ: 0 },    // Card 5: Row 3 Full Width
+];
+
 export default function AboutValuesSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -80,18 +90,18 @@ export default function AboutValuesSection() {
       const cards = gsap.utils.toArray<HTMLElement>('.value-bento-card', grid);
       const mm = gsap.matchMedia();
 
-      // 3D Staggered entrance identical to OPERATING TENETS
+      // Fluid, responsive 3D Staggered entrance matching OPERATING TENETS
       mm.add('(min-width: 768px)', () => {
         cards.forEach((card, idx) => {
-          const isLeft = idx % 2 === 0;
+          const trajectory = CARD_TRAJECTORIES[idx] || { x: 0, y: 50, rotateX: 14, rotateZ: 0 };
           gsap.fromTo(
             card,
             {
-              x: isLeft ? -90 : 90,
-              y: 60,
-              rotateX: 18,
-              rotateZ: isLeft ? -2 : 2,
-              opacity: 0.1,
+              x: trajectory.x,
+              y: trajectory.y,
+              rotateX: trajectory.rotateX,
+              rotateZ: trajectory.rotateZ,
+              opacity: 0.12,
             },
             {
               x: 0,
@@ -102,9 +112,9 @@ export default function AboutValuesSection() {
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: card,
-                start: 'top bottom+=60px',
-                end: 'top 52%',
-                scrub: 1,
+                start: 'top 92%',
+                end: 'center 48%',
+                scrub: 0.6,
               },
             }
           );
@@ -115,16 +125,16 @@ export default function AboutValuesSection() {
         cards.forEach((card) => {
           gsap.fromTo(
             card,
-            { y: 40, opacity: 0.15 },
+            { y: 35, opacity: 0.15 },
             {
               y: 0,
               opacity: 1,
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: card,
-                start: 'top bottom+=30px',
-                end: 'top 60%',
-                scrub: 0.8,
+                start: 'top 90%',
+                end: 'center 52%',
+                scrub: 0.6,
               },
             }
           );
@@ -157,10 +167,10 @@ export default function AboutValuesSection() {
           </p>
         </div>
 
-        {/* Bento Grid with closer gaps and Staggered 3D Scroll like OPERATING TENETS */}
+        {/* Bento Grid with Tight Gaps (gap-2.5 sm:gap-3) and Clean Non-Colliding 3D Scroll */}
         <div
           ref={gridRef}
-          className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-3.5"
+          className="grid grid-cols-1 md:grid-cols-12 gap-2.5 sm:gap-3"
           style={{ perspective: '1200px' }}
         >
           {VALUES_CARDS.map((card) => (
