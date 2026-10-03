@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { CASE_STUDIES } from '@/data/caseStudies';
+import { TOCMinimap, TOCItemType } from '@/components/toc-minimap';
 import { ArrowUpRight } from 'lucide-react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -15,6 +16,69 @@ const HANDOVER_STANDARDS = [
   'Inter-rater agreement (α > 0.90)',
   'Deterministic replay test cases',
   'Severity-ranked regression blockers',
+];
+
+const TOC_ITEMS: TOCItemType[] = [
+  {
+    title: '01 Fintech Agent Evaluation',
+    url: '#case-01',
+    depth: 2,
+  },
+  {
+    title: 'Problem: Masked Failure Modes',
+    url: '#case-01-problem',
+    depth: 3,
+  },
+  {
+    title: 'Approach: Task-Grounded Rubrics',
+    url: '#case-01-approach',
+    depth: 3,
+  },
+  {
+    title: 'Outcome: Board Authorization',
+    url: '#case-01-outcome',
+    depth: 3,
+  },
+  {
+    title: '02 Adversarial Red-Teaming',
+    url: '#case-02',
+    depth: 2,
+  },
+  {
+    title: 'Problem: Static Suite Gaps',
+    url: '#case-02-problem',
+    depth: 3,
+  },
+  {
+    title: 'Approach: Adaptive Injections',
+    url: '#case-02-approach',
+    depth: 3,
+  },
+  {
+    title: 'Outcome: Automated CI Gate',
+    url: '#case-02-outcome',
+    depth: 3,
+  },
+  {
+    title: '03 Clinical Alignment & RLHF',
+    url: '#case-03',
+    depth: 2,
+  },
+  {
+    title: 'Problem: Crowd Annotator Flaws',
+    url: '#case-03-problem',
+    depth: 3,
+  },
+  {
+    title: 'Approach: Credentialed MDs',
+    url: '#case-03-approach',
+    depth: 3,
+  },
+  {
+    title: 'Outcome: 48% Omission Drop',
+    url: '#case-03-outcome',
+    depth: 3,
+  },
 ];
 
 export default function CaseStudiesLedgerSection() {
@@ -53,7 +117,7 @@ export default function CaseStudiesLedgerSection() {
       className="relative z-20 bg-[#09090b] text-white py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-b border-neutral-800"
     >
       <div className="max-w-7xl mx-auto space-y-20">
-        {/* Natural Header Block (No Box / Card wrapper) */}
+        {/* Natural Header Block */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start pb-16 border-b border-neutral-800">
           {/* Main Title & Lede */}
           <div className="lg:col-span-7 space-y-4">
@@ -68,7 +132,7 @@ export default function CaseStudiesLedgerSection() {
             </p>
           </div>
 
-          {/* Natural Handover Standards List (No Box) */}
+          {/* Natural Handover Standards List */}
           <div className="lg:col-span-5 space-y-6 pt-2 lg:pt-8">
             <div>
               <span className="font-mono text-xs uppercase tracking-wider text-neutral-300 font-semibold block mb-3">
@@ -97,95 +161,116 @@ export default function CaseStudiesLedgerSection() {
           </div>
         </div>
 
-        {/* Natural Case Studies Rows (No Cards, No Rounded Outer Boxes) */}
-        <div className="divide-y divide-neutral-800">
-          {CASE_STUDIES.map((study, idx) => (
-            <article
-              key={study.id}
-              ref={(el) => {
-                rowRefs.current[idx] = el;
-              }}
-              className="py-16 sm:py-20 first:pt-0 last:pb-0 space-y-8"
-            >
-              {/* Meta Row: Large Index + Domain + Context */}
-              <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
-                <div className="flex items-baseline gap-4">
-                  <span className="font-mono text-3xl sm:text-4xl font-extrabold text-neutral-300">
-                    {study.index}
-                  </span>
-                  <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold">
-                    {study.focus}
-                  </span>
-                  <span className="text-neutral-600 hidden sm:inline">/</span>
-                  <span className="font-mono text-xs uppercase tracking-wider text-neutral-400">
-                    {study.domain}
-                  </span>
-                </div>
-                <span className="font-mono text-xs text-neutral-400">
-                  {study.clientContext}
-                </span>
-              </div>
+        {/* Case Studies Container with Slight Left Side Width for Sticky TOC Minimap */}
+        <div className="flex gap-6 lg:gap-12 items-start">
+          {/* Slight Left Side Width: Sticky TOC Minimap */}
+          <div className="hidden md:flex flex-col items-center w-12 sm:w-14 lg:w-16 shrink-0 sticky top-36 self-start pt-2">
+            <TOCMinimap
+              items={TOC_ITEMS}
+              side="right"
+              sideOffset={20}
+              className="w-full flex justify-center"
+            />
+          </div>
 
-              {/* Title & Core Summary */}
-              <div className="max-w-4xl space-y-3">
-                <h3 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-snug">
-                  {study.headline}
-                </h3>
-                <p className="font-sans text-base sm:text-lg text-neutral-300 leading-relaxed">
-                  {study.summary}
-                </p>
-              </div>
-
-              {/* 3-Column Progression (Problem -> Approach -> Outcome) Sitting Naturally */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4">
-                {study.phases.map((phase, pIdx) => (
-                  <div key={phase.label} className="space-y-2.5">
-                    <span className="font-mono text-xs font-bold uppercase tracking-widest text-neutral-400 block">
-                      {String(pIdx + 1).padStart(2, '0')} // {phase.label}
+          {/* Natural Case Studies Rows */}
+          <div className="flex-1 min-w-0 divide-y divide-neutral-800">
+            {CASE_STUDIES.map((study, idx) => (
+              <article
+                key={study.id}
+                id={study.id}
+                ref={(el) => {
+                  rowRefs.current[idx] = el;
+                }}
+                className="py-16 sm:py-20 first:pt-0 last:pb-0 space-y-8 scroll-mt-28"
+              >
+                {/* Meta Row: Large Index + Domain + Context */}
+                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
+                  <div className="flex items-baseline gap-4">
+                    <span className="font-mono text-3xl sm:text-4xl font-extrabold text-neutral-300">
+                      {study.index}
                     </span>
-                    <strong className="font-display font-semibold text-base text-white block">
-                      {phase.title}
-                    </strong>
-                    <p className="font-sans text-sm text-neutral-400 leading-relaxed">
-                      {phase.text}
-                    </p>
+                    <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold">
+                      {study.focus}
+                    </span>
+                    <span className="text-neutral-600 hidden sm:inline">/</span>
+                    <span className="font-mono text-xs uppercase tracking-wider text-neutral-400">
+                      {study.domain}
+                    </span>
                   </div>
-                ))}
-              </div>
-
-              {/* Metrics & Deliverables Ledger Line */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-8 border-t border-neutral-800/80 items-start">
-                {/* 3 Telemetry Metrics */}
-                <div className="lg:col-span-5 grid grid-cols-3 gap-4">
-                  {study.metrics.map((m, mIdx) => (
-                    <div key={mIdx} className="space-y-1">
-                      <div className="font-display font-bold text-2xl sm:text-3xl text-white tracking-tight">
-                        {m.value}
-                      </div>
-                      <div className="font-mono text-[11px] text-neutral-400 uppercase tracking-wider leading-tight">
-                        {m.label}
-                      </div>
-                    </div>
-                  ))}
+                  <span className="font-mono text-xs text-neutral-400">
+                    {study.clientContext}
+                  </span>
                 </div>
 
-                {/* Handover Deliverables */}
-                <div className="lg:col-span-7 flex flex-col justify-center space-y-2">
-                  <span className="font-mono text-xs uppercase tracking-wider text-neutral-400">
-                    Handover Deliverables:
-                  </span>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-300 font-mono">
-                    {study.deliverables.map((d, dIdx) => (
-                      <span key={dIdx} className="inline-flex items-center gap-1.5">
-                        <span className="text-neutral-500">•</span>
-                        <span>{d}</span>
-                      </span>
+                {/* Title & Core Summary */}
+                <div className="max-w-4xl space-y-3">
+                  <h3 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-snug">
+                    {study.headline}
+                  </h3>
+                  <p className="font-sans text-base sm:text-lg text-neutral-300 leading-relaxed">
+                    {study.summary}
+                  </p>
+                </div>
+
+                {/* 3-Column Progression (Problem -> Approach -> Outcome) Sitting Naturally */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4">
+                  {study.phases.map((phase, pIdx) => {
+                    const phaseId = `${study.id}-${phase.label.toLowerCase()}`;
+                    return (
+                      <div
+                        key={phase.label}
+                        id={phaseId}
+                        className="space-y-2.5 scroll-mt-32"
+                      >
+                        <span className="font-mono text-xs font-bold uppercase tracking-widest text-neutral-400 block">
+                          {String(pIdx + 1).padStart(2, '0')} // {phase.label}
+                        </span>
+                        <strong className="font-display font-semibold text-base text-white block">
+                          {phase.title}
+                        </strong>
+                        <p className="font-sans text-sm text-neutral-400 leading-relaxed">
+                          {phase.text}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Metrics & Deliverables Ledger Line */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-8 border-t border-neutral-800/80 items-start">
+                  {/* 3 Telemetry Metrics */}
+                  <div className="lg:col-span-5 grid grid-cols-3 gap-4">
+                    {study.metrics.map((m, mIdx) => (
+                      <div key={mIdx} className="space-y-1">
+                        <div className="font-display font-bold text-2xl sm:text-3xl text-white tracking-tight">
+                          {m.value}
+                        </div>
+                        <div className="font-mono text-[11px] text-neutral-400 uppercase tracking-wider leading-tight">
+                          {m.label}
+                        </div>
+                      </div>
                     ))}
                   </div>
+
+                  {/* Handover Deliverables */}
+                  <div className="lg:col-span-7 flex flex-col justify-center space-y-2">
+                    <span className="font-mono text-xs uppercase tracking-wider text-neutral-400">
+                      Handover Deliverables:
+                    </span>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-300 font-mono">
+                      {study.deliverables.map((d, dIdx) => (
+                        <span key={dIdx} className="inline-flex items-center gap-1.5">
+                          <span className="text-neutral-500">•</span>
+                          <span>{d}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>
