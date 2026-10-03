@@ -33,15 +33,15 @@ export default function ContactChannelsBento({
       cards.forEach((card) => {
         gsap.fromTo(
           card,
-          { y: 45, opacity: 0.15 },
+          { y: 40, opacity: 0.15 },
           {
             y: 0,
             opacity: 1,
             ease: 'none',
             scrollTrigger: {
               trigger: card,
-              start: 'top 90%',
-              end: 'top 58%',
+              start: 'top 95%',
+              end: 'top 72%',
               scrub: true,
               invalidateOnRefresh: true,
             },
