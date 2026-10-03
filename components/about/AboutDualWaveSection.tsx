@@ -19,18 +19,16 @@ interface OrbitItem {
 }
 
 const ORBIT_ITEMS: OrbitItem[] = [
-  { id: 'o1', image: '/services/reality-01.jpg', title: 'Clinical Diagnostics', baseSize: 88 },
-  { id: 'o2', image: '/services/hero-datacenter.jpg', title: 'Compute Clusters', baseSize: 88 },
-  { id: 'o3', image: '/cards/card_06.jpg', title: 'Orbital Telemetry', baseSize: 88 },
-  { id: 'o4', image: '/services/reality-02.jpg', title: 'Silicon Hardware', baseSize: 88 },
-  { id: 'o5', image: '/services/ai-agent-evaluation.webp', title: 'Autonomous Systems', baseSize: 88 },
-  { id: 'o6', image: '/cards/card_04.jpg', title: 'Simulation Physics', baseSize: 88 },
-  { id: 'o7', image: '/services/reality-03.jpg', title: 'Robotics & Vision', baseSize: 88 },
-  { id: 'o8', image: '/cards/card_05.jpg', title: 'Cryptographic Security', baseSize: 88 },
-  { id: 'o9', image: '/services/benchmarking-frameworks.webp', title: 'Empirical Metrics', baseSize: 88 },
-  { id: 'o10', image: '/cards/card_07.jpg', title: 'WASM Sandboxes', baseSize: 88 },
-  { id: 'o11', image: '/cards/card_08.jpg', title: 'Optical Sensors', baseSize: 88 },
-  { id: 'o12', image: '/services/hero-bg.webp', title: 'Frontier Neural Models', baseSize: 88 },
+  { id: 'o1', image: '/services/reality-01.jpg', title: 'Clinical Diagnostics', baseSize: 95 },
+  { id: 'o2', image: '/services/hero-datacenter.jpg', title: 'Compute Clusters', baseSize: 95 },
+  { id: 'o3', image: '/cards/card_06.jpg', title: 'Orbital Telemetry', baseSize: 95 },
+  { id: 'o4', image: '/services/reality-02.jpg', title: 'Silicon Hardware', baseSize: 95 },
+  { id: 'o5', image: '/services/ai-agent-evaluation.webp', title: 'Autonomous Systems', baseSize: 95 },
+  { id: 'o6', image: '/cards/card_04.jpg', title: 'Simulation Physics', baseSize: 95 },
+  { id: 'o7', image: '/services/reality-03.jpg', title: 'Robotics & Vision', baseSize: 95 },
+  { id: 'o8', image: '/cards/card_05.jpg', title: 'Cryptographic Security', baseSize: 95 },
+  { id: 'o9', image: '/services/benchmarking-frameworks.webp', title: 'Empirical Metrics', baseSize: 95 },
+  { id: 'o10', image: '/cards/card_08.jpg', title: 'Optical Sensors', baseSize: 95 },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -156,18 +154,18 @@ export default function AboutDualWaveSection() {
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [focusedIdx, setFocusedIdx] = useState<number>(0);
 
-  // Responsive radii for diagonal ellipse closely framing headline
-  const [orbitRadii, setOrbitRadii] = useState({ rx: 495, ry: 240 });
+  // Responsive radii for diagonal ellipse closely adapted to 2-3 word headline
+  const [orbitRadii, setOrbitRadii] = useState({ rx: 445, ry: 235 });
 
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
       if (width < 640) {
-        setOrbitRadii({ rx: 185, ry: 145 });
+        setOrbitRadii({ rx: 180, ry: 140 });
       } else if (width < 1024) {
-        setOrbitRadii({ rx: 355, ry: 185 });
+        setOrbitRadii({ rx: 325, ry: 180 });
       } else {
-        setOrbitRadii({ rx: 495, ry: 240 });
+        setOrbitRadii({ rx: 445, ry: 235 });
       }
     };
 
@@ -192,7 +190,7 @@ export default function AboutDualWaveSection() {
       const dt = (now - lastTime) / 1000;
       lastTime = now;
 
-      // Slightly increased angular velocity: ~0.13 rad/s for fluid, responsive orbit
+      // Smooth constant angular velocity: ~0.13 rad/s
       angle += dt * 0.13;
 
       const { rx, ry } = orbitRadii;
@@ -212,13 +210,12 @@ export default function AboutDualWaveSection() {
         const y = x0 * sinTilt + y0 * cosTilt;
 
         // Perspective sizing:
-        // Comparatively large at left side (x < 0), decreasing as it goes to right (x > 0),
-        // and increasing as it comes back to left.
+        // Increased at left side only (x < 0, up to ~119px), remaining compact on right (x > 0, ~42px)
         const nx = Math.max(-1, Math.min(1, x / rx));
         const progress = (1 - nx) / 2; // 1.0 at far left, 0.0 at far right
 
-        // Scale: from 0.46x (small on right) up to 1.04x (harmonious on left with generous clearance)
-        const scale = 0.46 + progress * 0.58;
+        // Scale: from 0.44x (compact on right) up to 1.25x (prominent on left without collision)
+        const scale = 0.44 + progress * 0.81;
         const opacity = 0.65 + progress * 0.35;
         const zIndex = Math.round(progress * 30) + 1;
 
@@ -313,8 +310,8 @@ export default function AboutDualWaveSection() {
             >
               <div
                 style={{
-                  width: `${Math.round(item.baseSize * (orbitRadii.rx / 495))}px`,
-                  height: `${Math.round(item.baseSize * (orbitRadii.rx / 495))}px`,
+                  width: `${Math.round(item.baseSize * (orbitRadii.rx / 445))}px`,
+                  height: `${Math.round(item.baseSize * (orbitRadii.rx / 445))}px`,
                 }}
                 className="relative rounded-lg overflow-hidden bg-neutral-900 shadow-[0_12px_28px_rgba(0,0,0,0.7)] transition-transform duration-200"
               >
@@ -330,12 +327,12 @@ export default function AboutDualWaveSection() {
           ))}
         </div>
 
-        {/* Center Content: Strictly 2-line headline directly contextualizing the matrix */}
-        <div className="relative z-30 max-w-4xl mx-auto px-4 text-center pointer-events-auto">
-          <h2 className="font-display font-extrabold text-2xl sm:text-4xl md:text-5xl lg:text-[50px] text-white tracking-tight leading-[1.16] drop-shadow-md">
-            <span className="block whitespace-nowrap">Autonomous Systems Assurance</span>
+        {/* Center Content: Concise 2-3 words per line headline */}
+        <div className="relative z-30 max-w-3xl mx-auto px-4 text-center pointer-events-auto">
+          <h2 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.12] drop-shadow-md">
+            <span className="block whitespace-nowrap">Autonomous Systems</span>
             <span className="block whitespace-nowrap text-neutral-400 font-bold mt-1.5">
-              Verified Across Production Domains
+              Verified in Production
             </span>
           </h2>
         </div>
