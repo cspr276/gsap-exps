@@ -14,8 +14,6 @@ interface ValueCard {
   desc: string;
   highlight: string;
   cols: string;
-  initialY: number;
-  initialRotateX: number;
 }
 
 const VALUES_CARDS: ValueCard[] = [
@@ -26,8 +24,6 @@ const VALUES_CARDS: ValueCard[] = [
     desc: 'Every project is led by senior practitioners who stay involved from initial threat modeling to final release gates. No handoffs to junior replacements halfway through. Leadership here is active, hands-on participation in the work and direct accountability for outcomes.',
     highlight: 'Direct Founder & Principal Involvement',
     cols: 'col-span-12 lg:col-span-7',
-    initialY: -100,
-    initialRotateX: 12,
   },
   {
     id: '02',
@@ -36,8 +32,6 @@ const VALUES_CARDS: ValueCard[] = [
     desc: 'We build deterministic test harnesses, gold-standard rubrics, and automated verifiers designed to remain dependable long after initial launch. Zero throwaway scripts or superficial audit summaries.',
     highlight: 'Deterministic Invariant Longevity',
     cols: 'col-span-12 lg:col-span-5',
-    initialY: -140,
-    initialRotateX: 16,
   },
   {
     id: '03',
@@ -46,8 +40,6 @@ const VALUES_CARDS: ValueCard[] = [
     desc: 'We share edge-case vulnerabilities, adversarial exploit chains, and confidence intervals early so engineering leaders make release decisions from unvarnished empirical evidence.',
     highlight: 'Zero Sugarcoating Policy',
     cols: 'col-span-12 md:col-span-6 lg:col-span-4',
-    initialY: -110,
-    initialRotateX: 10,
   },
   {
     id: '04',
@@ -56,8 +48,6 @@ const VALUES_CARDS: ValueCard[] = [
     desc: 'Operating across Europe, Asia, and North America without a single rigid headquarters. Engagements are planned around client timezone overlap, senior availability, and rigorous async documentation.',
     highlight: 'Multi-Region Timezone Overlap',
     cols: 'col-span-12 md:col-span-6 lg:col-span-4',
-    initialY: -80,
-    initialRotateX: 8,
   },
   {
     id: '05',
@@ -66,8 +56,6 @@ const VALUES_CARDS: ValueCard[] = [
     desc: 'Cloud infrastructure, observability enclaves, and developer tooling relationships validated in enterprise production, deployed only where specialist tooling adds direct client value.',
     highlight: 'Enterprise-Vetted Tooling',
     cols: 'col-span-12 md:col-span-6 lg:col-span-4',
-    initialY: -130,
-    initialRotateX: 14,
   },
   {
     id: '06',
@@ -76,8 +64,6 @@ const VALUES_CARDS: ValueCard[] = [
     desc: 'Success is measured by reduced production regression deltas and verified containment, not by billing hours or shipping unchecked code. Healthy, focused teams build dependable systems and maintain high velocity without chaotic fire drills.',
     highlight: 'Measurable Production Impact',
     cols: 'col-span-12',
-    initialY: -90,
-    initialRotateX: 10,
   },
 ];
 
@@ -94,40 +80,55 @@ export default function AboutValuesSection() {
       const cards = gsap.utils.toArray<HTMLElement>('.value-bento-card', grid);
       const mm = gsap.matchMedia();
 
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
+      // 3D Staggered entrance identical to OPERATING TENETS
+      mm.add('(min-width: 768px)', () => {
         cards.forEach((card, idx) => {
-          const cardConfig = VALUES_CARDS[idx];
-          const initialY = cardConfig ? cardConfig.initialY : -100;
-          const initialRotate = cardConfig ? cardConfig.initialRotateX : 10;
-
-          // Bi-directional scrubbed falling animation:
-          // Scrolling down: cards fall smoothly into place
-          // Scrolling up: cards lift smoothly back up
+          const isLeft = idx % 2 === 0;
           gsap.fromTo(
             card,
             {
-              y: initialY,
-              rotateX: initialRotate,
-              opacity: 0.25,
+              x: isLeft ? -90 : 90,
+              y: 60,
+              rotateX: 18,
+              rotateZ: isLeft ? -2 : 2,
+              opacity: 0.1,
             },
             {
+              x: 0,
               y: 0,
               rotateX: 0,
+              rotateZ: 0,
               opacity: 1,
               ease: 'power2.out',
               scrollTrigger: {
-                trigger: section,
-                start: 'top 80%',
-                end: 'top 20%',
-                scrub: 0.8,
+                trigger: card,
+                start: 'top bottom+=60px',
+                end: 'top 52%',
+                scrub: 1,
               },
             }
           );
         });
       });
 
-      mm.add('(prefers-reduced-motion: reduce)', () => {
-        gsap.set(cards, { y: 0, rotateX: 0, opacity: 1 });
+      mm.add('(max-width: 767px)', () => {
+        cards.forEach((card) => {
+          gsap.fromTo(
+            card,
+            { y: 40, opacity: 0.15 },
+            {
+              y: 0,
+              opacity: 1,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top bottom+=30px',
+                end: 'top 60%',
+                scrub: 0.8,
+              },
+            }
+          );
+        });
       });
     },
     { scope: sectionRef }
@@ -141,7 +142,7 @@ export default function AboutValuesSection() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-8 mb-14 border-b border-neutral-200 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-8 mb-12 border-b border-neutral-200 gap-4">
           <div className="max-w-3xl">
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-3">
               04 // VALUES & OPERATING CONTEXT
@@ -156,20 +157,20 @@ export default function AboutValuesSection() {
           </p>
         </div>
 
-        {/* Bento Grid with Falling-Into-Place Scrubbed Scroll */}
+        {/* Bento Grid with closer gaps and Staggered 3D Scroll like OPERATING TENETS */}
         <div
           ref={gridRef}
-          className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6"
+          className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-3.5"
           style={{ perspective: '1200px' }}
         >
           {VALUES_CARDS.map((card) => (
             <div
               key={card.id}
-              className={`${card.cols} value-bento-card group rounded-md border border-neutral-200/90 bg-white hover:border-neutral-400 hover:shadow-lg transition-all duration-300 p-7 sm:p-8 flex flex-col justify-between shadow-xs will-change-transform`}
+              className={`${card.cols} value-bento-card group rounded-md border border-neutral-200/90 bg-white hover:border-neutral-400 hover:shadow-lg transition-all duration-300 p-6 sm:p-7 flex flex-col justify-between shadow-xs will-change-transform`}
             >
               <div>
                 {/* Top Row: Index + Category */}
-                <div className="flex items-center justify-between pb-4 mb-5 border-b border-neutral-100">
+                <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-neutral-100">
                   <span className="font-mono text-xs font-bold text-neutral-900">
                     {card.id}
                   </span>
@@ -179,7 +180,7 @@ export default function AboutValuesSection() {
                 </div>
 
                 {/* Heading */}
-                <h3 className="font-display font-bold text-lg sm:text-xl text-neutral-950 tracking-tight leading-snug mb-3">
+                <h3 className="font-display font-bold text-lg sm:text-xl text-neutral-950 tracking-tight leading-snug mb-2.5">
                   {card.title}
                 </h3>
 
@@ -190,7 +191,7 @@ export default function AboutValuesSection() {
               </div>
 
               {/* Bottom Feature Line */}
-              <div className="mt-8 pt-4 border-t border-neutral-100 flex items-center justify-between font-mono text-xs">
+              <div className="mt-6 pt-3.5 border-t border-neutral-100 flex items-center justify-between font-mono text-xs">
                 <span className="text-neutral-400 uppercase tracking-wider text-[11px]">
                   Standard
                 </span>

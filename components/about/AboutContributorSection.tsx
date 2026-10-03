@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, Award, ShieldCheck, Scale } from 'lucide-react';
@@ -12,6 +13,7 @@ const CONTRIBUTOR_PILLARS = [
     title: 'Credentialed Domain Specialists',
     desc: 'We recruit certified clinicians, attorneys, financial analysts, and security researchers. Every contributor undergoes rigorous calibration against gold-standard rubrics before scoring production data.',
     metric: '1,200+ Verified Fellows',
+    image: '/cards/card_05.jpg',
   },
   {
     num: '02',
@@ -19,6 +21,7 @@ const CONTRIBUTOR_PILLARS = [
     title: 'High-Horizon Reasoning Adjudication',
     desc: 'Automated judges hallucinate on nuanced domain workflows. Our specialists evaluate multi-step tool calls, regulatory compliance boundaries, and multi-turn reasoning traces with granular failure categorization.',
     metric: 'Krippendorff α ≥ 0.90',
+    image: '/cards/card_06.jpg',
   },
   {
     num: '03',
@@ -26,6 +29,7 @@ const CONTRIBUTOR_PILLARS = [
     title: 'Deterministic Trace Auditing',
     desc: 'Every annotation, rubric score, and adjudication dispute is stamped with cryptographic hashes and reviewer provenance, ensuring auditable traceability for enterprise release gates.',
     metric: '100% Auditable Traces',
+    image: '/cards/card_08.jpg',
   },
 ];
 
@@ -61,7 +65,7 @@ export default function AboutContributorSection() {
           </motion.p>
         </div>
 
-        {/* 3 Pillar Cards */}
+        {/* 3 Pillar Cards with Architectural Image Background like Inside Evalixa Labs */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-16">
           {CONTRIBUTOR_PILLARS.map((pillar, idx) => {
             const Icon = pillar.icon;
@@ -72,32 +76,47 @@ export default function AboutContributorSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="group rounded-md border border-neutral-800/80 bg-neutral-950/70 hover:border-neutral-700 hover:bg-neutral-900/50 p-7 sm:p-8 flex flex-col justify-between transition-all duration-300"
+                className="group relative rounded-md border border-neutral-800 bg-neutral-950 p-7 sm:p-8 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl hover:border-neutral-500 transition-all duration-300"
               >
-                <div>
-                  <div className="flex items-center justify-between pb-4 mb-5 border-b border-neutral-800">
-                    <span className="font-mono text-xs font-bold text-neutral-400">
-                      {pillar.num}
-                    </span>
-                    <Icon className="w-4 h-4 text-neutral-500 group-hover:text-white transition-colors" />
-                  </div>
-
-                  <h3 className="font-display font-bold text-lg sm:text-xl text-white tracking-tight leading-snug mb-3">
-                    {pillar.title}
-                  </h3>
-
-                  <p className="font-sans text-xs sm:text-sm text-neutral-400 leading-relaxed font-normal">
-                    {pillar.desc}
-                  </p>
+                {/* Background Architectural Image with Dark Gradient Overlay */}
+                <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                  <Image
+                    src={pillar.image}
+                    alt={pillar.title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 400px"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 opacity-80 group-hover:opacity-90 transition-all duration-700 ease-out contrast-125"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/40" />
                 </div>
 
-                <div className="mt-8 pt-4 border-t border-neutral-800 flex items-center justify-between font-mono text-xs">
-                  <span className="text-neutral-500 uppercase tracking-wider text-[11px]">
-                    Benchmark
-                  </span>
-                  <span className="font-semibold text-white">
-                    {pillar.metric}
-                  </span>
+                {/* Foreground Card Content */}
+                <div className="relative z-10 flex flex-col justify-between h-full min-h-[300px]">
+                  <div>
+                    <div className="flex items-center justify-between pb-4 mb-5 border-b border-white/15">
+                      <span className="font-mono text-xs font-bold text-neutral-300">
+                        {pillar.num}
+                      </span>
+                      <Icon className="w-4 h-4 text-neutral-400 group-hover:text-white transition-colors" />
+                    </div>
+
+                    <h3 className="font-display font-bold text-lg sm:text-xl text-white tracking-tight leading-snug mb-3">
+                      {pillar.title}
+                    </h3>
+
+                    <p className="font-sans text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal">
+                      {pillar.desc}
+                    </p>
+                  </div>
+
+                  <div className="mt-8 pt-5 border-t border-white/15 flex items-center justify-between font-mono text-xs text-neutral-400">
+                    <span className="uppercase tracking-wider text-[11px]">
+                      Benchmark
+                    </span>
+                    <span className="font-semibold text-white">
+                      {pillar.metric}
+                    </span>
+                  </div>
                 </div>
               </motion.div>
             );
