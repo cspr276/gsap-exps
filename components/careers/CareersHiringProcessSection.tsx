@@ -59,25 +59,23 @@ export default function CareersHiringProcessSection() {
       const grid = gridRef.current;
       if (!grid) return;
 
-      const cards = gsap.utils.toArray<HTMLElement>('.eval-step-card', grid);
-      cards.forEach((card) => {
-        gsap.fromTo(
-          card,
-          { y: 50, opacity: 0.15 },
-          {
-            y: 0,
-            opacity: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 92%',
-              end: 'top 58%',
-              scrub: true,
-              invalidateOnRefresh: true,
-            },
-          }
-        );
-      });
+      // Animate the entire segmented box (outer border, dividing lines, Grainient shaders & content) together
+      gsap.fromTo(
+        grid,
+        { y: 50, opacity: 0.15 },
+        {
+          y: 0,
+          opacity: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: grid,
+            start: 'top 92%',
+            end: 'top 60%',
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        }
+      );
     },
     { scope: sectionRef }
   );
@@ -104,7 +102,7 @@ export default function CareersHiringProcessSection() {
         {/* 4-Step Segmented Process Rail: No gap, divide lines, bare icons in same line as top, slight Grainient shaders */}
         <div
           ref={gridRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 rounded-md border border-neutral-800 divide-y md:divide-y-0 md:divide-x divide-neutral-800 bg-neutral-950 overflow-hidden shadow-2xl"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 rounded-md border border-neutral-800 divide-y md:divide-y-0 md:divide-x divide-neutral-800 bg-neutral-950 overflow-hidden shadow-2xl will-change-transform"
         >
           {STEPS.map((step) => {
             const Icon = step.icon;
