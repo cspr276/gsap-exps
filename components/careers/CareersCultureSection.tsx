@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const CULTURE_PILLARS = [
   {
@@ -28,7 +29,13 @@ export default function CareersCultureSection() {
     <section className="relative z-20 w-full py-20 sm:py-28 bg-[#fbfbfb] text-neutral-900 border-b border-neutral-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="max-w-3xl mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-3xl mb-12"
+        >
           <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-3">
             LIFE, BENEFITS & GROWTH
           </span>
@@ -38,13 +45,21 @@ export default function CareersCultureSection() {
           <p className="font-sans text-base sm:text-lg text-neutral-600 leading-relaxed font-normal">
             We operate with a startup mindset: fast feedback, transparent communication, and delivery cycles designed to keep momentum high without sacrificing engineering depth.
           </p>
-        </div>
+        </motion.div>
 
         {/* 3 Compact Editorial Cards matching ManifestoSection */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8 border-t border-neutral-200/90">
-          {CULTURE_PILLARS.map((pillar) => (
-            <div
+          {CULTURE_PILLARS.map((pillar, idx) => (
+            <motion.div
               key={pillar.num}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{
+                duration: 0.55,
+                delay: idx * 0.1,
+                ease: [0.16, 1, 0.3, 1],
+              }}
               className="p-6 sm:p-7 rounded-md border border-neutral-200/90 bg-white hover:border-neutral-300 hover:shadow-md transition-all duration-300 flex flex-col justify-between shadow-sm"
             >
               <div>
@@ -61,7 +76,7 @@ export default function CareersCultureSection() {
                   {pillar.desc}
                 </p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

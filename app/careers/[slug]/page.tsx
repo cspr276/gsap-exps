@@ -17,6 +17,7 @@ import {
   ArrowLeft,
   Mail,
   ArrowUpRight,
+  ArrowDown,
 } from 'lucide-react';
 
 interface PageProps {
@@ -104,7 +105,25 @@ export default async function CareerRolePage({ params }: PageProps) {
                 {role.summary}
               </p>
 
-              {/* Metadata strip */}
+              {/* Action Buttons & Metadata strip */}
+              <div className="flex flex-wrap items-center gap-4 mb-8">
+                <a
+                  href="#apply-form"
+                  className="px-6 py-3.5 rounded-md bg-white text-neutral-950 font-semibold text-xs font-mono uppercase tracking-wider inline-flex items-center gap-2 hover:bg-neutral-200 transition-colors shadow-lg cursor-pointer"
+                >
+                  <span>Apply for this Role</span>
+                  <ArrowDown className="w-3.5 h-3.5 text-neutral-950" />
+                </a>
+
+                <a
+                  href={mailtoUrl}
+                  className="px-6 py-3.5 rounded-md bg-neutral-900 border border-neutral-800 hover:border-neutral-600 text-white font-mono text-xs uppercase tracking-wider inline-flex items-center gap-2 transition-colors cursor-pointer"
+                >
+                  <Mail className="w-3.5 h-3.5 text-neutral-400" />
+                  <span>Email Resume</span>
+                </a>
+              </div>
+
               <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs sm:text-sm text-neutral-300 font-sans pt-6 border-t border-neutral-900">
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-neutral-400 shrink-0" />
@@ -123,11 +142,11 @@ export default async function CareerRolePage({ params }: PageProps) {
           </div>
         </section>
 
-        {/* Main Content Layout */}
+        {/* Section 1: Role Overview & Specifications with Sticky Sidebar */}
         <section className="relative z-10 w-full py-16 sm:py-24 bg-[#09090b]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-              {/* Left / Main Column: Details & Application Form */}
+              {/* Left Column: Responsibilities, Qualifications, Tools */}
               <div className="lg:col-span-8 space-y-12">
                 {/* Key Responsibilities */}
                 <div>
@@ -152,7 +171,7 @@ export default async function CareerRolePage({ params }: PageProps) {
                   <h2 className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold mb-4">
                     QUALIFICATIONS & PREREQUISITES
                   </h2>
-                  <div className="p-6 rounded-md bg-neutral-950 border border-neutral-800">
+                  <div className="p-6 sm:p-7 rounded-md bg-neutral-950 border border-neutral-800">
                     <p className="font-sans text-sm sm:text-base text-neutral-300 leading-relaxed font-normal">
                       {role.qualification}
                     </p>
@@ -174,30 +193,6 @@ export default async function CareerRolePage({ params }: PageProps) {
                       </span>
                     ))}
                   </div>
-                </div>
-
-                {/* Application Form */}
-                <div id="apply-form" className="pt-8 border-t border-neutral-800">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
-                    <div>
-                      <h2 className="font-display font-bold text-2xl sm:text-3xl text-white tracking-tight">
-                        Apply for this Role
-                      </h2>
-                      <p className="font-sans text-xs text-neutral-400 mt-1">
-                        Reviewed directly by senior practitioners. No automated rejection filters.
-                      </p>
-                    </div>
-
-                    <a
-                      href={mailtoUrl}
-                      className="font-mono text-xs text-neutral-400 hover:text-white inline-flex items-center gap-1.5 underline underline-offset-4 shrink-0"
-                    >
-                      <Mail className="w-3.5 h-3.5" />
-                      <span>Prefer email? Send to {CAREERS_EMAIL}</span>
-                    </a>
-                  </div>
-
-                  <CareerApplyClientForm roleTitle={role.title} teamName={role.team} />
                 </div>
               </div>
 
@@ -227,14 +222,13 @@ export default async function CareerRolePage({ params }: PageProps) {
                     </div>
                   </div>
 
-                  <div className="pt-5 space-y-4">
+                  <div className="pt-5 space-y-3">
                     <a
-                      href={mailtoUrl}
-                      className="w-full py-3 rounded-md bg-neutral-900 hover:bg-neutral-800 border border-neutral-700/80 hover:border-neutral-500 text-white font-semibold text-xs tracking-wide inline-flex items-center justify-center gap-2 transition-all cursor-pointer"
+                      href="#apply-form"
+                      className="w-full py-3 rounded-md bg-white hover:bg-neutral-200 text-neutral-950 font-semibold text-xs tracking-wide inline-flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
                     >
-                      <Mail className="w-3.5 h-3.5 text-neutral-400" />
-                      <span>Email Application</span>
-                      <ArrowUpRight className="w-3.5 h-3.5 text-neutral-400" />
+                      <span>Jump to Application Form</span>
+                      <ArrowDown className="w-3.5 h-3.5 text-neutral-950" />
                     </a>
 
                     <Link
@@ -258,6 +252,36 @@ export default async function CareerRolePage({ params }: PageProps) {
                   </p>
                 </div>
               </aside>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 2: Application Form — Centered in the middle of the page */}
+        <section id="apply-form" className="relative z-10 w-full py-20 sm:py-28 bg-[#09090b] border-t border-neutral-900">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Centered Form Header */}
+            <div className="text-center mb-10">
+              <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-2">
+                SUBMIT APPLICATION
+              </span>
+              <h2 className="font-display font-bold text-3xl sm:text-4xl text-white tracking-tight leading-tight mb-3">
+                Apply for {role.title}
+              </h2>
+              <p className="font-sans text-sm sm:text-base text-neutral-400 leading-relaxed max-w-xl mx-auto mb-4 font-normal">
+                Reviewed directly by senior practitioners on the {role.team} team. No automated rejection filters.
+              </p>
+              <a
+                href={mailtoUrl}
+                className="inline-flex items-center gap-1.5 font-mono text-xs text-neutral-400 hover:text-white underline underline-offset-4"
+              >
+                <Mail className="w-3.5 h-3.5" />
+                <span>Prefer email? Send your resume to {CAREERS_EMAIL}</span>
+              </a>
+            </div>
+
+            {/* Centered Form Card */}
+            <div className="p-8 sm:p-11 rounded-md bg-neutral-950 border border-neutral-800 shadow-2xl">
+              <CareerApplyClientForm roleTitle={role.title} teamName={role.team} />
             </div>
           </div>
         </section>
