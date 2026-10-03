@@ -67,14 +67,14 @@ const VALUES_CARDS: ValueCard[] = [
   },
 ];
 
-// Layout-calibrated 3D trajectories to eliminate cross-cutting and messy overlaps
+// Layout-aligned 3D offsets for clean non-colliding entrance
 const CARD_TRAJECTORIES = [
-  { x: -70, y: 55, rotateX: 16, rotateZ: -2 }, // Card 0: Row 1 Left
-  { x: 70, y: 55, rotateX: 16, rotateZ: 2 },   // Card 1: Row 1 Right
-  { x: -60, y: 50, rotateX: 16, rotateZ: -2 }, // Card 2: Row 2 Left
-  { x: 0, y: 65, rotateX: 18, rotateZ: 0 },    // Card 3: Row 2 Center (Clean vertical glide)
-  { x: 60, y: 50, rotateX: 16, rotateZ: 2 },   // Card 4: Row 2 Right
-  { x: 0, y: 55, rotateX: 14, rotateZ: 0 },    // Card 5: Row 3 Full Width
+  { x: -50, y: 35, rotateX: 12, rotateZ: -1.5 }, // Card 0: Row 1 Left
+  { x: 50, y: 35, rotateX: 12, rotateZ: 1.5 },   // Card 1: Row 1 Right
+  { x: -45, y: 35, rotateX: 12, rotateZ: -1.5 }, // Card 2: Row 2 Left
+  { x: 0, y: 45, rotateX: 14, rotateZ: 0 },      // Card 3: Row 2 Center (Clean vertical glide)
+  { x: 45, y: 35, rotateX: 12, rotateZ: 1.5 },   // Card 4: Row 2 Right
+  { x: 0, y: 40, rotateX: 10, rotateZ: 0 },      // Card 5: Row 3 Full Width
 ];
 
 export default function AboutValuesSection() {
@@ -90,10 +90,10 @@ export default function AboutValuesSection() {
       const cards = gsap.utils.toArray<HTMLElement>('.value-bento-card', grid);
       const mm = gsap.matchMedia();
 
-      // Fluid, responsive 3D Staggered entrance matching OPERATING TENETS
+      // Desktop: natural 1:1 scroll tracking with scrub: true & ease: 'none'
       mm.add('(min-width: 768px)', () => {
         cards.forEach((card, idx) => {
-          const trajectory = CARD_TRAJECTORIES[idx] || { x: 0, y: 50, rotateX: 14, rotateZ: 0 };
+          const trajectory = CARD_TRAJECTORIES[idx] || { x: 0, y: 35, rotateX: 10, rotateZ: 0 };
           gsap.fromTo(
             card,
             {
@@ -101,7 +101,7 @@ export default function AboutValuesSection() {
               y: trajectory.y,
               rotateX: trajectory.rotateX,
               rotateZ: trajectory.rotateZ,
-              opacity: 0.12,
+              opacity: 0.15,
             },
             {
               x: 0,
@@ -109,32 +109,34 @@ export default function AboutValuesSection() {
               rotateX: 0,
               rotateZ: 0,
               opacity: 1,
-              ease: 'power2.out',
+              ease: 'none',
               scrollTrigger: {
                 trigger: card,
-                start: 'top 92%',
-                end: 'center 48%',
-                scrub: 0.6,
+                start: 'top 88%',
+                end: 'top 58%',
+                scrub: true,
+                invalidateOnRefresh: true,
               },
             }
           );
         });
       });
 
+      // Mobile
       mm.add('(max-width: 767px)', () => {
         cards.forEach((card) => {
           gsap.fromTo(
             card,
-            { y: 35, opacity: 0.15 },
+            { y: 30, opacity: 0.2 },
             {
               y: 0,
               opacity: 1,
-              ease: 'power2.out',
+              ease: 'none',
               scrollTrigger: {
                 trigger: card,
                 start: 'top 90%',
-                end: 'center 52%',
-                scrub: 0.6,
+                end: 'top 65%',
+                scrub: true,
               },
             }
           );
@@ -167,7 +169,7 @@ export default function AboutValuesSection() {
           </p>
         </div>
 
-        {/* Bento Grid with Tight Gaps (gap-2.5 sm:gap-3) and Clean Non-Colliding 3D Scroll */}
+        {/* Bento Grid with Tight Gaps (gap-2.5 sm:gap-3) and Immediate 1:1 Scroll Sync */}
         <div
           ref={gridRef}
           className="grid grid-cols-1 md:grid-cols-12 gap-2.5 sm:gap-3"
@@ -176,7 +178,7 @@ export default function AboutValuesSection() {
           {VALUES_CARDS.map((card) => (
             <div
               key={card.id}
-              className={`${card.cols} value-bento-card group rounded-md border border-neutral-200/90 bg-white hover:border-neutral-400 hover:shadow-lg transition-all duration-300 p-6 sm:p-7 flex flex-col justify-between shadow-xs will-change-transform`}
+              className={`${card.cols} value-bento-card group rounded-md border border-neutral-200/90 bg-white hover:border-neutral-400 hover:shadow-lg transition-[border-color,box-shadow] duration-200 p-6 sm:p-7 flex flex-col justify-between shadow-xs will-change-transform`}
             >
               <div>
                 {/* Top Row: Index + Category */}
