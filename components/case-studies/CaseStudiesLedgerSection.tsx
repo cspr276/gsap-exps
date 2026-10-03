@@ -6,7 +6,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { CASE_STUDIES } from '@/data/caseStudies';
-import { TOCMinimap, TOCItemType } from '@/components/toc-minimap';
+import CaseStudiesTOC, { TOCItem } from '@/components/case-studies/CaseStudiesTOC';
 import { ArrowUpRight } from 'lucide-react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -18,77 +18,21 @@ const HANDOVER_STANDARDS = [
   'Severity-ranked regression blockers',
 ];
 
-const TOC_ITEMS: TOCItemType[] = [
-  {
-    title: 'Audit Methodology',
-    url: '#audit-methodology',
-    depth: 2,
-  },
-  {
-    title: 'Fintech Agent Evaluation',
-    url: '#case-01',
-    depth: 2,
-  },
-  {
-    title: 'Refund Hallucinations',
-    url: '#case-01-problem',
-    depth: 3,
-  },
-  {
-    title: 'Task-Grounded Rubrics',
-    url: '#case-01-approach',
-    depth: 3,
-  },
-  {
-    title: 'Board Authorization',
-    url: '#case-01-outcome',
-    depth: 3,
-  },
-  {
-    title: 'Model Red-Teaming',
-    url: '#case-02',
-    depth: 2,
-  },
-  {
-    title: 'Static Suite Gaps',
-    url: '#case-02-problem',
-    depth: 3,
-  },
-  {
-    title: 'Adaptive Injections',
-    url: '#case-02-approach',
-    depth: 3,
-  },
-  {
-    title: 'Automated CI Gate',
-    url: '#case-02-outcome',
-    depth: 3,
-  },
-  {
-    title: 'Clinical Alignment & RLHF',
-    url: '#case-03',
-    depth: 2,
-  },
-  {
-    title: 'Diagnostic Omissions',
-    url: '#case-03-problem',
-    depth: 3,
-  },
-  {
-    title: 'Credentialed MDs',
-    url: '#case-03-approach',
-    depth: 3,
-  },
-  {
-    title: 'Regulatory Ledger',
-    url: '#case-03-outcome',
-    depth: 3,
-  },
-  {
-    title: 'Reporting Standards',
-    url: '#handover-reporting',
-    depth: 2,
-  },
+const TOC_ITEMS: TOCItem[] = [
+  { id: 'audit-methodology', title: 'Audit Methodology', depth: 2 },
+  { id: 'case-01', title: 'Fintech Agent Evaluation', depth: 2 },
+  { id: 'case-01-problem', title: 'Refund Hallucinations', depth: 3 },
+  { id: 'case-01-approach', title: 'Task-Grounded Rubrics', depth: 3 },
+  { id: 'case-01-outcome', title: 'Board Authorization', depth: 3 },
+  { id: 'case-02', title: 'Model Red-Teaming', depth: 2 },
+  { id: 'case-02-problem', title: 'Static Suite Gaps', depth: 3 },
+  { id: 'case-02-approach', title: 'Adaptive Injections', depth: 3 },
+  { id: 'case-02-outcome', title: 'Automated CI Gate', depth: 3 },
+  { id: 'case-03', title: 'Clinical Alignment & RLHF', depth: 2 },
+  { id: 'case-03-problem', title: 'Diagnostic Omissions', depth: 3 },
+  { id: 'case-03-approach', title: 'Credentialed MDs', depth: 3 },
+  { id: 'case-03-outcome', title: 'Regulatory Ledger', depth: 3 },
+  { id: 'handover-reporting', title: 'Reporting Standards', depth: 2 },
 ];
 
 export default function CaseStudiesLedgerSection() {
@@ -126,10 +70,10 @@ export default function CaseStudiesLedgerSection() {
       ref={containerRef}
       className="relative z-20 bg-[#09090b] text-white py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-b border-neutral-800"
     >
-      <div className="max-w-7xl mx-auto flex items-start gap-8 lg:gap-14">
-        {/* Left Sticky TOC Minimap Rail spanning the entire ledger */}
-        <aside className="hidden md:flex flex-col items-start w-16 shrink-0 sticky top-28 self-start z-30 pt-1">
-          <TOCMinimap items={TOC_ITEMS} className="w-full ml-0" />
+      <div className="max-w-7xl mx-auto flex items-start gap-10 lg:gap-16">
+        {/* Left Sticky Normal Compact TOC Rail */}
+        <aside className="hidden lg:block w-56 shrink-0 sticky top-28 self-start pt-1">
+          <CaseStudiesTOC items={TOC_ITEMS} />
         </aside>
 
         {/* Main Content Stream */}
