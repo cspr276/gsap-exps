@@ -19,16 +19,16 @@ interface OrbitItem {
 }
 
 const ORBIT_ITEMS: OrbitItem[] = [
-  { id: 'o1', image: '/services/reality-01.jpg', title: 'Clinical Diagnostics', baseSize: 105 },
-  { id: 'o2', image: '/services/hero-datacenter.jpg', title: 'Compute Clusters', baseSize: 105 },
-  { id: 'o3', image: '/cards/card_06.jpg', title: 'Orbital Telemetry', baseSize: 105 },
-  { id: 'o4', image: '/services/reality-02.jpg', title: 'Silicon Hardware', baseSize: 105 },
-  { id: 'o5', image: '/services/ai-agent-evaluation.webp', title: 'Autonomous Systems', baseSize: 105 },
-  { id: 'o6', image: '/cards/card_04.jpg', title: 'Simulation Physics', baseSize: 105 },
-  { id: 'o7', image: '/services/reality-03.jpg', title: 'Robotics & Vision', baseSize: 105 },
-  { id: 'o8', image: '/cards/card_05.jpg', title: 'Cryptographic Security', baseSize: 105 },
-  { id: 'o9', image: '/services/benchmarking-frameworks.webp', title: 'Empirical Metrics', baseSize: 105 },
-  { id: 'o10', image: '/cards/card_08.jpg', title: 'Optical Sensors', baseSize: 105 },
+  { id: 'o1', image: '/services/reality-01.jpg', title: 'Clinical Diagnostics', baseSize: 92 },
+  { id: 'o2', image: '/services/hero-datacenter.jpg', title: 'Compute Clusters', baseSize: 92 },
+  { id: 'o3', image: '/cards/card_06.jpg', title: 'Orbital Telemetry', baseSize: 92 },
+  { id: 'o4', image: '/services/reality-02.jpg', title: 'Silicon Hardware', baseSize: 92 },
+  { id: 'o5', image: '/services/ai-agent-evaluation.webp', title: 'Autonomous Systems', baseSize: 92 },
+  { id: 'o6', image: '/cards/card_04.jpg', title: 'Simulation Physics', baseSize: 92 },
+  { id: 'o7', image: '/services/reality-03.jpg', title: 'Robotics & Vision', baseSize: 92 },
+  { id: 'o8', image: '/cards/card_05.jpg', title: 'Cryptographic Security', baseSize: 92 },
+  { id: 'o9', image: '/services/benchmarking-frameworks.webp', title: 'Empirical Metrics', baseSize: 92 },
+  { id: 'o10', image: '/cards/card_08.jpg', title: 'Optical Sensors', baseSize: 92 },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -154,18 +154,18 @@ export default function AboutDualWaveSection() {
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [focusedIdx, setFocusedIdx] = useState<number>(0);
 
-  // Responsive radii for diagonal ellipse with expanded height/clearance
-  const [orbitRadii, setOrbitRadii] = useState({ rx: 600, ry: 290 });
+  // Responsive radii for diagonal ellipse closely framing headline
+  const [orbitRadii, setOrbitRadii] = useState({ rx: 485, ry: 235 });
 
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
       if (width < 640) {
-        setOrbitRadii({ rx: 200, ry: 165 });
+        setOrbitRadii({ rx: 180, ry: 140 });
       } else if (width < 1024) {
-        setOrbitRadii({ rx: 400, ry: 220 });
+        setOrbitRadii({ rx: 345, ry: 180 });
       } else {
-        setOrbitRadii({ rx: 600, ry: 290 });
+        setOrbitRadii({ rx: 485, ry: 235 });
       }
     };
 
@@ -190,8 +190,8 @@ export default function AboutDualWaveSection() {
       const dt = (now - lastTime) / 1000;
       lastTime = now;
 
-      // Constant angular velocity: ~0.082 rad/s
-      angle += dt * 0.082;
+      // Slightly increased angular velocity: ~0.13 rad/s for fluid, responsive orbit
+      angle += dt * 0.13;
 
       const { rx, ry } = orbitRadii;
 
@@ -215,8 +215,8 @@ export default function AboutDualWaveSection() {
         const nx = Math.max(-1, Math.min(1, x / rx));
         const progress = (1 - nx) / 2; // 1.0 at far left, 0.0 at far right
 
-        // Scale: from 0.48x (small on right) up to 1.22x (large on left with generous spacing)
-        const scale = 0.48 + progress * 0.74;
+        // Scale: from 0.46x (small on right) up to 1.10x (comfortably large on left without collision)
+        const scale = 0.46 + progress * 0.64;
         const opacity = 0.65 + progress * 0.35;
         const zIndex = Math.round(progress * 30) + 1;
 
@@ -293,9 +293,9 @@ export default function AboutDualWaveSection() {
     >
       {/* ─────────────────────────────────────────────────────────────
           PART 1: DIAGONAL OVAL ROTATION SECTION
-          Spacious height, 10 spaced images, strictly 2-line heading
+          Balanced height, 10 spaced images, relevant 2-line heading
           ───────────────────────────────────────────────────────────── */}
-      <div className="relative w-full min-h-[96vh] sm:min-h-[104vh] lg:min-h-[110vh] flex items-center justify-center overflow-hidden py-32 sm:py-44 border-b border-neutral-900/60">
+      <div className="relative w-full min-h-[86vh] sm:min-h-[92vh] lg:min-h-[96vh] flex items-center justify-center overflow-hidden py-24 sm:py-32 border-b border-neutral-900/60">
         {/* Subtle radial ambient spotlight */}
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.04)_0%,transparent_70%)]" />
 
@@ -311,8 +311,8 @@ export default function AboutDualWaveSection() {
             >
               <div
                 style={{
-                  width: `${Math.round(item.baseSize * (orbitRadii.rx / 600))}px`,
-                  height: `${Math.round(item.baseSize * (orbitRadii.rx / 600))}px`,
+                  width: `${Math.round(item.baseSize * (orbitRadii.rx / 485))}px`,
+                  height: `${Math.round(item.baseSize * (orbitRadii.rx / 485))}px`,
                 }}
                 className="relative rounded-lg overflow-hidden bg-neutral-900 shadow-[0_12px_28px_rgba(0,0,0,0.7)] transition-transform duration-200"
               >
@@ -328,12 +328,12 @@ export default function AboutDualWaveSection() {
           ))}
         </div>
 
-        {/* Center Content: Strictly 2-line clean headline with comfortable sizing */}
+        {/* Center Content: Strictly 2-line headline directly contextualizing the matrix */}
         <div className="relative z-30 max-w-4xl mx-auto px-4 text-center pointer-events-auto">
-          <h2 className="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-[54px] text-white tracking-tight leading-[1.15] drop-shadow-md">
-            <span className="block whitespace-nowrap">Autonomous Systems</span>
-            <span className="block whitespace-nowrap text-neutral-400 font-bold mt-1">
-              Verified in Production
+          <h2 className="font-display font-extrabold text-2xl sm:text-4xl md:text-5xl lg:text-[50px] text-white tracking-tight leading-[1.16] drop-shadow-md">
+            <span className="block whitespace-nowrap">Autonomous Systems Assurance</span>
+            <span className="block whitespace-nowrap text-neutral-400 font-bold mt-1.5">
+              Verified Across Production Domains
             </span>
           </h2>
         </div>
