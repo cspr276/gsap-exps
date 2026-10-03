@@ -31,11 +31,11 @@ export default function BlogsHero() {
         className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none"
       >
         <Image
-          src="/blogs/blogs.webp"
-          alt="Evalixa AI Engineering Blog"
+          src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=2000&q=80"
+          alt="Evalixa AI Engineering Research"
           fill
           priority
-          className="object-cover object-center brightness-[0.55] contrast-[1.12]"
+          className="object-cover object-center brightness-[0.4] contrast-[1.15]"
         />
         <div className="absolute inset-0 bg-[#09090b]/55 pointer-events-none" />
         <div className="absolute inset-0 bg-linear-to-t from-[#09090b] via-transparent to-[#09090b]/80 pointer-events-none" />

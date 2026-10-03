@@ -1,13 +1,12 @@
 'use client';
 
 import React, { useState, useMemo, useRef } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { blogPosts } from '@/data/blogPosts';
-import { ArrowRight, ArrowUpRight, Search, X } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Search, X, Image as ImageIcon } from 'lucide-react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -234,74 +233,78 @@ export default function BlogsEditorialSection() {
           </div>
         )}
 
-        {/* Featured / Lead Guide Feature Spotlight (Shown when viewing default unfiltered state) */}
+        {/* Featured / Lead Guide Spotlight (Entire card clickable via Link) */}
         {featuredBlog && (
-          <div className="border border-neutral-800 rounded-xl p-8 sm:p-12 bg-neutral-900/40 relative overflow-hidden group hover:border-neutral-700 transition-colors">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-              <div className="lg:col-span-7 space-y-6">
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800 text-neutral-300 font-mono text-xs uppercase tracking-wider">
-                    {featuredBlog.category}
-                  </span>
-                  <span className="text-neutral-600 font-mono text-xs">•</span>
-                  <span className="font-mono text-xs text-neutral-400">
-                    {featuredBlog.readTime}
-                  </span>
-                  <span className="text-neutral-600 font-mono text-xs">•</span>
-                  <span className="font-mono text-xs text-neutral-400">
-                    {featuredBlog.publishDate}
-                  </span>
-                </div>
-
-                <h3 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-tight group-hover:text-neutral-200 transition-colors">
-                  <Link href={featuredBlog.path} className="hover:underline underline-offset-4">
-                    {featuredBlog.title}
-                  </Link>
-                </h3>
-
-                <p className="font-sans text-neutral-300 text-base sm:text-lg leading-relaxed line-clamp-3">
-                  {featuredBlog.intro}
-                </p>
-
-                <div className="flex flex-wrap gap-2 pt-2">
-                  {featuredBlog.tags.slice(0, 4).map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2.5 py-1 rounded bg-neutral-800/80 border border-neutral-700/60 text-xs text-neutral-300 font-mono"
-                    >
-                      {tag}
+          <div className="border border-neutral-800 rounded-xl bg-neutral-900/40 relative overflow-hidden group hover:border-neutral-700 transition-colors">
+            <Link
+              href={featuredBlog.path}
+              className="block p-8 sm:p-12 hover:text-white transition-colors cursor-pointer"
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                <div className="lg:col-span-7 space-y-6">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800 text-neutral-300 font-mono text-xs uppercase tracking-wider">
+                      {featuredBlog.category}
                     </span>
-                  ))}
+                    <span className="text-neutral-600 font-mono text-xs">•</span>
+                    <span className="font-mono text-xs text-neutral-400">
+                      {featuredBlog.readTime}
+                    </span>
+                    <span className="text-neutral-600 font-mono text-xs">•</span>
+                    <span className="font-mono text-xs text-neutral-400">
+                      {featuredBlog.publishDate}
+                    </span>
+                  </div>
+
+                  <h3 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-tight group-hover:text-neutral-200 transition-colors">
+                    {featuredBlog.title}
+                  </h3>
+
+                  <p className="font-sans text-neutral-300 text-base sm:text-lg leading-relaxed line-clamp-3">
+                    {featuredBlog.intro}
+                  </p>
+
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    {featuredBlog.tags.slice(0, 4).map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-2.5 py-1 rounded bg-neutral-800/80 border border-neutral-700/60 text-xs text-neutral-300 font-mono"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="pt-4">
+                    <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-white font-semibold group-hover:text-neutral-300 transition-colors">
+                      <span>Read Guide</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </div>
                 </div>
 
-                <div className="pt-4">
-                  <Link
-                    href={featuredBlog.path}
-                    className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-white font-semibold group/btn hover:text-neutral-300 transition-colors"
-                  >
-                    <span>Read Guide</span>
-                    <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                  </Link>
+                {/* Cover Media Placeholder (No AI images) */}
+                <div className="lg:col-span-5">
+                  <div className="relative aspect-16/10 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-950/80 flex flex-col items-center justify-center p-6 text-center space-y-3 group-hover:border-neutral-700 transition-colors">
+                    <div className="w-10 h-10 rounded-lg border border-neutral-800 bg-neutral-900 flex items-center justify-center text-neutral-400 group-hover:text-white transition-colors">
+                      <ImageIcon className="w-5 h-5" />
+                    </div>
+                    <div className="space-y-1">
+                      <span className="font-mono text-[11px] uppercase tracking-widest text-neutral-400 block">
+                        IMAGE PLACEHOLDER // ARCHITECTURAL SCHEMATIC
+                      </span>
+                      <span className="font-sans text-xs text-neutral-400 block">
+                        Autonomous agents networked across enterprise systems
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              {/* Cover Media / Architectural Graphic */}
-              <div className="lg:col-span-5">
-                <Link href={featuredBlog.path} className="block relative aspect-16/10 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-950">
-                  <Image
-                    src={featuredBlog.coverImage || '/blogs/enterpriseAI.webp'}
-                    alt={featuredBlog.coverImageAlt || featuredBlog.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-700 brightness-90 contrast-105"
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-neutral-950/80 via-transparent to-transparent pointer-events-none" />
-                </Link>
-              </div>
-            </div>
+            </Link>
           </div>
         )}
 
-        {/* Secondary Guide Stream */}
+        {/* Secondary Guide Stream (Entire row clickable via Link, identical to Articles) */}
         {listBlogs.length > 0 && (
           <div className="space-y-6 pt-4">
             <div className="flex items-center justify-between pb-4 border-b border-neutral-800 text-xs font-mono uppercase tracking-widest text-neutral-400">
@@ -320,9 +323,12 @@ export default function BlogsEditorialSection() {
                     ref={(el) => {
                       rowRefs.current[index] = el;
                     }}
-                    className="py-10 sm:py-12 group hover:bg-neutral-900/30 -mx-4 px-4 sm:-mx-6 sm:px-6 transition-colors rounded-lg"
+                    className="py-10 sm:py-12 group hover:bg-neutral-900/30 -mx-4 px-4 sm:-mx-6 sm:px-6 transition-colors rounded-lg cursor-pointer"
                   >
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+                    <Link
+                      href={post.path}
+                      className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start block"
+                    >
                       {/* Left: Canonical Index & Meta */}
                       <div className="lg:col-span-3 space-y-2">
                         <span className="font-mono text-xl sm:text-2xl font-bold text-neutral-500 group-hover:text-white transition-colors block">
@@ -343,9 +349,7 @@ export default function BlogsEditorialSection() {
                       {/* Center: Title & Intro */}
                       <div className="lg:col-span-8 space-y-3">
                         <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight group-hover:text-neutral-200 transition-colors">
-                          <Link href={post.path} className="hover:underline underline-offset-4">
-                            {post.title}
-                          </Link>
+                          {post.title}
                         </h3>
                         <p className="font-sans text-neutral-400 text-sm sm:text-base leading-relaxed line-clamp-2">
                           {post.intro}
@@ -364,15 +368,11 @@ export default function BlogsEditorialSection() {
 
                       {/* Right: Quick Action Arrow */}
                       <div className="lg:col-span-1 flex lg:justify-end items-center pt-2 lg:pt-0">
-                        <Link
-                          href={post.path}
-                          aria-label={`Read ${post.title}`}
-                          className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 group-hover:text-white group-hover:border-neutral-600 transition-all cursor-pointer"
-                        >
+                        <div className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 group-hover:text-white group-hover:border-neutral-600 transition-all">
                           <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                        </Link>
+                        </div>
                       </div>
-                    </div>
+                    </Link>
                   </article>
                 );
               })}

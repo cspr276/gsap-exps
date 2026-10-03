@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { BlogBlock } from '@/data/blogPosts';
-import { ArrowUpRight, ExternalLink } from 'lucide-react';
+import { ArrowUpRight, ExternalLink, Image as ImageIcon } from 'lucide-react';
 
 interface BlogBodyRendererProps {
   blocks: BlogBlock[];
@@ -109,18 +109,22 @@ export default function BlogBodyRenderer({ blocks }: BlogBodyRendererProps) {
                 )}
               </figure>
             ) : (
-              <figure
-                key={index}
-                className="my-10 p-8 rounded-lg border border-neutral-800 bg-neutral-900/40 text-center space-y-2"
-              >
-                <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 block">
-                  FIGURE // ARCHITECTURAL SCHEMATIC
-                </span>
-                <span className="font-display font-semibold text-white block">
-                  {block.alt}
-                </span>
+              <figure key={index} className="my-10 space-y-3">
+                <div className="relative w-full aspect-16/9 rounded-lg border border-neutral-800 bg-neutral-900/30 flex flex-col items-center justify-center p-8 text-center space-y-3">
+                  <div className="w-10 h-10 rounded-lg border border-neutral-800 bg-neutral-900 flex items-center justify-center text-neutral-400">
+                    <ImageIcon className="w-5 h-5" />
+                  </div>
+                  <div className="space-y-1.5 max-w-lg">
+                    <span className="font-mono text-[11px] uppercase tracking-widest text-neutral-400 block">
+                      IMAGE PLACEHOLDER // ARCHITECTURAL SCHEMATIC
+                    </span>
+                    <span className="font-display font-medium text-sm sm:text-base text-neutral-200 block">
+                      {block.alt}
+                    </span>
+                  </div>
+                </div>
                 {block.caption && (
-                  <figcaption className="text-xs text-neutral-400 font-mono pt-2 border-t border-neutral-800/80 max-w-xl mx-auto">
+                  <figcaption className="text-xs text-neutral-400 font-mono text-center max-w-xl mx-auto">
                     {block.caption}
                   </figcaption>
                 )}

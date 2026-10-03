@@ -9,7 +9,7 @@ import Footer from '@/components/Footer';
 import BlogTOC from '@/components/blogs/BlogTOC';
 import BlogBodyRenderer from '@/components/blogs/BlogBodyRenderer';
 import { blogPosts, getBlogPost } from '@/data/blogPosts';
-import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Image as ImageIcon } from 'lucide-react';
 
 interface BlogPageProps {
   params: Promise<{
@@ -117,9 +117,9 @@ export default async function BlogDetailPage({ params }: BlogPageProps) {
           </div>
         </header>
 
-        {/* Optional Cover Media */}
-        {post.coverImage && (
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 my-12">
+        {/* Cover Media or Image Placeholder */}
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 my-10">
+          {post.coverImage ? (
             <div className="relative w-full aspect-21/9 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-950">
               <Image
                 src={post.coverImage}
@@ -129,13 +129,27 @@ export default async function BlogDetailPage({ params }: BlogPageProps) {
                 className="object-cover"
               />
             </div>
-            {post.coverImageAlt && (
-              <p className="text-xs text-neutral-500 font-mono text-center mt-3">
-                {post.coverImageAlt}
-              </p>
-            )}
-          </div>
-        )}
+          ) : (
+            <div className="relative w-full aspect-21/9 rounded-lg border border-neutral-800 bg-neutral-900/30 flex flex-col items-center justify-center p-8 text-center space-y-3">
+              <div className="w-10 h-10 rounded-lg border border-neutral-800 bg-neutral-900 flex items-center justify-center text-neutral-400">
+                <ImageIcon className="w-5 h-5" />
+              </div>
+              <div className="space-y-1.5 max-w-xl">
+                <span className="font-mono text-[11px] uppercase tracking-widest text-neutral-400 block">
+                  IMAGE PLACEHOLDER // ARCHITECTURAL SCHEMATIC
+                </span>
+                <span className="font-display font-medium text-sm sm:text-base text-neutral-200 block">
+                  {post.coverImageAlt || post.title}
+                </span>
+              </div>
+            </div>
+          )}
+          {post.coverImageAlt && (
+            <p className="text-xs text-neutral-400 font-mono text-center mt-3">
+              {post.coverImageAlt}
+            </p>
+          )}
+        </div>
 
         {/* Reading Layout: Left Sticky TOC + Main Article Body */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex items-start gap-10 lg:gap-16">

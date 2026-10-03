@@ -36,21 +36,21 @@ export interface BlogPost {
 
 const imagePaths = {
   blogCovers: {
-    'enterprise-ai-and-automation': '/blogs/enterpriseAI.webp',
-    'ai-benchmarking-and-agent-evaluation': '/blogs/benchmarkingFrameworks.webp',
+    'enterprise-ai-and-automation': '',
+    'ai-benchmarking-and-agent-evaluation': '',
     'from-generative-ai-to-agentic-ai': '',
     'enterprise-ai-strategy-and-roi': '',
     'ai-in-healthcare-evaluation': '',
   },
   blogInline: {
-    'enterprise-ai-agent-architecture': '/blogs/enterpriseArchitecture.webp',
-    'rpa-vs-ai-comparison': '/blogs/RPA.webp',
-    'enterprise-ai-adoption': '/blogs/enterpriseAdoption.webp',
+    'enterprise-ai-agent-architecture': '',
+    'rpa-vs-ai-comparison': '',
+    'enterprise-ai-adoption': '',
     'production-ai-architecture': '',
-    'benchmarking-testing-gap': '/blogs/benchmarkingGap.webp',
+    'benchmarking-testing-gap': '',
     'benchmarking-five-dimensions': '',
-    'benchmarking-frameworks': '/blogs/benchmarkingFrameworks.webp',
-    'benchmarking-pipeline': '/blogs/benchmarkingPipeline.webp',
+    'benchmarking-frameworks': '',
+    'benchmarking-pipeline': '',
   },
 };
 
