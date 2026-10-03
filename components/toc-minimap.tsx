@@ -21,16 +21,9 @@ export type TOCMinimapProps = {
   /** @fumadocsHref #tocitemtype */
   items: TOCItemType[]
   className?: string
-  side?: "left" | "right" | "top" | "bottom"
-  sideOffset?: number
 }
 
-export function TOCMinimap({
-  items,
-  className,
-  side = "right",
-  sideOffset = 16,
-}: TOCMinimapProps) {
+export function TOCMinimap({ items, className }: TOCMinimapProps) {
   const itemIds = useMemo(
     () => items.map((item) => item.url.replace("#", "")),
     [items]
@@ -45,45 +38,39 @@ export function TOCMinimap({
   }
 
   return (
-    <div className={cn("w-16", className)}>
+    <div className={cn("ml-auto w-18", className)}>
       <HoverCard
-        openDelay={0}
-        closeDelay={150}
         onOpenChange={(open) => {
           if (open) play()
         }}
       >
         <HoverCardTrigger asChild>
-          <button
-            type="button"
-            aria-label="Table of contents minimap"
-            className="flex max-h-[50dvh] flex-col gap-2.5 overflow-hidden py-3 px-2 cursor-pointer opacity-80 hover:opacity-100 transition-opacity duration-200"
-          >
+          <div className="flex max-h-[50dvh] flex-col gap-3 overflow-hidden py-3 pl-6 opacity-100 transition-opacity duration-200 data-popup-open:opacity-0 cursor-pointer">
             {items.map((item) => (
               <div
                 key={item.url}
                 data-depth={item.depth}
                 data-active={item.url === `#${activeHeading}`}
                 className={cn(
-                  "h-0.5 w-6 shrink-0 rounded-xs bg-neutral-700 transition-all duration-200",
+                  "h-0.5 w-6 shrink-0 rounded-xs bg-ring/50 transition-[background-color] duration-200",
                   "data-[depth=3]:ml-2 data-[depth=3]:w-4",
                   "data-[depth=4]:ml-4 data-[depth=4]:w-2",
-                  "data-active:bg-white data-active:w-8"
+                  "data-active:bg-foreground"
                 )}
               />
             ))}
-          </button>
+          </div>
         </HoverCardTrigger>
 
         <HoverCardContent
-          className="w-64 overflow-hidden p-0 duration-200 bg-neutral-900 border border-neutral-800 text-white shadow-2xl rounded-lg backdrop-blur-md"
+          className="w-56 overflow-hidden p-0 duration-200 data-[side=left]:slide-in-from-right-3 data-[side=left]:slide-out-to-right-3 data-open:zoom-in-100 data-closed:zoom-out-100"
           align="start"
           alignOffset={0}
-          side={side}
-          sideOffset={sideOffset}
+          side="right"
+          sideOffset={16}
         >
           <div className="flex max-h-[50dvh] overflow-y-auto overscroll-contain">
-            <ul className="flex size-full flex-col px-5 py-4 text-xs font-mono">
+            <ul className="flex size-full flex-col px-6 py-4 text-sm">
               {items.map((item) => (
                 <li key={item.url} className="flex py-1">
                   <a
@@ -92,8 +79,8 @@ export function TOCMinimap({
                     data-active={item.url === `#${activeHeading}`}
                     className={cn(
                       "line-clamp-2 w-full transition-[color] duration-200",
-                      "text-neutral-400 hover:text-white data-active:text-white data-active:font-semibold",
-                      "data-[depth=3]:pl-3 data-[depth=4]:pl-6"
+                      "text-muted-foreground hover:text-foreground data-active:text-foreground",
+                      "data-[depth=3]:pl-4 data-[depth=4]:pl-8"
                     )}
                     onClick={handleItemClick}
                   >
@@ -121,7 +108,7 @@ export function useActiveHeading(itemIds: string[]) {
           }
         }
       },
-      { rootMargin: "0% 0% -70% 0%", threshold: 0.1 }
+      { rootMargin: "0% 0% -60% 0%", threshold: 0.2 }
     )
 
     for (const id of itemIds ?? []) {
@@ -152,14 +139,12 @@ function handleItemClick(e: React.MouseEvent<HTMLAnchorElement>) {
 
 function scrollToHeading(url: string) {
   history.pushState(null, "", url)
-  const id = url.replace("#", "")
-  const element = document.getElementById(id)
-  if (!element) return
-
+  const target = document.getElementById(url.replace("#", ""))
+  if (!target) return
   if (typeof window !== "undefined" && window.__lenis) {
-    window.__lenis.scrollTo(element, { offset: -90, duration: 1.2 })
+    window.__lenis.scrollTo(target, { offset: -90, duration: 1.2 })
   } else {
-    element.scrollIntoView({
+    target.scrollIntoView({
       behavior: "smooth",
     })
   }

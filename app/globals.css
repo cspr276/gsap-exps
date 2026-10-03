@@ -28,11 +28,24 @@
   /* Accents */
   --accent-blue: #2563eb;
   --accent-blue-hover: #1d4ed8;
+
+  /* UI Tokens for HoverCard and Minimap */
+  --popover: #121214;
+  --popover-foreground: #ffffff;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --ring: #52525b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-ring: var(--ring);
 
   --color-surface-canvas: var(--surface-canvas);
   --color-surface-card: var(--surface-card);
@@ -67,7 +80,7 @@
 html, body {
   background: var(--background);
   color: var(--foreground);
-  overflow-x: hidden;
+  overflow-x: clip;
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
 }
 

@@ -20,63 +20,33 @@ const HANDOVER_STANDARDS = [
 
 const TOC_ITEMS: TOCItemType[] = [
   {
-    title: '01 Fintech Agent Evaluation',
+    title: 'Fintech Support Agent',
     url: '#case-01',
     depth: 2,
   },
   {
-    title: 'Problem: Masked Failure Modes',
+    title: 'Policy Hallucinations',
     url: '#case-01-problem',
     depth: 3,
   },
   {
-    title: 'Approach: Task-Grounded Rubrics',
-    url: '#case-01-approach',
-    depth: 3,
-  },
-  {
-    title: 'Outcome: Board Authorization',
-    url: '#case-01-outcome',
-    depth: 3,
-  },
-  {
-    title: '02 Adversarial Red-Teaming',
+    title: 'Model Red-Teaming',
     url: '#case-02',
     depth: 2,
   },
   {
-    title: 'Problem: Static Suite Gaps',
+    title: 'Adaptive Injections',
     url: '#case-02-problem',
     depth: 3,
   },
   {
-    title: 'Approach: Adaptive Injections',
-    url: '#case-02-approach',
-    depth: 3,
-  },
-  {
-    title: 'Outcome: Automated CI Gate',
-    url: '#case-02-outcome',
-    depth: 3,
-  },
-  {
-    title: '03 Clinical Alignment & RLHF',
+    title: 'Clinical Data & RLHF',
     url: '#case-03',
     depth: 2,
   },
   {
-    title: 'Problem: Crowd Annotator Flaws',
+    title: 'Clinical Omissions',
     url: '#case-03-problem',
-    depth: 3,
-  },
-  {
-    title: 'Approach: Credentialed MDs',
-    url: '#case-03-approach',
-    depth: 3,
-  },
-  {
-    title: 'Outcome: 48% Omission Drop',
-    url: '#case-03-outcome',
     depth: 3,
   },
 ];
@@ -116,65 +86,60 @@ export default function CaseStudiesLedgerSection() {
       ref={containerRef}
       className="relative z-20 bg-[#09090b] text-white py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-b border-neutral-800"
     >
-      <div className="max-w-7xl mx-auto space-y-20">
-        {/* Natural Header Block */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start pb-16 border-b border-neutral-800">
-          {/* Main Title & Lede */}
-          <div className="lg:col-span-7 space-y-4">
-            <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block">
-              AUDIT LEDGER // IN-DEPTH ENGAGEMENTS
-            </span>
-            <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight">
-              Verified outcomes from production audits.
-            </h2>
-            <p className="font-sans text-base sm:text-lg text-neutral-400 leading-relaxed max-w-2xl">
-              Each study follows the same verification structure: the failure mode the team brought us, the approach we engineered, and what changed as a result. Figures are illustrative of outcomes these programmes produce — every number in a live engagement is reproduced from the evaluation traces we hand over, not from a marketing summary.
-            </p>
-          </div>
+      <div className="max-w-7xl mx-auto flex items-start gap-8 lg:gap-12">
+        {/* Left Sticky TOC Minimap Rail spanning the entire ledger */}
+        <aside className="hidden md:flex flex-col items-start w-16 shrink-0 sticky top-32 self-start z-30 pt-1">
+          <TOCMinimap items={TOC_ITEMS} className="w-full ml-0" />
+        </aside>
 
-          {/* Natural Handover Standards List */}
-          <div className="lg:col-span-5 space-y-6 pt-2 lg:pt-8">
-            <div>
-              <span className="font-mono text-xs uppercase tracking-wider text-neutral-300 font-semibold block mb-3">
-                Audit Handover Deliverables Standard
+        {/* Main Content Stream */}
+        <div className="flex-1 min-w-0 space-y-16">
+          {/* Natural Header Block */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start pb-16 border-b border-neutral-800">
+            {/* Main Title & Lede */}
+            <div className="lg:col-span-7 space-y-4">
+              <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block">
+                AUDIT LEDGER // IN-DEPTH ENGAGEMENTS
               </span>
-              <ul className="space-y-2 text-sm text-neutral-400">
-                {HANDOVER_STANDARDS.map((item) => (
-                  <li key={item} className="flex items-center gap-3">
-                    <span className="text-neutral-500 font-mono text-xs">—</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
+              <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight">
+                Verified outcomes from production audits.
+              </h2>
+              <p className="font-sans text-base sm:text-lg text-neutral-400 leading-relaxed max-w-2xl">
+                Each study follows the same verification structure: the failure mode the team brought us, the approach we engineered, and what changed as a result. Figures are illustrative of outcomes these programmes produce — every number in a live engagement is reproduced from the evaluation traces we hand over, not from a marketing summary.
+              </p>
             </div>
 
-            <div className="pt-4 flex items-center gap-4">
-              <span className="text-xs text-neutral-400">Have a model in staging?</span>
-              <Link
-                href="/contact?source=case-studies"
-                className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-white hover:text-neutral-300 transition-colors underline underline-offset-4"
-              >
-                <span>Scope Evaluation</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-        </div>
+            {/* Natural Handover Standards List */}
+            <div className="lg:col-span-5 space-y-6 pt-2 lg:pt-8">
+              <div>
+                <span className="font-mono text-xs uppercase tracking-wider text-neutral-300 font-semibold block mb-3">
+                  Audit Handover Deliverables Standard
+                </span>
+                <ul className="space-y-2 text-sm text-neutral-400">
+                  {HANDOVER_STANDARDS.map((item) => (
+                    <li key={item} className="flex items-center gap-3">
+                      <span className="text-neutral-500 font-mono text-xs">—</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-        {/* Case Studies Container with Slight Left Side Width for Sticky TOC Minimap */}
-        <div className="flex gap-6 lg:gap-12 items-start">
-          {/* Slight Left Side Width: Sticky TOC Minimap */}
-          <div className="hidden md:flex flex-col items-center w-12 sm:w-14 lg:w-16 shrink-0 sticky top-36 self-start pt-2">
-            <TOCMinimap
-              items={TOC_ITEMS}
-              side="right"
-              sideOffset={20}
-              className="w-full flex justify-center"
-            />
+              <div className="pt-4 flex items-center gap-4">
+                <span className="text-xs text-neutral-400">Have a model in staging?</span>
+                <Link
+                  href="/contact?source=case-studies"
+                  className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-white hover:text-neutral-300 transition-colors underline underline-offset-4"
+                >
+                  <span>Scope Evaluation</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
           </div>
 
           {/* Natural Case Studies Rows */}
-          <div className="flex-1 min-w-0 divide-y divide-neutral-800">
+          <div className="divide-y divide-neutral-800">
             {CASE_STUDIES.map((study, idx) => (
               <article
                 key={study.id}
@@ -213,7 +178,7 @@ export default function CaseStudiesLedgerSection() {
                   </p>
                 </div>
 
-                {/* 3-Column Progression (Problem -> Approach -> Outcome) Sitting Naturally */}
+                {/* 3-Column Progression (Problem -> Approach -> Outcome) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4">
                   {study.phases.map((phase, pIdx) => {
                     const phaseId = `${study.id}-${phase.label.toLowerCase()}`;
