@@ -83,37 +83,37 @@ export default function CareersOpenPositionsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
           {/* Left Column: Sticky / Pinned Filter and Summary Box */}
-          <aside className="lg:col-span-4 lg:sticky lg:top-28 space-y-6">
-            <div className="p-7 rounded-md bg-neutral-950 border border-neutral-800">
-              <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-3">
+          <aside className="lg:col-span-4 lg:sticky lg:top-24 self-start">
+            <div className="p-5 sm:p-6 rounded-md bg-neutral-950 border border-neutral-800 max-h-[calc(100vh-7rem)] overflow-y-auto">
+              <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-2">
                 OPENINGS LEDGER
               </span>
-              <h2 className="font-display font-bold text-2xl sm:text-3xl text-white tracking-tight leading-tight mb-4">
+              <h2 className="font-display font-bold text-2xl text-white tracking-tight leading-tight mb-2.5">
                 Open Positions.
               </h2>
-              <p className="font-sans text-sm text-neutral-400 leading-relaxed font-normal mb-6">
+              <p className="font-sans text-xs text-neutral-400 leading-relaxed font-normal mb-4">
                 Evalixa hires people who can raise the quality of AI evaluation, security testing, expert review, and delivery operations.
               </p>
 
               {/* Quick Telemetry Summary */}
-              <div className="grid grid-cols-2 gap-3 py-4 border-y border-neutral-900 mb-6 text-xs">
+              <div className="grid grid-cols-2 gap-3 py-3 border-y border-neutral-900 mb-4 text-xs">
                 <div>
-                  <span className="block font-display font-bold text-xl text-white">25+</span>
-                  <span className="font-mono text-[11px] text-neutral-500 uppercase tracking-wider">
+                  <span className="block font-display font-bold text-lg text-white">25+</span>
+                  <span className="font-mono text-[10px] text-neutral-500 uppercase tracking-wider">
                     Total Openings
                   </span>
                 </div>
                 <div>
-                  <span className="block font-display font-bold text-xl text-white">6</span>
-                  <span className="font-mono text-[11px] text-neutral-500 uppercase tracking-wider">
+                  <span className="block font-display font-bold text-lg text-white">6</span>
+                  <span className="font-mono text-[10px] text-neutral-500 uppercase tracking-wider">
                     Hiring Tracks
                   </span>
                 </div>
               </div>
 
               {/* Category / Department Filter Buttons */}
-              <div className="space-y-1.5 mb-6">
-                <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-500 font-semibold block mb-2">
+              <div className="space-y-1 mb-4">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-500 font-semibold block mb-1.5">
                   FILTER BY TRACK:
                 </span>
                 {CATEGORIES.map((cat) => {
@@ -127,15 +127,15 @@ export default function CareersOpenPositionsSection() {
                     <button
                       key={cat.id}
                       onClick={() => setSelectedCategory(cat.id)}
-                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-md text-xs font-mono transition-all cursor-pointer ${
+                      className={`w-full flex items-center justify-between px-3 py-1.5 rounded-md text-xs font-mono transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-white text-neutral-950 font-semibold shadow-sm'
+                          ? 'bg-white text-neutral-950 font-semibold shadow-xs'
                           : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
                       }`}
                     >
                       <span>{cat.label}</span>
                       <span
-                        className={`text-[10px] px-2 py-0.5 rounded ${
+                        className={`text-[10px] px-1.5 py-0.2 rounded ${
                           isSelected
                             ? 'bg-neutral-200 text-neutral-950'
                             : 'bg-neutral-900 text-neutral-500'
@@ -149,13 +149,13 @@ export default function CareersOpenPositionsSection() {
               </div>
 
               {/* Direct Mail Rail */}
-              <div className="pt-5 border-t border-neutral-900">
-                <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-500 block mb-2">
+              <div className="pt-3.5 border-t border-neutral-900">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-500 block mb-1.5">
                   DIRECT RESUME SUBMISSION:
                 </span>
                 <a
                   href={`mailto:${CAREERS_EMAIL}`}
-                  className="font-mono text-xs text-white hover:text-neutral-300 flex items-center gap-2 underline underline-offset-4"
+                  className="font-mono text-xs text-neutral-300 hover:text-white flex items-center gap-2 underline underline-offset-4"
                 >
                   <Mail className="w-3.5 h-3.5 text-neutral-400" />
                   <span>{CAREERS_EMAIL}</span>

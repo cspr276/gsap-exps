@@ -75,7 +75,7 @@ export default function BlogsHero() {
             onClick={scrollToBlogs}
             className="inline-flex items-center gap-2 px-6 py-3.5 rounded-md bg-white text-black font-mono text-xs uppercase tracking-wider font-semibold hover:bg-neutral-200 transition-all shadow-xl shadow-black/50 cursor-pointer"
           >
-            <span>Explore 5 Guides</span>
+            <span>Explore Guides</span>
             <ArrowDown className="w-3.5 h-3.5 text-black stroke-[2.5]" />
           </a>
 
