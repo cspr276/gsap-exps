@@ -67,8 +67,9 @@ export default function CaseStudiesMethodSection() {
 
   return (
     <section
+      id="audit-methodology"
       ref={containerRef}
-      className="relative z-20 bg-[#fbfbfb] text-neutral-900 border-b border-neutral-300 py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      className="relative z-20 bg-[#fbfbfb] text-neutral-900 border-b border-neutral-300 py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden scroll-mt-20"
     >
       <div className="max-w-7xl mx-auto">
         {/* Section Header - Clean, no circle dot */}

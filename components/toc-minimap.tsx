@@ -38,39 +38,45 @@ export function TOCMinimap({ items, className }: TOCMinimapProps) {
   }
 
   return (
-    <div className={cn("ml-auto w-18", className)}>
+    <div className={cn("w-18", className)}>
       <HoverCard
+        openDelay={0}
+        closeDelay={120}
         onOpenChange={(open) => {
           if (open) play()
         }}
       >
         <HoverCardTrigger asChild>
-          <div className="flex max-h-[50dvh] flex-col gap-3 overflow-hidden py-3 pl-6 opacity-100 transition-opacity duration-200 data-popup-open:opacity-0 cursor-pointer">
+          <button
+            type="button"
+            aria-label="Table of contents minimap"
+            className="flex max-h-[50dvh] flex-col gap-3 overflow-hidden py-3 pl-2 pr-4 cursor-pointer opacity-100 transition-opacity duration-150"
+          >
             {items.map((item) => (
               <div
                 key={item.url}
                 data-depth={item.depth}
                 data-active={item.url === `#${activeHeading}`}
                 className={cn(
-                  "h-0.5 w-6 shrink-0 rounded-xs bg-ring/50 transition-[background-color] duration-200",
+                  "h-0.5 w-6 shrink-0 rounded-xs bg-neutral-700 transition-[background-color,width] duration-150",
                   "data-[depth=3]:ml-2 data-[depth=3]:w-4",
                   "data-[depth=4]:ml-4 data-[depth=4]:w-2",
-                  "data-active:bg-foreground"
+                  "data-active:bg-white data-active:w-8"
                 )}
               />
             ))}
-          </div>
+          </button>
         </HoverCardTrigger>
 
         <HoverCardContent
-          className="w-56 overflow-hidden p-0 duration-200 data-[side=left]:slide-in-from-right-3 data-[side=left]:slide-out-to-right-3 data-open:zoom-in-100 data-closed:zoom-out-100"
+          className="w-64 overflow-hidden p-0 duration-150 transition-all ease-out border border-neutral-800 bg-[#121214] text-white shadow-2xl rounded-xl backdrop-blur-md"
           align="start"
-          alignOffset={0}
+          alignOffset={-4}
           side="right"
-          sideOffset={16}
+          sideOffset={14}
         >
           <div className="flex max-h-[50dvh] overflow-y-auto overscroll-contain">
-            <ul className="flex size-full flex-col px-6 py-4 text-sm">
+            <ul className="flex size-full flex-col px-5 py-4 text-sm font-sans">
               {items.map((item) => (
                 <li key={item.url} className="flex py-1">
                   <a
@@ -78,9 +84,9 @@ export function TOCMinimap({ items, className }: TOCMinimapProps) {
                     data-depth={item.depth}
                     data-active={item.url === `#${activeHeading}`}
                     className={cn(
-                      "line-clamp-2 w-full transition-[color] duration-200",
-                      "text-muted-foreground hover:text-foreground data-active:text-foreground",
-                      "data-[depth=3]:pl-4 data-[depth=4]:pl-8"
+                      "line-clamp-2 w-full transition-[color] duration-150",
+                      "text-neutral-400 hover:text-white data-active:text-white data-active:font-semibold",
+                      "data-[depth=3]:pl-4 data-[depth=3]:text-xs data-[depth=3]:text-neutral-500 data-[depth=3]:data-active:text-neutral-200"
                     )}
                     onClick={handleItemClick}
                   >
@@ -100,31 +106,39 @@ export function useActiveHeading(itemIds: string[]) {
   const [activeId, setActiveId] = useState<string | null>(null)
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id)
+    if (!itemIds || !itemIds.length) return
+
+    const computeActive = () => {
+      // Offset reading line 180px down from viewport top
+      const scrollY = window.scrollY
+      const readingLine = scrollY + 220
+      let current: string | null = null
+
+      for (const id of itemIds) {
+        const el = document.getElementById(id)
+        if (el) {
+          const rect = el.getBoundingClientRect()
+          const elementTop = rect.top + scrollY
+          if (elementTop <= readingLine) {
+            current = id
           }
         }
-      },
-      { rootMargin: "0% 0% -60% 0%", threshold: 0.2 }
-    )
+      }
 
-    for (const id of itemIds ?? []) {
-      const element = document.getElementById(id)
-      if (element) {
-        observer.observe(element)
+      if (current) {
+        setActiveId(current)
+      } else if (itemIds[0]) {
+        setActiveId(itemIds[0])
       }
     }
 
+    computeActive()
+    window.addEventListener("scroll", computeActive, { passive: true })
+    window.addEventListener("resize", computeActive, { passive: true })
+
     return () => {
-      for (const id of itemIds ?? []) {
-        const element = document.getElementById(id)
-        if (element) {
-          observer.unobserve(element)
-        }
-      }
+      window.removeEventListener("scroll", computeActive)
+      window.removeEventListener("resize", computeActive)
     }
   }, [itemIds])
 

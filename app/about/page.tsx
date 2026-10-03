@@ -33,41 +33,17 @@ export default function AboutPage() {
         {/* Universal Architectural Sticky Navbar */}
         <Navbar />
 
-        {/* 1. Pinned Atmospheric Hero (Dark) */}
         <AboutHero />
-
-        {/* Continuous Z-20 Stacking Layer */}
-        <div className="relative z-20 bg-[#09090b]">
-          {/* 2. Institutional Telemetry Metrics Strip (Counter Increase Animation) */}
-          <AboutMetricsSection />
-
-          {/* 3. Origin, Thesis & Paradigm Shift (White — OnScrollTypography Fx16 Illumination) */}
-          <AboutOriginSection />
-
-          {/* 4. Dual-Wave Capabilities & Enterprise Domains (Dark — DualWave Harmonic Curve) */}
-          <AboutDualWaveSection />
-
-          {/* 5. Inside Evalixa Labs (White — Bento Infrastructure Cards) */}
-          <AboutStickyGridSection />
-
-          {/* 6. Values & Operating Context Bento Grid (White — Bi-directional Falling-Into-Place Scrub) */}
-          <AboutValuesSection />
-
-          {/* 7. Four Non-Negotiable Operating Tenets (Dark — Staggered 3D Cards) */}
-          <AboutTenetsSection />
-
-          {/* 8. The Expert Contributor Network Pathway (Dark) */}
-          <AboutContributorSection />
-
-          {/* 9. Frequently Asked Questions Accordion (Dark — 10 Source FAQs) */}
-          <AboutFAQSection />
-
-          {/* 10. High-Contrast Conversion CTA */}
-          <AboutCTASection />
-
-          {/* 11. Architectural Footer */}
-          <Footer />
-        </div>
+        <AboutMetricsSection />
+        <AboutOriginSection />
+        <AboutDualWaveSection />
+        <AboutStickyGridSection />
+        <AboutValuesSection />
+        <AboutTenetsSection />
+        <AboutContributorSection />
+        <AboutFAQSection />
+        <AboutCTASection />
+        <Footer />
       </main>
     </SmoothScroll>
   );

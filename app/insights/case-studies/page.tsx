@@ -28,26 +28,12 @@ export default function CaseStudiesPage() {
         {/* Universal Architectural Sticky Navbar */}
         <Navbar />
 
-        {/* 1. Pinned Atmospheric Hero (Dark — Full Screen Height with Background Image) */}
         <CaseStudiesHero />
-
-        {/* Continuous Z-20 Stacking Layer */}
-        <div className="relative z-20 bg-[#09090b]">
-          {/* 2. Audit Principles & Verification Methodology (White Editorial) */}
-          <CaseStudiesMethodSection />
-
-          {/* 3. In-Depth Engagement Ledger (Left Pinned Rail + Right Structured Cards) */}
-          <CaseStudiesLedgerSection />
-
-          {/* 4. How We Report Outcomes (4-Segmented Grid with Subtle Grainient Shaders) */}
-          <CaseStudiesReportingSection />
-
-          {/* 5. Direct Scoping CTA (WebGL Aurora Canvas) */}
-          <CaseStudiesCTASection />
-
-          {/* 6. Institutional Footer */}
-          <Footer />
-        </div>
+        <CaseStudiesMethodSection />
+        <CaseStudiesLedgerSection />
+        <CaseStudiesReportingSection />
+        <CaseStudiesCTASection />
+        <Footer />
       </main>
     </SmoothScroll>
   );

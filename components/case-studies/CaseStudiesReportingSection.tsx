@@ -72,8 +72,9 @@ export default function CaseStudiesReportingSection() {
 
   return (
     <section
+      id="handover-reporting"
       ref={sectionRef}
-      className="relative z-20 bg-[#09090b] text-white py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-b border-neutral-800"
+      className="relative z-20 bg-[#09090b] text-white py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-b border-neutral-800 scroll-mt-20"
     >
       <div className="max-w-7xl mx-auto">
         {/* Section Header - Clean, no circle dot */}

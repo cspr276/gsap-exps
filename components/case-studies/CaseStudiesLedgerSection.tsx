@@ -20,13 +20,28 @@ const HANDOVER_STANDARDS = [
 
 const TOC_ITEMS: TOCItemType[] = [
   {
-    title: 'Fintech Support Agent',
+    title: 'Audit Methodology',
+    url: '#audit-methodology',
+    depth: 2,
+  },
+  {
+    title: 'Fintech Agent Evaluation',
     url: '#case-01',
     depth: 2,
   },
   {
-    title: 'Policy Hallucinations',
+    title: 'Refund Hallucinations',
     url: '#case-01-problem',
+    depth: 3,
+  },
+  {
+    title: 'Task-Grounded Rubrics',
+    url: '#case-01-approach',
+    depth: 3,
+  },
+  {
+    title: 'Board Authorization',
+    url: '#case-01-outcome',
     depth: 3,
   },
   {
@@ -35,19 +50,44 @@ const TOC_ITEMS: TOCItemType[] = [
     depth: 2,
   },
   {
-    title: 'Adaptive Injections',
+    title: 'Static Suite Gaps',
     url: '#case-02-problem',
     depth: 3,
   },
   {
-    title: 'Clinical Data & RLHF',
+    title: 'Adaptive Injections',
+    url: '#case-02-approach',
+    depth: 3,
+  },
+  {
+    title: 'Automated CI Gate',
+    url: '#case-02-outcome',
+    depth: 3,
+  },
+  {
+    title: 'Clinical Alignment & RLHF',
     url: '#case-03',
     depth: 2,
   },
   {
-    title: 'Clinical Omissions',
+    title: 'Diagnostic Omissions',
     url: '#case-03-problem',
     depth: 3,
+  },
+  {
+    title: 'Credentialed MDs',
+    url: '#case-03-approach',
+    depth: 3,
+  },
+  {
+    title: 'Regulatory Ledger',
+    url: '#case-03-outcome',
+    depth: 3,
+  },
+  {
+    title: 'Reporting Standards',
+    url: '#handover-reporting',
+    depth: 2,
   },
 ];
 
@@ -86,9 +126,9 @@ export default function CaseStudiesLedgerSection() {
       ref={containerRef}
       className="relative z-20 bg-[#09090b] text-white py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-b border-neutral-800"
     >
-      <div className="max-w-7xl mx-auto flex items-start gap-8 lg:gap-12">
+      <div className="max-w-7xl mx-auto flex items-start gap-8 lg:gap-14">
         {/* Left Sticky TOC Minimap Rail spanning the entire ledger */}
-        <aside className="hidden md:flex flex-col items-start w-16 shrink-0 sticky top-32 self-start z-30 pt-1">
+        <aside className="hidden md:flex flex-col items-start w-16 shrink-0 sticky top-28 self-start z-30 pt-1">
           <TOCMinimap items={TOC_ITEMS} className="w-full ml-0" />
         </aside>
 

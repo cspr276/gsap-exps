@@ -21,7 +21,7 @@ export default function CareersHero() {
   return (
     <section
       id="careers-hero"
-      className="sticky top-0 z-0 w-full min-h-screen lg:h-screen flex flex-col justify-center items-center overflow-hidden bg-[#09090b] text-white"
+      className="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden bg-[#09090b] text-white"
     >
       {/* Dynamic Atmospheric Background Frame matching rest of site */}
       <motion.div

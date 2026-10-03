@@ -29,29 +29,13 @@ export default function CareersPage() {
         {/* Universal Architectural Sticky Navbar */}
         <Navbar />
 
-        {/* 1. Pinned Atmospheric Hero (Dark — Full Screen Height with Background Image) */}
         <CareersHero />
-
-        {/* Continuous Z-20 Stacking Layer */}
-        <div className="relative z-20 bg-[#09090b]">
-          {/* 2. Life, Principles & Sustainable Growth (White Editorial) */}
-          <CareersCultureSection />
-
-          {/* 3. Open Positions Directory (Left Pinned Filter Ledger + Right Cards) */}
-          <CareersOpenPositionsSection />
-
-          {/* 4. How We Evaluate (Segmented Border Grid, Bare Icons in Top Line) */}
-          <CareersHiringProcessSection />
-
-          {/* 5. Frequently Asked Questions for Candidates (Matching Institutional FAQ Theme) */}
-          <CareersFAQSection />
-
-          {/* 6. Conversion CTA (Preserved as requested) */}
-          <CareersCTASection />
-
-          {/* 7. Institutional Footer */}
-          <Footer />
-        </div>
+        <CareersCultureSection />
+        <CareersOpenPositionsSection />
+        <CareersHiringProcessSection />
+        <CareersFAQSection />
+        <CareersCTASection />
+        <Footer />
       </main>
     </SmoothScroll>
   );
