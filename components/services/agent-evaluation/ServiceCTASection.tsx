@@ -8,7 +8,7 @@ import Aurora from '@/components/Aurora';
 export default function ServiceCTASection() {
   return (
     <section className="relative w-full overflow-hidden bg-neutral-950 text-white py-32 sm:py-40 lg:py-48 flex items-center justify-center border-t border-neutral-900">
-      {/* WebGL Aurora Background Canvas matching home page */}
+      {/* WebGL Aurora Background Canvas */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <Aurora
           colorStops={['#a7a8ff', '#9096fe', '#a892ff']}
@@ -20,17 +20,17 @@ export default function ServiceCTASection() {
 
       {/* Content Container */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 sm:px-12 text-center flex flex-col items-center">
-        {/* Service-Specific Headline */}
+        {/* Headline */}
         <h2 className="font-display font-bold text-3xl sm:text-5xl md:text-6xl tracking-tight text-white leading-[1.15] mb-6 max-w-3xl">
           Find out what your agents actually do
         </h2>
 
-        {/* Service-Specific Descriptive Body */}
+        {/* Descriptive Body */}
         <p className="text-neutral-300 text-base sm:text-lg md:text-xl font-normal leading-relaxed max-w-2xl mb-10">
           Bring one workflow you are unsure about. We will scope an evaluation around it and tell you honestly whether it is worth measuring.
         </p>
 
-        {/* CTA Buttons with crisp rounded-md borders */}
+        {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-10">
           <Link
             href="/contact"
@@ -50,7 +50,7 @@ export default function ServiceCTASection() {
         </div>
 
         {/* Trust Badges */}
-        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-neutral-400 font-mono text-xs uppercase tracking-wider pt-2 border-t border-neutral-800/80">
+        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-neutral-400 font-mono text-xs uppercase tracking-wider pt-6 border-t border-neutral-800/80">
           <span>✓ Calibrated Domain Network</span>
           <span className="hidden sm:inline text-neutral-600">•</span>
           <span>✓ Reproducible Traces</span>

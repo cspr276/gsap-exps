@@ -20,11 +20,6 @@ export default function ServiceCTASection() {
 
       {/* Content Container */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 sm:px-12 text-center flex flex-col items-center">
-        {/* Eyebrow Label */}
-        <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-4">
-          OFFENSIVE ASSURANCE
-        </span>
-
         {/* Headline */}
         <h2 className="font-display font-bold text-3xl sm:text-5xl md:text-6xl tracking-tight text-white leading-[1.15] mb-6 max-w-3xl">
           Find out what your AI system{' '}
@@ -36,7 +31,7 @@ export default function ServiceCTASection() {
           Bring one deployed or near-production AI workflow with real tools, data paths, and permission boundaries. We will scope a security test around what an attacker could influence, access, trigger, or exfiltrate.
         </p>
 
-        {/* CTA Buttons with crisp rounded-md borders */}
+        {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-10">
           <Link
             href="/contact"
@@ -56,11 +51,11 @@ export default function ServiceCTASection() {
         </div>
 
         {/* Trust Badges */}
-        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-neutral-400 font-mono text-xs uppercase tracking-wider pt-2 border-t border-neutral-800/80">
+        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-neutral-400 font-mono text-xs uppercase tracking-wider pt-6 border-t border-neutral-800/80">
           <span>✓ OWASP GenAI Aligned</span>
-          <span className="hidden sm:inline text-neutral-600">—</span>
+          <span className="hidden sm:inline text-neutral-600">•</span>
           <span>✓ Zero Production Risk</span>
-          <span className="hidden sm:inline text-neutral-600">—</span>
+          <span className="hidden sm:inline text-neutral-600">•</span>
           <span>✓ Reproducible Trace Proofs</span>
         </div>
       </div>

@@ -10,13 +10,12 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const Dither = dynamic(() => import('@/components/Dither'), { ssr: false });
 const Grainient = dynamic(() => import('@/components/Grainient'), { ssr: false });
 
 interface CodeLine {
   label?: string;
   code: string;
-  tone?: 'neutral' | 'success' | 'warn' | 'accent';
+  tone?: 'neutral' | 'accent' | 'highlight';
 }
 
 interface ComparisonOption {
@@ -35,13 +34,11 @@ interface ComparisonItem {
 
 interface Pillar {
   id: string;
-  step: string;
+  category: string;
   title: string;
   subtitle: string;
   description: string;
   specs: string[];
-  ditherColor: [number, number, number];
-  grainientColors: { color1: string; color2: string; color3: string };
   codePreview: {
     title: string;
     badge: string;
@@ -50,25 +47,24 @@ interface Pillar {
   comparisonPreview: ComparisonItem;
 }
 
+// 100% Monochromatic (Obsidian, Graphite, Slate & Platinum Silvers)
 const PILLARS: Pillar[] = [
   {
     id: 'contract-ruleout',
-    step: 'PILLAR 01',
+    category: 'LEVER AUDIT',
     title: 'Task Contract & Retrieval Rule-Out',
     subtitle: 'Checking cheaper prompt and RAG levers first',
     description:
       'Before writing a single training line or curating examples, we systematically audit whether the observed capability gap can be resolved via strict output schema contracts, few-shot decomposition, or chunk-level retrieval augmentation.',
     specs: ['Contract schema specification', 'Retrieval index audit', 'Zero-cost prompt refactoring', 'Reversibility analysis'],
-    ditherColor: [0.42, 0.65, 0.9],
-    grainientColors: { color1: '#162238', color2: '#253d66', color3: '#3b629e' },
     codePreview: {
       title: 'lever_audit_assessment.json',
       badge: 'LEVER EVALUATION',
       lines: [
         { label: 'LEVER_1_PROMPT', code: 'Refactored unconstrained prompt into strict JSON schema contract' },
-        { label: 'SCHEMA_GAIN', code: 'Format adherence rose from 68.2% to 94.1% without training', tone: 'success' },
-        { label: 'LEVER_2_RAG', code: 'Appended chunk-level provenance; factual hallucinations dropped 42%', tone: 'success' },
-        { label: 'RESIDUAL_GAP', code: '"Subtle domain phrasing and multi-turn negative constraint adherence"', tone: 'warn' },
+        { label: 'SCHEMA_GAIN', code: 'Format adherence rose from 68.2% to 94.1% without training', tone: 'accent' },
+        { label: 'LEVER_2_RAG', code: 'Appended chunk-level provenance; factual hallucinations dropped 42%', tone: 'accent' },
+        { label: 'RESIDUAL_GAP', code: '"Subtle domain phrasing and multi-turn negative constraint adherence"', tone: 'highlight' },
         { label: 'VERDICT', code: 'CHEAP LEVERS EXHAUSTED: PROCEEDING TO CURATED SFT', tone: 'accent' },
       ],
     },
@@ -91,23 +87,21 @@ const PILLARS: Pillar[] = [
   },
   {
     id: 'demonstration-sft',
-    step: 'PILLAR 02',
+    category: 'DEMONSTRATION SFT',
     title: 'Curated Demonstration SFT',
     subtitle: 'Teaching structure, format, and house conventions',
     description:
       'Supervised fine-tuning excels at teaching format, institutional tone, and syntactic adherence from curated demonstrations. We curate high-signal, multi-turn gold datasets where domain experts author the exact desired behavior.',
     specs: ['Loss masking on prompt tokens', 'High-density instruction tuning', 'Verified domain demonstrations', 'Syntactic schema fidelity'],
-    ditherColor: [0.32, 0.78, 0.55],
-    grainientColors: { color1: '#132e22', color2: '#1e4d3a', color3: '#2e7558' },
     codePreview: {
       title: 'sft_training_telemetry.log',
       badge: 'SFT PIPELINE v3.2',
       lines: [
         { label: 'DATASET', code: '1,850 curated domain demonstrations (triple-verified gold set)' },
         { label: 'LOSS_MASKING', code: 'Active: gradients calculated strictly on completion tokens', tone: 'accent' },
-        { label: 'EPOCH_3_LOSS', code: 'Train Loss: 0.142 | Validation Perplexity: 1.18', tone: 'success' },
-        { label: 'FORMAT_FIDELITY', code: '100.0% JSON syntax validity across 500 held-out stress tests', tone: 'success' },
-        { label: 'UNCERTAINTY_FLAG', code: 'Model successfully taught to emit [UNCERTAIN: NOT IN SOURCE]', tone: 'success' },
+        { label: 'EPOCH_3_LOSS', code: 'Train Loss: 0.142 | Validation Perplexity: 1.18', tone: 'accent' },
+        { label: 'FORMAT_FIDELITY', code: '100.0% JSON syntax validity across 500 held-out stress tests', tone: 'accent' },
+        { label: 'UNCERTAINTY_FLAG', code: 'Model successfully taught to emit [UNCERTAIN: NOT IN SOURCE]', tone: 'accent' },
       ],
     },
     comparisonPreview: {
@@ -129,23 +123,21 @@ const PILLARS: Pillar[] = [
   },
   {
     id: 'preference-dpo',
-    step: 'PILLAR 03',
+    category: 'PREFERENCE DPO',
     title: 'Expert Preference Optimization / DPO',
     subtitle: 'Aligning subtle domain quality trade-offs',
     description:
       'When outputs cannot be captured by static rules and require nuanced judgment, we deploy Direct Preference Optimization (DPO) on pairwise comparisons scored by calibrated domain specialists.',
     specs: ['Direct Preference Optimization (DPO)', 'Pairwise preference ranking', 'Krippendorff α agreement > 0.88', 'Implicit reward margin loss'],
-    ditherColor: [0.85, 0.62, 0.35],
-    grainientColors: { color1: '#362615', color2: '#573d1f', color3: '#825c2e' },
     codePreview: {
       title: 'dpo_alignment_metrics.json',
       badge: 'DPO CONVERGENCE',
       lines: [
         { label: 'OBJECTIVE', code: 'Direct Preference Optimization (beta=0.10, reference-anchored)' },
         { label: 'PREFERENCE_PAIRS', code: '2,400 expert pairwise comparisons (adjudicated agreement α=0.91)', tone: 'accent' },
-        { label: 'IMPLICIT_MARGIN', code: 'Reward delta (chosen - rejected) widened to +2.48', tone: 'success' },
-        { label: 'KL_DIVERGENCE', code: 'KL vs SFT baseline maintained within stable bounds (0.042)', tone: 'success' },
-        { label: 'OUTCOME', code: 'OPTIMAL TRADEOFF CONVERGENCE: UTILITY PREFERRED OVER FLUENCY', tone: 'success' },
+        { label: 'IMPLICIT_MARGIN', code: 'Reward delta (chosen - rejected) widened to +2.48', tone: 'accent' },
+        { label: 'KL_DIVERGENCE', code: 'KL vs SFT baseline maintained within stable bounds (0.042)', tone: 'highlight' },
+        { label: 'OUTCOME', code: 'OPTIMAL TRADEOFF CONVERGENCE: UTILITY PREFERRED OVER FLUENCY', tone: 'accent' },
       ],
     },
     comparisonPreview: {
@@ -167,23 +159,21 @@ const PILLARS: Pillar[] = [
   },
   {
     id: 'regression-gate',
-    step: 'PILLAR 04',
+    category: 'REGRESSION GATE',
     title: 'Continuous Regression Gate & Model Retirement',
     subtitle: 'Verifying adapted checkpoints against stock baselines',
     description:
       'Adapted models risk catastrophic forgetting or obsolescence as foundational base models update. We evaluate checkpoints against permanent held-out task suites to verify that fine-tuning continuously justifies its maintenance overhead.',
     specs: ['Catastrophic forgetting checks', 'Stock foundation model parity tests', 'Automated CI/CD release gate', 'Model retirement triggers'],
-    ditherColor: [0.72, 0.42, 0.92],
-    grainientColors: { color1: '#2f1940', color2: '#4e246e', color3: '#7535a6' },
     codePreview: {
       title: 'checkpoint_verification_audit.log',
       badge: 'REGRESSION AUDIT',
       lines: [
         { label: 'CANDIDATE', code: 'mistral-sft-dpo-v4 vs Stock Base Model v2.5' },
-        { label: 'DOMAIN_TASK', code: '+18.4% improvement on proprietary schema reconciliation', tone: 'success' },
-        { label: 'FORGETTING_TEST', code: 'General reasoning benchmark delta: -0.2% [PASS: Within tolerance]', tone: 'success' },
+        { label: 'DOMAIN_TASK', code: '+18.4% improvement on proprietary schema reconciliation', tone: 'accent' },
+        { label: 'FORGETTING_TEST', code: 'General reasoning benchmark delta: -0.2% [PASS: Within tolerance]', tone: 'highlight' },
         { label: 'RETIREMENT_CHECK', code: 'Custom checkpoint maintains 14.1% net advantage over new stock base', tone: 'accent' },
-        { label: 'DECISION', code: 'DEPLOYMENT CERTIFIED — RELEASE GATE PASSED', tone: 'success' },
+        { label: 'DECISION', code: 'DEPLOYMENT CERTIFIED — RELEASE GATE PASSED', tone: 'accent' },
       ],
     },
     comparisonPreview: {
@@ -200,7 +190,7 @@ const PILLARS: Pillar[] = [
         verdict: 'Maintains decisive advantage on mission-critical constraints. Retirement deferred until next stock generation.',
         isWinner: true,
       },
-      note: 'Maintaining a fine-tuned model means continuously validating whether stock models have caught up. When they do, we retire the custom weights.',
+      note: 'Fine-tuning is a temporary debt: we continuously benchmark against base model releases so you retire custom weights the moment base models catch up.',
     },
   },
 ];
@@ -210,7 +200,7 @@ export default function SftWorkbenchSection() {
   const leftColRef = useRef<HTMLDivElement>(null);
   const laserLineRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState<number>(0);
-  const [activeMode, setActiveMode] = useState<'console' | 'comparison'>('console');
+  const [activeMode, setActiveMode] = useState<'console' | 'diff'>('console');
 
   const currentPillar = PILLARS[activeIndex] || PILLARS[0];
 
@@ -220,6 +210,24 @@ export default function SftWorkbenchSection() {
       const laser = laserLineRef.current;
       if (!section) return;
 
+      // Ensure fresh scroll position and active index on mount
+      if (typeof window !== 'undefined' && !window.location.hash) {
+        if ('scrollRestoration' in history) {
+          history.scrollRestoration = 'manual';
+        }
+        if (window.__lenis) {
+          window.__lenis.scrollTo(0, { immediate: true });
+        }
+        window.scrollTo(0, 0);
+        ScrollTrigger.clearScrollMemory?.();
+        ScrollTrigger.update();
+      }
+
+      setActiveIndex(0);
+      if (laser) {
+        gsap.set(laser, { scaleY: 0 });
+      }
+
       const mm = gsap.matchMedia();
 
       mm.add('(min-width: 1024px)', () => {
@@ -227,7 +235,7 @@ export default function SftWorkbenchSection() {
         const scrollDistance = 2400;
 
         const st = ScrollTrigger.create({
-          id: 'workbench-pin',
+          id: 'workbench-pin-sft',
           trigger: section,
           start: 'top top',
           end: `+=${scrollDistance}`,
@@ -235,6 +243,13 @@ export default function SftWorkbenchSection() {
           scrub: 0.4,
           anticipatePin: 1,
           onUpdate: (self) => {
+            // Guard: Guarantee Pillar 1 if inactive at start
+            if (!self.isActive && self.progress === 0) {
+              setActiveIndex(0);
+              if (laser) gsap.set(laser, { scaleY: 0 });
+              return;
+            }
+
             const p = self.progress;
 
             if (laser) {
@@ -257,7 +272,7 @@ export default function SftWorkbenchSection() {
   const handlePillarClick = (index: number) => {
     setActiveIndex(index);
 
-    const st = ScrollTrigger.getById('workbench-pin');
+    const st = ScrollTrigger.getById('workbench-pin-sft');
     if (st) {
       const stepProgress = (index + 0.15) / PILLARS.length;
       const targetScroll = st.start + stepProgress * (st.end - st.start);
@@ -280,10 +295,10 @@ export default function SftWorkbenchSection() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-6 gap-3">
           <div className="max-w-2xl">
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-1.5">
-              ADAPTATION ENGINE ARCHITECTURE
+              ADAPTATION ARCHITECTURE
             </span>
             <h2 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-tight">
-              Engineered for Precision. Governed by Pre-Training Baselines.
+              Surgical Interventions. Auditable Improvements.
             </h2>
           </div>
 
@@ -297,7 +312,7 @@ export default function SftWorkbenchSection() {
 
         {/* 2-Column Interactive Workbench */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
-          {/* Left Column: 4 Pillar Navigation Cards with Vertical Laser Rail */}
+          {/* Left Column: 4 Pillar Navigation Cards */}
           <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col gap-3 sm:gap-3.5 lg:h-[530px]">
             <div className="hidden lg:block absolute left-[-14px] top-2 bottom-2 w-[2px] bg-neutral-800 rounded-full overflow-hidden pointer-events-none">
               <div
@@ -313,79 +328,88 @@ export default function SftWorkbenchSection() {
                 <button
                   key={pillar.id}
                   type="button"
-                  onClick={() => {
-                    handlePillarClick(idx);
-                    setActiveMode('console');
-                  }}
-                  className={`relative overflow-hidden w-full text-left p-4 sm:p-4.5 rounded-md border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-center ${
+                  onClick={() => handlePillarClick(idx)}
+                  className={`group relative overflow-hidden w-full flex-1 min-h-0 text-left px-4 py-3 sm:px-5 sm:py-3.5 rounded-md border transition-all duration-300 cursor-pointer flex flex-col justify-center ${
                     isActive
-                      ? 'border-neutral-500 bg-neutral-900/90 shadow-xl shadow-black/60 text-white'
-                      : 'bg-neutral-900/30 border-neutral-800/80 hover:border-neutral-700 hover:bg-neutral-900/50 text-neutral-300'
+                      ? 'border-white/40 bg-neutral-900/90 shadow-xl shadow-black/80 text-white'
+                      : 'bg-neutral-900/30 border-neutral-800 hover:border-neutral-700 hover:bg-neutral-900/60 text-neutral-400'
                   }`}
                 >
+                  {/* Monochromatic Fluid Grain Shader Background on Active Card */}
                   {isActive && (
                     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-85">
                       <Grainient
-                        color1={pillar.grainientColors.color1}
-                        color2={pillar.grainientColors.color2}
-                        color3={pillar.grainientColors.color3}
-                        timeSpeed={0.25}
+                        color1="#000000"
+                        color2="#2c2c2c"
+                        color3="#6c6c6c"
+                        saturation={0}
+                        timeSpeed={0.2}
                         warpStrength={0.5}
-                        grainAmount={0.06}
-                        contrast={1.15}
+                        grainAmount={0.07}
+                        contrast={1.3}
                       />
-                      <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+                      <div className="absolute inset-0 bg-neutral-950/40 pointer-events-none" />
                     </div>
                   )}
 
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-bold">
-                        {pillar.step}
-                      </span>
+                  <div className="relative z-10 flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2.5 mb-1">
+                        <span className="font-mono text-xs font-bold text-neutral-400">
+                          {String(idx + 1).padStart(2, '0')}
+                        </span>
+                        <span
+                          className={`font-mono text-[10px] uppercase tracking-wider font-semibold transition-colors ${
+                            isActive ? 'text-neutral-200' : 'text-neutral-500 group-hover:text-neutral-400'
+                          }`}
+                        >
+                          {pillar.category}
+                        </span>
+                      </div>
+                      <h3
+                        className={`font-display font-bold text-sm sm:text-base mb-0.5 transition-colors ${
+                          isActive ? 'text-white' : 'text-neutral-300 group-hover:text-white'
+                        }`}
+                      >
+                        {pillar.title}
+                      </h3>
+                      <p
+                        className={`font-sans text-xs line-clamp-2 leading-relaxed transition-colors ${
+                          isActive ? 'text-neutral-200' : 'text-neutral-400'
+                        }`}
+                      >
+                        {pillar.subtitle}
+                      </p>
                     </div>
-                    <h3
-                      className={`font-display font-bold text-base mb-1 transition-colors ${
-                        isActive ? 'text-white' : 'text-neutral-200'
-                      }`}
-                    >
-                      {pillar.title}
-                    </h3>
-                    <p
-                      className={`font-sans text-xs line-clamp-2 leading-relaxed font-normal transition-colors ${
-                        isActive ? 'text-neutral-200' : 'text-neutral-400'
-                      }`}
-                    >
-                      {pillar.subtitle}
-                    </p>
                   </div>
                 </button>
               );
             })}
           </div>
 
-          {/* Right Column: Dynamic Inspection Console & Behavioral Diff Comparison */}
-          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-neutral-950 overflow-hidden min-h-[500px] lg:h-[530px] shadow-xl shadow-black/80 flex flex-col justify-between">
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-75">
-              <Dither
-                waveSpeed={0.04}
-                waveFrequency={2.4}
-                waveAmplitude={0.3}
-                waveColor={currentPillar.ditherColor}
-                backgroundColor={[0.03, 0.03, 0.05]}
-                colorNum={4}
-                pixelSize={2}
-                enableMouseInteraction={false}
+          {/* Right Column: Dynamic Inspection Console & Output Diff Inspector */}
+          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-[#0c0d10] overflow-hidden min-h-[460px] lg:h-[530px] shadow-2xl shadow-black flex flex-col justify-between">
+            {/* Ambient Monochromatic Fluid Grain Shader Background on Console */}
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-85">
+              <Grainient
+                color1="#000000"
+                color2="#2c2c2c"
+                color3="#6c6c6c"
+                saturation={0}
+                timeSpeed={0.2}
+                warpStrength={0.5}
+                grainAmount={0.07}
+                contrast={1.3}
               />
             </div>
 
-            <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/70 via-transparent to-neutral-950/40" />
+            <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/85 via-neutral-950/30 to-neutral-950/50" />
 
             {/* Header with Mode Switcher */}
             <div className="relative z-10 p-4 sm:p-5 border-b border-neutral-800/80 flex flex-wrap items-center justify-between gap-3 bg-neutral-950/60 backdrop-blur-md">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
-                  ADAPTATION CONSOLE
+                  ADAPTATION ENGINE
                 </span>
               </div>
 
@@ -405,15 +429,15 @@ export default function SftWorkbenchSection() {
 
                 <button
                   type="button"
-                  onClick={() => setActiveMode('comparison')}
+                  onClick={() => setActiveMode('diff')}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-all cursor-pointer ${
-                    activeMode === 'comparison'
+                    activeMode === 'diff'
                       ? 'bg-neutral-800 text-white font-semibold'
                       : 'text-neutral-400 hover:text-white'
                   }`}
                 >
                   <GitCompare className="w-3.5 h-3.5" />
-                  <span>BEHAVIOR DIFF</span>
+                  <span>OUTPUT DIFF INSPECTOR</span>
                 </button>
               </div>
             </div>
@@ -424,18 +448,13 @@ export default function SftWorkbenchSection() {
                 {activeMode === 'console' ? (
                   <motion.div
                     key={currentPillar.id}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col justify-between h-full"
+                    initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex flex-col justify-center gap-6 h-full"
                   >
                     <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
-                          {currentPillar.step} ARCHITECTURE
-                        </span>
-                      </div>
                       <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight mb-2">
                         {currentPillar.title}
                       </h3>
@@ -448,7 +467,7 @@ export default function SftWorkbenchSection() {
                         {currentPillar.specs.map((spec) => (
                           <span
                             key={spec}
-                            className="font-mono text-[11px] text-neutral-300 bg-neutral-900/60 backdrop-blur-sm border border-neutral-700/80 px-2.5 py-1 rounded-sm"
+                            className="font-mono text-[10px] sm:text-[11px] text-neutral-200 bg-neutral-900/70 backdrop-blur-md border border-neutral-700/80 px-2.5 py-1 rounded-sm shadow-sm"
                           >
                             {spec}
                           </span>
@@ -456,30 +475,28 @@ export default function SftWorkbenchSection() {
                       </div>
                     </div>
 
-                    <div className="rounded-md bg-black/60 backdrop-blur-sm border border-neutral-800 p-4 font-mono text-xs overflow-hidden shadow-inner mt-4">
-                      <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-neutral-800/80 text-neutral-400 text-[11px]">
-                        <span className="truncate pr-2">{currentPillar.codePreview.title}</span>
-                        <span className="text-neutral-400 font-bold shrink-0">
+                    <div className="rounded-md bg-black/75 backdrop-blur-md border border-neutral-800 p-4 font-mono text-xs overflow-hidden shadow-2xl">
+                      <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-neutral-800 text-neutral-400 text-[11px]">
+                        <span className="truncate pr-2 text-neutral-300 font-medium">{currentPillar.codePreview.title}</span>
+                        <span className="px-2 py-0.5 rounded bg-white/10 text-white border border-white/20 text-[10px] font-bold shrink-0 uppercase tracking-wider">
                           {currentPillar.codePreview.badge}
                         </span>
                       </div>
-                      <div className="space-y-1.5 leading-relaxed overflow-x-auto">
+                      <div className="space-y-1.5 leading-relaxed overflow-x-auto text-[11px]">
                         {currentPillar.codePreview.lines.map((line, idx) => (
-                          <div key={idx} className="flex gap-2">
+                          <div key={idx} className="flex gap-2.5">
                             {line.label && (
-                              <span className="text-neutral-400 shrink-0 select-none">
+                              <span className="text-neutral-500 shrink-0 select-none">
                                 {line.label}:
                               </span>
                             )}
                             <span
                               className={
-                                line.tone === 'success'
-                                  ? 'text-emerald-400 font-medium'
-                                  : line.tone === 'warn'
-                                  ? 'text-amber-400 font-medium'
-                                  : line.tone === 'accent'
-                                  ? 'text-rose-400 font-bold'
-                                  : 'text-neutral-300'
+                                line.tone === 'accent'
+                                  ? 'text-white font-semibold'
+                                  : line.tone === 'highlight'
+                                  ? 'text-neutral-200 font-medium'
+                                  : 'text-neutral-400'
                               }
                             >
                               {line.code}
@@ -491,83 +508,105 @@ export default function SftWorkbenchSection() {
                   </motion.div>
                 ) : (
                   <motion.div
-                    key="comparison"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    key="diff"
+                    initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
                     className="flex flex-col justify-between h-full"
                   >
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
                         <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
-                          BEHAVIORAL DIFF INSPECTOR
+                          PAIRWISE OUTPUT ARTIFACT
                         </span>
-                        <span className="font-mono text-xs text-neutral-400 font-bold">
-                          {currentPillar.step}
+                        <span className="font-mono text-xs font-bold text-neutral-300">
+                          {currentPillar.category}
                         </span>
                       </div>
 
-                      <h3 className="font-display font-bold text-lg sm:text-xl text-white tracking-tight mb-2">
-                        Side-by-Side Model Output Comparison
+                      <h3 className="font-display font-bold text-lg sm:text-xl text-white tracking-tight mb-1.5">
+                        Ground Truth Output Comparison
                       </h3>
-
-                      <div className="p-2.5 rounded-md bg-neutral-900/80 border border-neutral-800 mb-3 font-mono text-xs">
-                        <span className="text-neutral-500 block text-[10px] uppercase font-bold mb-0.5">Prompt:</span>
-                        <p className="text-neutral-200 italic">&ldquo;{currentPillar.comparisonPreview.prompt}&rdquo;</p>
+                      <div className="p-2.5 rounded-md bg-black/60 border border-neutral-800 text-xs font-mono text-neutral-300 mb-3">
+                        <span className="text-neutral-500 block text-[10px] uppercase font-bold mb-0.5">Evaluation Task Prompt</span>
+                        &ldquo;{currentPillar.comparisonPreview.prompt}&rdquo;
                       </div>
 
+                      {/* Side-by-Side Cards */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                         {/* Option A */}
-                        <div className={`p-3 rounded-md border flex flex-col justify-between ${
-                          currentPillar.comparisonPreview.optionA.isWinner
-                            ? 'bg-emerald-950/20 border-emerald-800/80'
-                            : 'bg-black/40 border-neutral-800'
-                        }`}>
+                        <div
+                          className={`p-3 rounded-md border font-mono text-xs flex flex-col justify-between ${
+                            currentPillar.comparisonPreview.optionA.isWinner
+                              ? 'bg-neutral-900 border-neutral-700 text-white'
+                              : 'bg-black/60 border-neutral-800 text-neutral-400'
+                          }`}
+                        >
                           <div>
-                            <span className="font-mono text-[10px] text-neutral-400 font-bold uppercase block mb-1">
-                              {currentPillar.comparisonPreview.optionA.label}
-                            </span>
-                            <p className="font-mono text-xs text-neutral-300 whitespace-pre-line mb-2 leading-relaxed">
+                            <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-neutral-800">
+                              <span className="font-bold text-[11px] text-neutral-300">
+                                {currentPillar.comparisonPreview.optionA.label}
+                              </span>
+                              <span
+                                className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                                  currentPillar.comparisonPreview.optionA.isWinner
+                                    ? 'bg-white text-black'
+                                    : 'bg-neutral-800 text-neutral-400'
+                                }`}
+                              >
+                                {currentPillar.comparisonPreview.optionA.isWinner ? 'ACCEPTED' : 'REJECTED'}
+                              </span>
+                            </div>
+                            <p className="text-[11px] leading-relaxed mb-3 whitespace-pre-line text-neutral-300">
                               {currentPillar.comparisonPreview.optionA.text}
                             </p>
                           </div>
-                          <p className="font-sans text-[11px] text-neutral-400 pt-2 border-t border-neutral-800/60">
+                          <p className="text-[10px] text-neutral-400 pt-1.5 border-t border-neutral-800/80">
                             {currentPillar.comparisonPreview.optionA.verdict}
                           </p>
                         </div>
 
                         {/* Option B */}
-                        <div className={`p-3 rounded-md border flex flex-col justify-between ${
-                          currentPillar.comparisonPreview.optionB.isWinner
-                            ? 'bg-emerald-950/20 border-emerald-800/80'
-                            : 'bg-black/40 border-neutral-800'
-                        }`}>
+                        <div
+                          className={`p-3 rounded-md border font-mono text-xs flex flex-col justify-between ${
+                            currentPillar.comparisonPreview.optionB.isWinner
+                              ? 'bg-neutral-900 border-neutral-700 text-white'
+                              : 'bg-black/60 border-neutral-800 text-neutral-400'
+                          }`}
+                        >
                           <div>
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="font-mono text-[10px] text-neutral-400 font-bold uppercase">
+                            <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-neutral-800">
+                              <span className="font-bold text-[11px] text-neutral-300">
                                 {currentPillar.comparisonPreview.optionB.label}
                               </span>
-                              {currentPillar.comparisonPreview.optionB.isWinner && (
-                                <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-emerald-900/60 text-emerald-300 border border-emerald-700">
-                                  CHOSEN
-                                </span>
-                              )}
+                              <span
+                                className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                                  currentPillar.comparisonPreview.optionB.isWinner
+                                    ? 'bg-white text-black'
+                                    : 'bg-neutral-800 text-neutral-400'
+                                }`}
+                              >
+                                {currentPillar.comparisonPreview.optionB.isWinner ? 'ACCEPTED' : 'REJECTED'}
+                              </span>
                             </div>
-                            <p className="font-mono text-xs text-neutral-200 whitespace-pre-line mb-2 leading-relaxed font-medium">
+                            <p className="text-[11px] leading-relaxed mb-3 whitespace-pre-line text-neutral-300">
                               {currentPillar.comparisonPreview.optionB.text}
                             </p>
                           </div>
-                          <p className="font-sans text-[11px] text-neutral-300 pt-2 border-t border-neutral-800/60">
+                          <p className="text-[10px] text-neutral-400 pt-1.5 border-t border-neutral-800/80">
                             {currentPillar.comparisonPreview.optionB.verdict}
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="rounded-md p-2.5 border border-neutral-800 bg-neutral-900/60 font-sans text-xs text-neutral-300 leading-relaxed">
-                      <span className="font-mono text-neutral-400 font-bold uppercase text-[10px] block mb-0.5">Architectural Rationale:</span>
-                      {currentPillar.comparisonPreview.note}
+                    {/* Educational Footnote */}
+                    <div className="rounded-md p-3 border border-neutral-800 bg-neutral-900/60 font-mono text-xs text-neutral-300">
+                      <span className="text-white font-bold block mb-0.5">ENGINEERING TAKEAWAY:</span>
+                      <p className="font-sans text-[11px] text-neutral-300 leading-relaxed font-normal">
+                        {currentPillar.comparisonPreview.note}
+                      </p>
                     </div>
                   </motion.div>
                 )}

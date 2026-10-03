@@ -1,18 +1,14 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 
-interface StepItem {
-  step: string;
-  title: string;
-  duration: string;
-  description: string;
-  image: string;
-}
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const STEPS: StepItem[] = [
+const STEPS = [
   {
     step: '01',
     title: 'Estate Discovery & Architecture Interviews',
@@ -20,6 +16,7 @@ const STEPS: StepItem[] = [
     description:
       'We scan your cloud environments, inspect API gateways, and interview engineering and procurement leads to map the complete footprint of deployed models and tools.',
     image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1000&auto=format&fit=crop',
+    milestones: ['Cloud environment inventory', 'API gateway endpoint audit', 'Engineering & vendor interviews'],
   },
   {
     step: '02',
@@ -28,6 +25,7 @@ const STEPS: StepItem[] = [
     description:
       'Every discovered pipeline is scored against our impact and autonomy matrix, while technical controls (scoping, logging, guardrails) are tested in runtime.',
     image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1000&auto=format&fit=crop',
+    milestones: ['Autonomy & impact tier classification', 'Runtime credential scoping tests', 'Egress boundary validation'],
   },
   {
     step: '03',
@@ -36,6 +34,7 @@ const STEPS: StepItem[] = [
     description:
       'We produce an actionable, engineering-ready remediation backlog prioritized by disproportionate risk reduction—eliminating vulnerabilities before expanding governance.',
     image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=1000&auto=format&fit=crop',
+    milestones: ['Engineering remediation tickets', 'Privilege reduction policy maps', 'Emergency halt trigger verification'],
   },
   {
     step: '04',
@@ -44,70 +43,161 @@ const STEPS: StepItem[] = [
     description:
       'Final delivery of the executive risk dashboard, engineering tickets, automated registry tooling, and comprehensive evidence binder ready for board and regulatory presentation.',
     image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop',
+    milestones: ['Executive risk dashboard', 'NIST / ISO defensible binder', 'Registry synchronization tooling'],
   },
 ];
 
 export default function ReadinessDeliverySection() {
-  return (
-    <section className="relative w-full py-24 sm:py-32 bg-white text-neutral-950 border-t border-neutral-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-14">
-          <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-2.5">
-            DELIVERY METHODOLOGY
-          </span>
-          <h2 className="font-display font-bold text-3xl sm:text-5xl text-neutral-950 tracking-tight leading-tight mb-4">
-            From Shadow Discovery to Defensible Governance.
-          </h2>
-          <p className="font-sans text-base sm:text-lg text-neutral-600 leading-relaxed font-normal">
-            A structured 4-week engagement delivering immediate estate visibility and engineering-ready remediation backlogs.
-          </p>
-        </div>
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
 
-        {/* Crisp cards with Unsplash image backgrounds */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {STEPS.map((step, idx) => (
-            <motion.div
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      const track = trackRef.current;
+      const progressBar = progressBarRef.current;
+      if (!section || !track) return;
+
+      const mm = gsap.matchMedia();
+
+      // Pinned Horizontal Track on Desktop
+      mm.add('(min-width: 1024px)', () => {
+        const getScrollDistance = () => {
+          const cards = track.children;
+          if (cards.length > 1) {
+            const lastCard = cards[cards.length - 1] as HTMLElement;
+            return lastCard.offsetLeft + 80;
+          }
+          return 1600;
+        };
+
+        gsap.to(track, {
+          x: () => -getScrollDistance(),
+          ease: 'none',
+          scrollTrigger: {
+            id: 'delivery-horizontal',
+            trigger: section,
+            pin: true,
+            start: 'top top',
+            end: () => `+=${getScrollDistance() + 450}`,
+            scrub: 1,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        if (progressBar) {
+          gsap.fromTo(
+            progressBar,
+            { scaleX: 0 },
+            {
+              scaleX: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: section,
+                start: 'top top',
+                end: () => `+=${getScrollDistance() + 450}`,
+                scrub: 1,
+                invalidateOnRefresh: true,
+              },
+            }
+          );
+        }
+      });
+    },
+    { scope: sectionRef }
+  );
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative w-full min-h-screen flex flex-col justify-center py-16 sm:py-20 lg:py-24 bg-white text-neutral-950 border-t border-neutral-200 overflow-hidden"
+    >
+      {/* Laser progress wire (Desktop) */}
+      <div className="hidden lg:block absolute top-0 left-0 right-0 h-[2px] bg-neutral-200">
+        <div
+          ref={progressBarRef}
+          className="w-full h-full bg-neutral-950 origin-left"
+          style={{ transform: 'scaleX(0)' }}
+        />
+      </div>
+
+      {/* Section Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mb-8 sm:mb-10 flex-shrink-0">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div className="max-w-2xl">
+            <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-2">
+              DELIVERY METHODOLOGY
+            </span>
+            <h2 className="font-display font-bold text-3xl sm:text-5xl text-neutral-950 tracking-tight leading-tight">
+              From Shadow Discovery to Defensible Governance.
+            </h2>
+          </div>
+
+          <div className="hidden lg:flex items-center gap-2 text-neutral-500 font-mono text-xs">
+            <span className="text-neutral-950 font-bold">4 PHASES</span>
+            <span>/</span>
+            <span>TIMELINE RAIL</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Pinned Horizontal Track Container */}
+      <div className="relative w-full overflow-hidden lg:overflow-visible px-4 sm:px-6 lg:px-0 lg:pl-[calc(50vw-210px)]">
+        <div
+          ref={trackRef}
+          className="flex flex-col lg:flex-row gap-6 w-full lg:w-max lg:will-change-transform lg:pr-32"
+        >
+          {STEPS.map((step) => (
+            <div
               key={step.step}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.45, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="group relative p-6 rounded-md bg-[#f8f8fa] border border-neutral-200/90 hover:border-neutral-400 transition-all flex flex-col justify-between overflow-hidden min-h-70 shadow-sm hover:shadow-md"
+              className="group relative p-6 sm:p-7 rounded-md bg-[#f8f8fa] border border-neutral-200/90 hover:border-neutral-400 transition-all flex flex-col justify-between overflow-hidden w-full lg:w-[420px] min-h-[400px] shrink-0 shadow-sm hover:shadow-md"
             >
-              {/* Background Image Layer with Subtle Light Tint & Smooth Zoom on Hover */}
+              {/* Background Image Layer */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
                 <Image
                   src={step.image}
                   alt={step.title}
                   fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  sizes="(max-width: 640px) 100vw, 420px"
                   className="object-cover object-center group-hover:scale-105 opacity-60 group-hover:opacity-80 transition-all duration-700 ease-out"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/70 to-black/60" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/70 to-black/60" />
               </div>
 
               {/* Foreground Card Content */}
               <div className="relative z-10 flex flex-col justify-between h-full">
                 <div>
                   <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/20">
-                    <span className="font-mono text-xl font-bold text-neutral-100">
+                    <span className="font-mono text-2xl font-bold text-neutral-100">
                       {step.step}
                     </span>
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-200 font-semibold">
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-200 font-semibold px-2 py-0.5 rounded bg-white/10 border border-white/20">
                       {step.duration}
                     </span>
                   </div>
 
-                  <h3 className="font-display font-bold text-base sm:text-lg text-neutral-100 mb-2.5 leading-snug">
+                  <h3 className="font-display font-bold text-lg sm:text-xl text-neutral-100 mb-3 leading-snug">
                     {step.title}
                   </h3>
 
-                  <p className="font-sans text-xs text-white leading-relaxed font-normal">
+                  <p className="font-sans text-xs sm:text-sm text-white leading-relaxed font-normal mb-6">
                     {step.description}
                   </p>
                 </div>
+
+                {/* Milestones specs */}
+                <div className="pt-4 border-t border-white/20 space-y-1.5">
+                  {step.milestones.map((ms) => (
+                    <div key={ms} className="flex items-center gap-2 text-[11px] font-mono text-neutral-200">
+                      <span className="text-neutral-400 select-none">—</span>
+                      <span>{ms}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

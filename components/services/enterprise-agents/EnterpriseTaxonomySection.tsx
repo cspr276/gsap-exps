@@ -1,8 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { motion, AnimatePresence } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const Grainient = dynamic(() => import('@/components/Grainient'), { ssr: false });
 
@@ -11,7 +15,6 @@ interface DimensionItem {
   name: string;
   summary: string;
   decidingFactor: string;
-  grainientColors: { color1: string; color2: string; color3: string };
   criteria: string[];
 }
 
@@ -21,7 +24,6 @@ const DIMENSIONS: DimensionItem[] = [
     name: 'Deterministic Ingress & Intent Routing',
     summary: 'High-volume request classification, context enrichment from read-only datastores, and routing to specialized teams or automated pipelines.',
     decidingFactor: 'Mistakes are cheap and immediately visible to the downstream human in the chain.',
-    grainientColors: { color1: '#142542', color2: '#233d6b', color3: '#365d9c' },
     criteria: [
       'Sub-millisecond intent and schema classification',
       'Bounded read-only context enrichment across internal datastores',
@@ -34,7 +36,6 @@ const DIMENSIONS: DimensionItem[] = [
     name: 'Co-Pilot Workflows & Suggestion Engines',
     summary: 'Composing customer responses, contract redlines, and technical summaries where domain specialists review and authorize every artifact.',
     decidingFactor: 'A person is already in the loop, so the failure mode is review friction, not systemic damage.',
-    grainientColors: { color1: '#123829', color2: '#1c543e', color3: '#2a7d5c' },
     criteria: [
       'Context-grounded draft synthesis with transparent citations',
       'Direct integration into existing employee approval queues',
@@ -47,7 +48,6 @@ const DIMENSIONS: DimensionItem[] = [
     name: 'Deep Long-Horizon Knowledge Synthesis',
     summary: 'Ingesting unstructured documentation corpora, cross-referencing multi-system ERP data, and producing verifiable intelligence reports.',
     decidingFactor: 'High latency tolerance allows rigorous multi-step verification and provenance preservation.',
-    grainientColors: { color1: '#3d1633', color2: '#5c224e', color3: '#873173' },
     criteria: [
       'Multi-hop cross-referencing across structured and unstructured records',
       'Cryptographic provenance tracking preserved down to chunk level',
@@ -60,7 +60,6 @@ const DIMENSIONS: DimensionItem[] = [
     name: 'Governed System-of-Record Mutations',
     summary: 'Automating high-impact operational workflows that mutate ledgers, initiate payouts, or update production configurations under strict circuit breakers.',
     decidingFactor: 'Actions cannot be recalled; mandatory confirmation gates, spend ceilings, and idempotency are mandatory.',
-    grainientColors: { color1: '#3d2c14', color2: '#5c431e', color3: '#87622c' },
     criteria: [
       'Mandatory two-man rule and cryptographic confirmation gates',
       'Strict idempotency keys preventing duplicate execution on retry',
@@ -71,98 +70,138 @@ const DIMENSIONS: DimensionItem[] = [
 ];
 
 function DimensionCard({ dim, idx }: { dim: DimensionItem; idx: number }) {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.45, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="relative p-8 rounded-md bg-neutral-900/40 border border-neutral-800 hover:border-neutral-600 transition-all duration-300 flex flex-col justify-between overflow-hidden group shadow-sm hover:shadow-xl hover:shadow-black/50"
+    <div
+      className="taxonomy-card relative p-8 rounded-md bg-neutral-950/40 border border-neutral-800 hover:border-neutral-600 transition-colors duration-300 flex flex-col justify-between overflow-hidden group shadow-sm hover:shadow-2xl hover:shadow-black/60 will-change-transform"
     >
-      {/* Ambient dynamic fluid Grainient on hover */}
-      <AnimatePresence>
-        {isHovered && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.7 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.35 }}
-            className="absolute inset-0 z-0 pointer-events-none overflow-hidden"
-          >
-            <Grainient
-              color1={dim.grainientColors.color1}
-              color2={dim.grainientColors.color2}
-              color3={dim.grainientColors.color3}
-              timeSpeed={0.2}
-              warpStrength={0.5}
-              grainAmount={0.06}
-              contrast={1.15}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/70 via-transparent to-neutral-950/40 pointer-events-none" />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* High-visibility pure monochromatic B&W fluid Grainient background */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-90 group-hover:opacity-100 transition-opacity duration-500">
+        <Grainient
+          color1="#000000"
+          color2="#303030"
+          color3="#808080"
+          saturation={0}
+          timeSpeed={0.2}
+          warpStrength={0.55}
+          grainAmount={0.065}
+          contrast={1.35}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#09090b]/90 via-[#09090b]/35 to-[#09090b]/55 pointer-events-none" />
+      </div>
 
       {/* Card Content */}
       <div className="relative z-10">
         <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-neutral-800 group-hover:border-neutral-700 transition-colors">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-400 group-hover:text-neutral-300 transition-colors font-semibold">
+          <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-400 group-hover:text-neutral-200 transition-colors font-semibold">
             {dim.category}
+          </span>
+          <span className="font-mono text-xs text-neutral-500 group-hover:text-neutral-400">
+            0{idx + 1}
           </span>
         </div>
 
         <h3 className="font-display font-bold text-xl text-white mb-2">
           {dim.name}
         </h3>
-        <p className="font-sans text-sm text-neutral-300 mb-4 leading-relaxed font-normal">
+        <p className="font-sans text-sm text-neutral-300 mb-6 leading-relaxed">
           {dim.summary}
         </p>
-
-        <div className="p-3 rounded-md bg-neutral-950/60 border border-neutral-800/80 mb-6">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-semibold block mb-1">
-            DECIDING FACTOR
-          </span>
-          <span className="font-sans text-xs text-neutral-300 font-normal">
-            {dim.decidingFactor}
-          </span>
-        </div>
       </div>
 
-      {/* Criteria list with clean rectangular bar indicator (NO circular dots) */}
-      <div className="relative z-10 space-y-2.5 pt-4 border-t border-neutral-800 group-hover:border-neutral-700 transition-colors">
+      <div className="relative z-10 space-y-2.5 pt-4 transition-colors">
         {dim.criteria.map((item) => (
-          <div key={item} className="flex items-start gap-3 text-xs text-neutral-300 font-sans">
-            <span className="w-2.5 h-0.5 bg-neutral-600 group-hover:bg-neutral-400 mt-2 shrink-0 transition-colors rounded-none" />
-            <span className="font-medium leading-relaxed">{item}</span>
+          <div key={item} className="flex items-start gap-2.5 text-xs text-neutral-300 font-sans">
+            <span className="text-neutral-500 font-mono text-[11px] select-none pt-0.5 shrink-0">—</span>
+            <span className="font-medium">{item}</span>
           </div>
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 export default function EnterpriseTaxonomySection() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const grid = gridRef.current;
+      if (!grid) return;
+
+      const cards = gsap.utils.toArray<HTMLElement>('.taxonomy-card');
+      if (!cards.length) return;
+
+      const mm = gsap.matchMedia();
+
+      mm.add('(min-width: 768px)', () => {
+        // Desktop / tablet: Left cards slide from left, right cards slide from right with to-and-fro scroll scrub
+        cards.forEach((card, idx) => {
+          const isLeft = idx % 2 === 0;
+          gsap.fromTo(
+            card,
+            {
+              x: isLeft ? -110 : 110,
+              opacity: 0.1,
+            },
+            {
+              x: 0,
+              opacity: 1,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top bottom+=60px',
+                end: 'top 48%',
+                scrub: 1,
+              },
+            }
+          );
+        });
+      });
+
+      mm.add('(max-width: 767px)', () => {
+        cards.forEach((card) => {
+          gsap.fromTo(
+            card,
+            { y: 40, opacity: 0.15 },
+            {
+              y: 0,
+              opacity: 1,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top bottom+=40px',
+                end: 'top 55%',
+                scrub: 0.8,
+              },
+            }
+          );
+        });
+      });
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section className="relative w-full py-24 sm:py-32 bg-[#09090b] text-white border-t border-neutral-900">
+    <section
+      ref={sectionRef}
+      className="relative w-full py-24 sm:py-32 bg-[#09090b] text-white border-t border-neutral-900 overflow-hidden"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mb-14">
           <span className="font-mono text-xs uppercase tracking-[0.2em] text-neutral-400 font-semibold block mb-3">
-            AGENT ARCHITECTURAL TAXONOMY
+            DEPLOYMENT TAXONOMY
           </span>
           <h2 className="font-display font-bold text-3xl sm:text-5xl text-white tracking-tight leading-tight mb-4">
-            4 Core Architectures. Engineered for Enterprise Fit.
+            Four Enterprise Autonomy Tiers.
           </h2>
           <p className="font-sans text-base sm:text-lg text-neutral-400 leading-relaxed font-normal">
-            Honest scoping saves millions. We design agent autonomy around workflow risk, reversibility, and verified human oversight.
+            Every agent archetype operates within strict authority boundaries. We deploy tiered patterns spanning triage routing, co-pilot drafting, deep research, and transaction gates.
           </p>
         </div>
 
-        {/* Crisp cards with rectangular borders (rounded-md) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* 2-column grid with to-and-fro lateral scroll scrub */}
+        <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {DIMENSIONS.map((dim, idx) => (
             <DimensionCard key={dim.name} dim={dim} idx={idx} />
           ))}

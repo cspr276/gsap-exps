@@ -179,6 +179,15 @@ export default function Navbar() {
   const closeDropdownImmediate = useCallback(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setActiveDropdown(null);
+    if (typeof window !== 'undefined') {
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      window.scrollTo(0, 0);
+      if (window.__lenis) {
+        window.__lenis.scrollTo(0, { immediate: true });
+      }
+    }
   }, []);
 
   return (

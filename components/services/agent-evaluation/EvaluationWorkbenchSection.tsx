@@ -123,6 +123,24 @@ export default function EvaluationWorkbenchSection() {
       const laser = laserLineRef.current;
       if (!section) return;
 
+      // Ensure fresh scroll position and active index on mount
+      if (typeof window !== 'undefined' && !window.location.hash) {
+        if ('scrollRestoration' in history) {
+          history.scrollRestoration = 'manual';
+        }
+        if (window.__lenis) {
+          window.__lenis.scrollTo(0, { immediate: true });
+        }
+        window.scrollTo(0, 0);
+        ScrollTrigger.clearScrollMemory?.();
+        ScrollTrigger.update();
+      }
+
+      setActiveIndex(0);
+      if (laser) {
+        gsap.set(laser, { scaleY: 0 });
+      }
+
       const mm = gsap.matchMedia();
 
       mm.add('(min-width: 1024px)', () => {
@@ -131,7 +149,7 @@ export default function EvaluationWorkbenchSection() {
 
         // Pin the entire workbench section while user scrolls through the 4 pillars
         const st = ScrollTrigger.create({
-          id: 'workbench-pin',
+          id: 'workbench-pin-evaluation',
           trigger: section,
           start: 'top top',
           end: `+=${scrollDistance}`,
@@ -139,6 +157,13 @@ export default function EvaluationWorkbenchSection() {
           scrub: 0.4,
           anticipatePin: 1,
           onUpdate: (self) => {
+            // Guard: Guarantee Pillar 1 if inactive at start
+            if (!self.isActive && self.progress === 0) {
+              setActiveIndex(0);
+              if (laser) gsap.set(laser, { scaleY: 0 });
+              return;
+            }
+
             const p = self.progress;
 
             // Animate laser track line
@@ -163,7 +188,7 @@ export default function EvaluationWorkbenchSection() {
   const handlePillarClick = (index: number) => {
     setActiveIndex(index);
 
-    const st = ScrollTrigger.getById('workbench-pin');
+    const st = ScrollTrigger.getById('workbench-pin-evaluation');
     if (st) {
       // Scroll to the exact position within the pinned range
       const stepProgress = (index + 0.15) / PILLARS.length;

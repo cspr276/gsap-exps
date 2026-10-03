@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Lenis from 'lenis';
 import gsap from 'gsap';
@@ -12,10 +12,16 @@ declare global {
   }
 }
 
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && 'scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+
     const lenis = new Lenis({
       lerp: 0.08,
       smoothWheel: true,
@@ -45,14 +51,32 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     };
   }, []);
 
-  // Instantly reset scroll to top on every route transition
+  // Synchronously reset scroll before paint on route change
+  useIsomorphicLayoutEffect(() => {
+    if (typeof window !== 'undefined') {
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      if (!window.location.hash) {
+        window.scrollTo(0, 0);
+        if (window.__lenis) {
+          window.__lenis.scrollTo(0, { immediate: true });
+        }
+      }
+      ScrollTrigger.clearScrollMemory?.();
+      ScrollTrigger.update();
+    }
+  }, [pathname]);
+
+  // Secondary refresh after layout settles
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      if (window.__lenis) {
-        window.__lenis.scrollTo(0, { immediate: true });
+      if (!window.location.hash) {
+        window.scrollTo(0, 0);
+        if (window.__lenis) {
+          window.__lenis.scrollTo(0, { immediate: true });
+        }
       }
-      window.scrollTo(0, 0);
-
       const timer = setTimeout(() => {
         ScrollTrigger.refresh();
       }, 120);

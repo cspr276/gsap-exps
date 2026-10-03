@@ -10,111 +10,101 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const Dither = dynamic(() => import('@/components/Dither'), { ssr: false });
 const Grainient = dynamic(() => import('@/components/Grainient'), { ssr: false });
 
 interface Pillar {
   id: string;
-  step: string;
+  category: string;
   title: string;
   subtitle: string;
   description: string;
   specs: string[];
-  ditherColor: [number, number, number];
-  grainientColors: { color1: string; color2: string; color3: string };
   codePreview: {
     title: string;
     badge: string;
-    lines: { label?: string; code: string; tone?: 'neutral' | 'success' | 'warn' | 'accent' }[];
+    lines: { label?: string; code: string; tone?: 'neutral' | 'accent' | 'highlight' }[];
   };
 }
 
+// 100% Monochromatic (Obsidian, Graphite, Slate & Platinum Silvers)
 const PILLARS: Pillar[] = [
   {
     id: 'transport-quota',
-    step: 'PILLAR 01',
+    category: 'TRANSPORT GUARD',
     title: 'Transport & Quota Pre-Filtering',
     subtitle: 'Microsecond rate limits and spend caps before token generation',
     description:
       'Authentication, per-tenant rate limits, request payload size guards, and cumulative spend caps. Stops volumetric abuse, denial-of-wallet, and automated token scraping before a single inference token is generated.',
     specs: ['µs-scale rate enforcement', 'Token & spend caps', 'Volumetric DDoS suppression'],
-    ditherColor: [0.32, 0.78, 0.55],
-    grainientColors: { color1: '#132e22', color2: '#1e4d3a', color3: '#2e7558' },
     codePreview: {
       title: 'rate_quota_prefilter.rs',
       badge: 'µs TRANSPORT GUARD',
       lines: [
         { label: 'TENANT_QUOTA', code: 'rate_limiter.acquire(tenant_id, cost_units=12)' },
         { label: 'BURST_WINDOW', code: 'SlidingWindowTracker::evaluate(interval=1000ms)' },
-        { label: 'SPEND_CAP', code: '$450.00 / $500.00 daily ceiling [HEALTHY]', tone: 'success' },
-        { label: 'VOLUMETRIC_CHECK', code: 'ZERO_ANOMALY: payload_bytes=4,120 < limit=32,768', tone: 'success' },
-        { label: 'ACTION', code: 'FORWARDED_TO_STAGE_2 (elapsed: 140µs)', tone: 'success' },
+        { label: 'SPEND_CAP', code: '$450.00 / $500.00 daily ceiling [HEALTHY]', tone: 'accent' },
+        { label: 'VOLUMETRIC_CHECK', code: 'ZERO_ANOMALY: payload_bytes=4,120 < limit=32,768', tone: 'highlight' },
+        { label: 'ACTION', code: 'FORWARDED_TO_STAGE_2 (elapsed: 140µs)', tone: 'accent' },
       ],
     },
   },
   {
     id: 'structural-provenance',
-    step: 'PILLAR 02',
+    category: 'CONTEXT ISOLATION',
     title: 'Structural Checks & Provenance Tagging',
     subtitle: 'Sub-millisecond untrusted context isolation and schema validation',
     description:
       'Strict schema validation, content-type and encoding normalization, and cryptographic provenance tagging. Untrusted spans, user-controlled context, and external tool outputs stay explicitly labeled across the entire agent lifecycle.',
     specs: ['Sub-ms schema validation', 'Encoding normalization', 'Taint & provenance tags'],
-    ditherColor: [0.42, 0.65, 0.9],
-    grainientColors: { color1: '#162238', color2: '#253d66', color3: '#3b629e' },
     codePreview: {
       title: 'provenance_taint_engine.go',
       badge: 'SUB-MS ISOLATION',
       lines: [
         { label: 'NORMALIZER', code: 'UnicodeNFKC::sanitize(input_bytes)' },
-        { label: 'SCHEMA_VALIDATION', code: 'validate_json_schema(payload, strict_mode=true)', tone: 'success' },
-        { label: 'PROVENANCE_TAG', code: 'tag_span(source="untrusted_user_input", span_id="0x7fe4")', tone: 'accent' },
+        { label: 'SCHEMA_VALIDATION', code: 'validate_json_schema(payload, strict_mode=true)', tone: 'accent' },
+        { label: 'PROVENANCE_TAG', code: 'tag_span(source="untrusted_user_input", span_id="0x7fe4")', tone: 'highlight' },
         { label: 'TAINT_TRACKING', code: 'bind_taint_propagation(context, sink_policies=["sql", "shell"])' },
-        { label: 'STATUS', code: 'CONTEXT ISOLATED & TAGGED (elapsed: 0.8ms)', tone: 'success' },
+        { label: 'STATUS', code: 'CONTEXT ISOLATED & TAGGED (elapsed: 0.8ms)', tone: 'accent' },
       ],
     },
   },
   {
     id: 'classifiers-egress',
-    step: 'PILLAR 03',
+    category: 'INLINE PERIMETER',
     title: 'Fast Inline Classifiers & Egress Allowlists',
     subtitle: 'Low-latency pattern matching, token defenses, and network perimeter controls',
     description:
       'Compact, distilled classifiers trained on known injection heuristics running in milliseconds inline. Combined with strict egress allowlists that constrain which outbound APIs, database schemas, and tools an agent can invoke.',
     specs: ['< 5ms neural classifier', 'Strict egress allowlist', 'Tool execution boundaries'],
-    ditherColor: [0.85, 0.62, 0.35],
-    grainientColors: { color1: '#362615', color2: '#573d1f', color3: '#825c2e' },
     codePreview: {
       title: 'inline_classifier_egress_gate.ts',
       badge: 'INLINE PERIMETER',
       lines: [
-        { label: 'FAST_CLASSIFIER', code: 'classifier.infer(tokens, threshold=0.92)', tone: 'success' },
-        { label: 'INJECTION_SCORE', code: '0.014 [PASS - No Known Attack Vector]', tone: 'success' },
-        { label: 'EGRESS_POLICY', code: 'assert_allowed_endpoint(dest="api.internal.erp/v1")', tone: 'warn' },
+        { label: 'FAST_CLASSIFIER', code: 'classifier.infer(tokens, threshold=0.92)', tone: 'accent' },
+        { label: 'INJECTION_SCORE', code: '0.014 [PASS - No Known Attack Vector]', tone: 'accent' },
+        { label: 'EGRESS_POLICY', code: 'assert_allowed_endpoint(dest="api.internal.erp/v1")', tone: 'highlight' },
         { label: 'TOOL_ALLOWLIST', code: '["read_calendar", "query_inventory"] [RESTRICTED]', tone: 'neutral' },
-        { label: 'CONTAINMENT', code: 'NETWORK BOUNDARY VERIFIED (elapsed: 4.2ms)', tone: 'success' },
+        { label: 'CONTAINMENT', code: 'NETWORK BOUNDARY VERIFIED (elapsed: 4.2ms)', tone: 'accent' },
       ],
     },
   },
   {
     id: 'async-review-tuning',
-    step: 'PILLAR 04',
+    category: 'OUT-OF-BAND TUNER',
     title: 'Asynchronous Model Review & Tuning',
     subtitle: 'Out-of-band deep analysis without user latency',
     description:
       'Heavy model-based judges and expert human reviewers analyze sampled and flagged traffic out of the hot path. Generates continuous drift telemetry, catches subtle multi-turn evasions, and retrains the inline classifiers.',
     specs: ['Out-of-band adjudication', 'Zero user latency impact', 'Continuous threshold tuning'],
-    ditherColor: [0.72, 0.42, 0.92],
-    grainientColors: { color1: '#2f1940', color2: '#4e246e', color3: '#7535a6' },
     codePreview: {
       title: 'async_adjudication_worker.py',
       badge: 'OUT-OF-BAND TUNER',
       lines: [
         { label: 'QUEUE_CONSUMER', code: 'kafka_consumer.poll(batch_size=50, flag="borderline")' },
         { label: 'DEEP_JUDGE', code: 'evaluator_llm.adjudicate(session_context, full_turns=12)' },
-        { label: 'DISCORDANCE', code: 'flagged_novel_paraphrase(confidence=0.982)', tone: 'warn' },
+        { label: 'DISCORDANCE', code: 'flagged_novel_paraphrase(confidence=0.982)', tone: 'highlight' },
         { label: 'WEIGHT_EXPORT', code: 'retrain_compact_model.emit_synthetic_weights()', tone: 'accent' },
-        { label: 'LATENCY_IMPACT', code: 'HOT PATH PENALTY: 0.00ms [COMPLETELY ASYNC]', tone: 'success' },
+        { label: 'LATENCY_IMPACT', code: 'HOT PATH PENALTY: 0.00ms [COMPLETELY ASYNC]', tone: 'accent' },
       ],
     },
   },
@@ -158,25 +148,25 @@ const LATENCY_CONTROLS: LatencyControl[] = [
   {
     id: 'clf',
     name: 'Fast Compact Classifier',
-    ms: 24,
-    description: 'Distilled neural classifier running inline on token sequences.',
+    ms: 5,
+    description: 'Distilled SLM scoring injection probability inline.',
     isInline: true,
     defaultActive: true,
   },
   {
     id: 'egress',
-    name: 'Policy & Egress Allowlist',
-    ms: 4,
-    description: 'Enforces tool, database, and outbound endpoint boundary constraints.',
+    name: 'Strict Egress Allowlist',
+    ms: 2,
+    description: 'Validates outbound URL destination and tool parameter schema.',
     isInline: true,
     defaultActive: true,
   },
   {
-    id: 'judge',
-    name: 'Model-as-a-Judge (Inline)',
-    ms: 600,
-    description: 'Heavy multi-billion parameter model evaluation in the hot path.',
-    isInline: true,
+    id: 'heavy-llm',
+    name: 'Inline Heavy LLM Guard',
+    ms: 650,
+    description: 'Synchronous frontier model call evaluating complete prompt on hot path.',
+    isInline: false,
     defaultActive: false,
     isHeavyWarning: true,
   },
@@ -188,6 +178,8 @@ export default function DetectionWorkbenchSection() {
   const laserLineRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [activeMode, setActiveMode] = useState<'console' | 'simulator'>('console');
+
+  // Latency Simulator state
   const [activeControls, setActiveControls] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     LATENCY_CONTROLS.forEach((c) => {
@@ -195,6 +187,20 @@ export default function DetectionWorkbenchSection() {
     });
     return initial;
   });
+
+  const toggleControl = (id: string) => {
+    setActiveControls((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  const totalLatencyMs = LATENCY_CONTROLS.reduce((sum, item) => {
+    return activeControls[item.id] ? sum + item.ms : sum;
+  }, 0);
+
+  const budgetCeilingMs = 50;
+  const isOverBudget = totalLatencyMs > budgetCeilingMs;
 
   const currentPillar = PILLARS[activeIndex] || PILLARS[0];
 
@@ -204,6 +210,24 @@ export default function DetectionWorkbenchSection() {
       const laser = laserLineRef.current;
       if (!section) return;
 
+      // Ensure fresh scroll position and active index on mount
+      if (typeof window !== 'undefined' && !window.location.hash) {
+        if ('scrollRestoration' in history) {
+          history.scrollRestoration = 'manual';
+        }
+        if (window.__lenis) {
+          window.__lenis.scrollTo(0, { immediate: true });
+        }
+        window.scrollTo(0, 0);
+        ScrollTrigger.clearScrollMemory?.();
+        ScrollTrigger.update();
+      }
+
+      setActiveIndex(0);
+      if (laser) {
+        gsap.set(laser, { scaleY: 0 });
+      }
+
       const mm = gsap.matchMedia();
 
       mm.add('(min-width: 1024px)', () => {
@@ -211,7 +235,7 @@ export default function DetectionWorkbenchSection() {
         const scrollDistance = 2400;
 
         const st = ScrollTrigger.create({
-          id: 'workbench-pin',
+          id: 'workbench-pin-detection',
           trigger: section,
           start: 'top top',
           end: `+=${scrollDistance}`,
@@ -219,6 +243,13 @@ export default function DetectionWorkbenchSection() {
           scrub: 0.4,
           anticipatePin: 1,
           onUpdate: (self) => {
+            // Guard: Guarantee Pillar 1 if inactive at start
+            if (!self.isActive && self.progress === 0) {
+              setActiveIndex(0);
+              if (laser) gsap.set(laser, { scaleY: 0 });
+              return;
+            }
+
             const p = self.progress;
 
             if (laser) {
@@ -241,7 +272,7 @@ export default function DetectionWorkbenchSection() {
   const handlePillarClick = (index: number) => {
     setActiveIndex(index);
 
-    const st = ScrollTrigger.getById('workbench-pin');
+    const st = ScrollTrigger.getById('workbench-pin-detection');
     if (st) {
       const stepProgress = (index + 0.15) / PILLARS.length;
       const targetScroll = st.start + stepProgress * (st.end - st.start);
@@ -252,20 +283,6 @@ export default function DetectionWorkbenchSection() {
       }
     }
   };
-
-  const toggleControl = (id: string) => {
-    setActiveControls((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
-
-  const totalLatencyMs = LATENCY_CONTROLS.reduce((sum, item) => {
-    return activeControls[item.id] ? sum + item.ms : sum;
-  }, 0);
-
-  const budgetCeilingMs = 120;
-  const isOverBudget = totalLatencyMs > budgetCeilingMs;
 
   return (
     <section
@@ -278,10 +295,10 @@ export default function DetectionWorkbenchSection() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-6 gap-3">
           <div className="max-w-2xl">
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-1.5">
-              DEFENSE WORKBENCH & LATENCY ENGINE
+              TIERED DEFENSE-IN-DEPTH
             </span>
             <h2 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-tight">
-              Layered Runtime Defenses. Sized for Real-World Latency.
+              Sub-Millisecond Guardrails. Zero Blind Spots.
             </h2>
           </div>
 
@@ -295,7 +312,7 @@ export default function DetectionWorkbenchSection() {
 
         {/* 2-Column Interactive Workbench */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
-          {/* Left Column: 4 Pillar Navigation Cards with Vertical Laser Rail */}
+          {/* Left Column: 4 Pillar Navigation Cards */}
           <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col gap-3 sm:gap-3.5 lg:h-[530px]">
             <div className="hidden lg:block absolute left-[-14px] top-2 bottom-2 w-[2px] bg-neutral-800 rounded-full overflow-hidden pointer-events-none">
               <div
@@ -312,47 +329,58 @@ export default function DetectionWorkbenchSection() {
                   key={pillar.id}
                   type="button"
                   onClick={() => handlePillarClick(idx)}
-                  className={`relative overflow-hidden w-full text-left p-4 sm:p-4.5 rounded-md border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-center ${
+                  className={`group relative overflow-hidden w-full flex-1 min-h-0 text-left px-4 py-3 sm:px-5 sm:py-3.5 rounded-md border transition-all duration-300 cursor-pointer flex flex-col justify-center ${
                     isActive
-                      ? 'border-neutral-500 bg-neutral-900/90 shadow-xl shadow-black/60 text-white'
-                      : 'bg-neutral-900/30 border-neutral-800/80 hover:border-neutral-700 hover:bg-neutral-900/50 text-neutral-300'
+                      ? 'border-white/40 bg-neutral-900/90 shadow-xl shadow-black/80 text-white'
+                      : 'bg-neutral-900/30 border-neutral-800 hover:border-neutral-700 hover:bg-neutral-900/60 text-neutral-400'
                   }`}
                 >
+                  {/* Monochromatic Fluid Grain Shader Background on Active Card */}
                   {isActive && (
                     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-85">
                       <Grainient
-                        color1={pillar.grainientColors.color1}
-                        color2={pillar.grainientColors.color2}
-                        color3={pillar.grainientColors.color3}
-                        timeSpeed={0.25}
+                        color1="#000000"
+                        color2="#2c2c2c"
+                        color3="#6c6c6c"
+                        saturation={0}
+                        timeSpeed={0.2}
                         warpStrength={0.5}
-                        grainAmount={0.06}
-                        contrast={1.15}
+                        grainAmount={0.07}
+                        contrast={1.3}
                       />
-                      <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+                      <div className="absolute inset-0 bg-neutral-950/40 pointer-events-none" />
                     </div>
                   )}
 
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-bold">
-                        {pillar.step}
-                      </span>
+                  <div className="relative z-10 flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2.5 mb-1">
+                        <span className="font-mono text-xs font-bold text-neutral-400">
+                          {String(idx + 1).padStart(2, '0')}
+                        </span>
+                        <span
+                          className={`font-mono text-[10px] uppercase tracking-wider font-semibold transition-colors ${
+                            isActive ? 'text-neutral-200' : 'text-neutral-500 group-hover:text-neutral-400'
+                          }`}
+                        >
+                          {pillar.category}
+                        </span>
+                      </div>
+                      <h3
+                        className={`font-display font-bold text-sm sm:text-base mb-0.5 transition-colors ${
+                          isActive ? 'text-white' : 'text-neutral-300 group-hover:text-white'
+                        }`}
+                      >
+                        {pillar.title}
+                      </h3>
+                      <p
+                        className={`font-sans text-xs line-clamp-2 leading-relaxed transition-colors ${
+                          isActive ? 'text-neutral-200' : 'text-neutral-400'
+                        }`}
+                      >
+                        {pillar.subtitle}
+                      </p>
                     </div>
-                    <h3
-                      className={`font-display font-bold text-base mb-1 transition-colors ${
-                        isActive ? 'text-white' : 'text-neutral-200'
-                      }`}
-                    >
-                      {pillar.title}
-                    </h3>
-                    <p
-                      className={`font-sans text-xs line-clamp-2 leading-relaxed font-normal transition-colors ${
-                        isActive ? 'text-neutral-200' : 'text-neutral-400'
-                      }`}
-                    >
-                      {pillar.subtitle}
-                    </p>
                   </div>
                 </button>
               );
@@ -360,21 +388,22 @@ export default function DetectionWorkbenchSection() {
           </div>
 
           {/* Right Column: Dynamic Inspection Console & Latency Budget Simulator */}
-          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-neutral-950 overflow-hidden min-h-[500px] lg:h-[530px] shadow-xl shadow-black/80 flex flex-col justify-between">
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-75">
-              <Dither
-                waveSpeed={0.04}
-                waveFrequency={2.4}
-                waveAmplitude={0.3}
-                waveColor={currentPillar.ditherColor}
-                backgroundColor={[0.03, 0.03, 0.05]}
-                colorNum={4}
-                pixelSize={2}
-                enableMouseInteraction={false}
+          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-[#0c0d10] overflow-hidden min-h-[460px] lg:h-[530px] shadow-2xl shadow-black flex flex-col justify-between">
+            {/* Ambient Monochromatic Fluid Grain Shader Background on Console */}
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-85">
+              <Grainient
+                color1="#000000"
+                color2="#2c2c2c"
+                color3="#6c6c6c"
+                saturation={0}
+                timeSpeed={0.2}
+                warpStrength={0.5}
+                grainAmount={0.07}
+                contrast={1.3}
               />
             </div>
 
-            <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/70 via-transparent to-neutral-950/40" />
+            <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/85 via-neutral-950/30 to-neutral-950/50" />
 
             {/* Header with Mode Switcher */}
             <div className="relative z-10 p-4 sm:p-5 border-b border-neutral-800/80 flex flex-wrap items-center justify-between gap-3 bg-neutral-950/60 backdrop-blur-md">
@@ -419,18 +448,13 @@ export default function DetectionWorkbenchSection() {
                 {activeMode === 'console' ? (
                   <motion.div
                     key={currentPillar.id}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col justify-between h-full"
+                    initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex flex-col justify-center gap-6 h-full"
                   >
                     <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
-                          {currentPillar.step} ARCHITECTURE
-                        </span>
-                      </div>
                       <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight mb-2">
                         {currentPillar.title}
                       </h3>
@@ -443,7 +467,7 @@ export default function DetectionWorkbenchSection() {
                         {currentPillar.specs.map((spec) => (
                           <span
                             key={spec}
-                            className="font-mono text-[11px] text-neutral-300 bg-neutral-900/60 backdrop-blur-sm border border-neutral-700/80 px-2.5 py-1 rounded-sm"
+                            className="font-mono text-[10px] sm:text-[11px] text-neutral-200 bg-neutral-900/70 backdrop-blur-md border border-neutral-700/80 px-2.5 py-1 rounded-sm shadow-sm"
                           >
                             {spec}
                           </span>
@@ -451,30 +475,28 @@ export default function DetectionWorkbenchSection() {
                       </div>
                     </div>
 
-                    <div className="rounded-md bg-black/60 backdrop-blur-sm border border-neutral-800 p-4 font-mono text-xs overflow-hidden shadow-inner mt-4">
-                      <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-neutral-800/80 text-neutral-400 text-[11px]">
-                        <span className="truncate pr-2">{currentPillar.codePreview.title}</span>
-                        <span className="text-neutral-400 font-bold shrink-0">
+                    <div className="rounded-md bg-black/75 backdrop-blur-md border border-neutral-800 p-4 font-mono text-xs overflow-hidden shadow-2xl">
+                      <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-neutral-800 text-neutral-400 text-[11px]">
+                        <span className="truncate pr-2 text-neutral-300 font-medium">{currentPillar.codePreview.title}</span>
+                        <span className="px-2 py-0.5 rounded bg-white/10 text-white border border-white/20 text-[10px] font-bold shrink-0 uppercase tracking-wider">
                           {currentPillar.codePreview.badge}
                         </span>
                       </div>
-                      <div className="space-y-1.5 leading-relaxed overflow-x-auto">
+                      <div className="space-y-1.5 leading-relaxed overflow-x-auto text-[11px]">
                         {currentPillar.codePreview.lines.map((line, idx) => (
-                          <div key={idx} className="flex gap-2">
+                          <div key={idx} className="flex gap-2.5">
                             {line.label && (
-                              <span className="text-neutral-400 shrink-0 select-none">
+                              <span className="text-neutral-500 shrink-0 select-none">
                                 {line.label}:
                               </span>
                             )}
                             <span
                               className={
-                                line.tone === 'success'
-                                  ? 'text-emerald-400 font-medium'
-                                  : line.tone === 'warn'
-                                  ? 'text-amber-400 font-medium'
-                                  : line.tone === 'accent'
-                                  ? 'text-white font-bold'
-                                  : 'text-neutral-300'
+                                line.tone === 'accent'
+                                  ? 'text-white font-semibold'
+                                  : line.tone === 'highlight'
+                                  ? 'text-neutral-200 font-medium'
+                                  : 'text-neutral-400'
                               }
                             >
                               {line.code}
@@ -487,10 +509,10 @@ export default function DetectionWorkbenchSection() {
                 ) : (
                   <motion.div
                     key="simulator"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
                     className="flex flex-col justify-between h-full"
                   >
                     <div>
@@ -501,8 +523,8 @@ export default function DetectionWorkbenchSection() {
                         <span
                           className={`font-mono text-xs font-bold px-2 py-0.5 rounded-sm border ${
                             isOverBudget
-                              ? 'bg-rose-950/60 border-rose-800 text-rose-300'
-                              : 'bg-emerald-950/60 border-emerald-800 text-emerald-300'
+                              ? 'bg-neutral-900 border-neutral-700 text-neutral-200'
+                              : 'bg-neutral-900 border-neutral-700 text-white'
                           }`}
                         >
                           {isOverBudget ? 'BUDGET EXCEEDED' : 'SLA COMPLIANT'}
@@ -517,10 +539,10 @@ export default function DetectionWorkbenchSection() {
                       </p>
 
                       {/* Budget Gauge Bar */}
-                      <div className="p-3 rounded-md bg-black/40 border border-neutral-800 mb-3">
+                      <div className="p-3 rounded-md bg-black/60 border border-neutral-800 mb-3">
                         <div className="flex items-center justify-between font-mono text-xs mb-1.5">
                           <span className="text-neutral-400">Total Added Overhead:</span>
-                          <span className={`font-bold ${isOverBudget ? 'text-rose-400' : 'text-emerald-400'}`}>
+                          <span className={`font-bold ${isOverBudget ? 'text-white' : 'text-neutral-200'}`}>
                             {totalLatencyMs}ms{' '}
                             <span className="text-neutral-500 font-normal">/ {budgetCeilingMs}ms SLA Ceiling</span>
                           </span>
@@ -529,7 +551,7 @@ export default function DetectionWorkbenchSection() {
                         <div className="w-full bg-neutral-900 rounded-full h-1.5 overflow-hidden border border-neutral-800">
                           <div
                             className={`h-full transition-all duration-300 ${
-                              isOverBudget ? 'bg-rose-500' : 'bg-emerald-400'
+                              isOverBudget ? 'bg-white' : 'bg-neutral-400'
                             }`}
                             style={{ width: `${Math.min(100, (totalLatencyMs / budgetCeilingMs) * 100)}%` }}
                           />
@@ -547,9 +569,7 @@ export default function DetectionWorkbenchSection() {
                               onClick={() => toggleControl(control.id)}
                               className={`w-full flex items-center justify-between p-2 rounded-md border text-left transition-all cursor-pointer ${
                                 isActive
-                                  ? control.isHeavyWarning
-                                    ? 'bg-rose-950/30 border-rose-800/80 text-white'
-                                    : 'bg-neutral-900/80 border-neutral-700 text-white'
+                                  ? 'bg-neutral-900/80 border-neutral-700 text-white'
                                   : 'bg-black/30 border-neutral-800/60 text-neutral-400 hover:border-neutral-700'
                               }`}
                             >
@@ -557,9 +577,7 @@ export default function DetectionWorkbenchSection() {
                                 <div
                                   className={`w-3.5 h-3.5 rounded-sm flex items-center justify-center border transition-all ${
                                     isActive
-                                      ? control.isHeavyWarning
-                                        ? 'bg-rose-500 border-rose-400 text-white'
-                                        : 'bg-white border-white text-black'
+                                      ? 'bg-white border-white text-black'
                                       : 'border-neutral-700 bg-neutral-900'
                                   }`}
                                 >
@@ -569,14 +587,14 @@ export default function DetectionWorkbenchSection() {
                                   <div className="font-mono text-xs font-semibold flex items-center gap-1.5">
                                     <span>{control.name}</span>
                                     {control.isHeavyWarning && (
-                                      <span className="text-[9px] font-mono px-1 py-0.2 rounded-sm bg-rose-900/60 text-rose-300 border border-rose-800">
+                                      <span className="text-[9px] font-mono px-1 py-0.2 rounded-sm bg-neutral-800 text-neutral-300 border border-neutral-700">
                                         HEAVY JUDGE
                                       </span>
                                     )}
                                   </div>
                                 </div>
                               </div>
-                              <span className="font-mono text-xs font-bold shrink-0 pl-2">
+                              <span className="font-mono text-xs font-bold shrink-0 pl-2 text-neutral-200">
                                 +{control.ms}ms
                               </span>
                             </button>
@@ -587,19 +605,15 @@ export default function DetectionWorkbenchSection() {
 
                     {/* Advisory Callout */}
                     <div
-                      className={`rounded-md p-3 border font-mono text-xs flex items-start gap-2 mt-3 ${
-                        isOverBudget
-                          ? 'bg-rose-950/40 border-rose-800 text-rose-200'
-                          : 'bg-neutral-900/60 border-neutral-800 text-neutral-300'
-                      }`}
+                      className="rounded-md p-3 border font-mono text-xs flex items-start gap-2 mt-3 bg-neutral-900/60 border-neutral-800 text-neutral-300"
                     >
                       {isOverBudget ? (
-                        <ShieldAlert className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                        <ShieldAlert className="w-4 h-4 text-white shrink-0 mt-0.5" />
                       ) : (
-                        <Zap className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                        <Zap className="w-4 h-4 text-neutral-400 shrink-0 mt-0.5" />
                       )}
                       <div>
-                        <span className="font-bold block mb-0.5">
+                        <span className="font-bold block mb-0.5 text-white">
                           {isOverBudget ? 'Warning: Latency SLA Blown' : 'Architecture Balanced for Hot Path'}
                         </span>
                         <p className="font-sans text-[11px] text-neutral-400 leading-relaxed font-normal">

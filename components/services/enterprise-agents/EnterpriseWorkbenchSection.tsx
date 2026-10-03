@@ -3,31 +3,28 @@
 import React, { useState, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, Shield, AlertTriangle, CheckCircle2, Lock, Layers } from 'lucide-react';
+import { Terminal, Layers } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const Dither = dynamic(() => import('@/components/Dither'), { ssr: false });
 const Grainient = dynamic(() => import('@/components/Grainient'), { ssr: false });
 
 interface CodeLine {
   label?: string;
   code: string;
-  tone?: 'neutral' | 'success' | 'warn' | 'accent';
+  tone?: 'neutral' | 'accent' | 'highlight';
 }
 
 interface Pillar {
   id: string;
-  step: string;
+  category: string;
   title: string;
   subtitle: string;
   description: string;
   specs: string[];
-  ditherColor: [number, number, number];
-  grainientColors: { color1: string; color2: string; color3: string };
   codePreview: {
     title: string;
     badge: string;
@@ -35,39 +32,36 @@ interface Pillar {
   };
 }
 
+// 100% Monochromatic (Obsidian, Graphite, Slate & Platinum Silvers)
 const PILLARS: Pillar[] = [
   {
     id: 'pillar-1',
-    step: 'PILLAR 01',
+    category: 'INTAKE & IDENTITY',
     title: 'Identity & Intake Interface',
     subtitle: 'Context assembly with strict provenance tracking',
     description:
       'Where work arrives—via chat, queues, webhooks, or scheduled triggers. Identity is bound at ingress before any planning occurs. Untrusted user inputs, external documents, and tool payloads carry cryptographic provenance tags throughout the agent execution graph.',
     specs: ['Zero-Trust Ingress Identity', 'Provenance Taint Tracking', 'Schema & Encoding Normalization'],
-    ditherColor: [0.42, 0.65, 0.9],
-    grainientColors: { color1: '#162238', color2: '#253d66', color3: '#3b629e' },
     codePreview: {
       title: 'agent_identity_intake.ts',
       badge: 'PROVENANCE GATEWAY',
       lines: [
         { label: 'INGRESS_AUTH', code: 'jwt.verify(bearerToken, { issuer: "corp.iam.auth" })' },
         { label: 'CALLER_IDENTITY', code: 'ctx.bindCaller({ tenantId: "acme-corp", role: "finance_ops" })' },
-        { label: 'UNTRUSTED_INGRESS', code: 'taintTag("src_user_upload", { hash: "0x4e9c8f2b", safe: false })', tone: 'warn' },
+        { label: 'UNTRUSTED_INGRESS', code: 'taintTag("src_user_upload", { hash: "0x4e9c8f2b", safe: false })', tone: 'highlight' },
         { label: 'CONTEXT_BOUNDARY', code: 'isolateUntrustedSpans(promptBuffer, escapeDelimiter: true)' },
-        { label: 'STATUS', code: 'IDENTITY BOUND & PROVENANCE GRAPH INITIALIZED', tone: 'success' },
+        { label: 'STATUS', code: 'IDENTITY BOUND & PROVENANCE GRAPH INITIALIZED', tone: 'accent' },
       ],
     },
   },
   {
     id: 'pillar-2',
-    step: 'PILLAR 02',
+    category: 'REASONING ENGINE',
     title: 'Model-Agnostic Reasoning Engine',
     subtitle: 'Decoupled planning and swappable LLM providers',
     description:
       'The reasoning engine treats foundation models as interchangeable execution backends rather than hardcoded architectural dependencies. If a provider degrades, suffers downtime, or modifies behavior, the system arbitrates to backup models with zero tool contract changes.',
     specs: ['Decoupled Planning Graphs', 'Dynamic Model Fallbacks', 'Deterministic State Handlers'],
-    ditherColor: [0.32, 0.78, 0.55],
-    grainientColors: { color1: '#132e22', color2: '#1e4d3a', color3: '#2e7558' },
     codePreview: {
       title: 'reasoning_planner_core.rs',
       badge: 'STATE MACHINE RUNNER',
@@ -75,52 +69,48 @@ const PILLARS: Pillar[] = [
         { label: 'STATE_GRAPH', code: 'ExecutionGraph::new(step_timeout=15000ms, max_turns=8)' },
         { label: 'PRIMARY_REASONER', code: 'ModelProvider::ClaudeSonnet35 { latency_p95: 820ms }' },
         { label: 'FALLBACK_ROUTER', code: 'CircuitBreaker::watchdog(error_threshold=0.03, fallback=GPT4o)', tone: 'accent' },
-        { label: 'PLANNING_VERIFIER', code: 'assert_schema_conformance(planner.emit_dag(), schema_v3)', tone: 'success' },
-        { label: 'STATUS', code: 'REASONING GRAPH VALIDATED — NO HARD PROVIDER LOCK-IN', tone: 'success' },
+        { label: 'PLANNING_VERIFIER', code: 'assert_schema_conformance(planner.emit_dag(), schema_v3)', tone: 'accent' },
+        { label: 'STATUS', code: 'REASONING GRAPH VALIDATED — NO HARD PROVIDER LOCK-IN', tone: 'accent' },
       ],
     },
   },
   {
     id: 'pillar-3',
-    step: 'PILLAR 03',
+    category: 'BLAST RADIUS',
     title: 'Tool Execution & Blast Radius Rings',
     subtitle: 'Scoped credentials, idempotency, and confirmation gates',
     description:
       'Where intent converts into tangible environmental consequence. Every tool call is isolated to narrow capability tokens. Irreversible mutations require idempotency verification and cryptographic confirmation gates before execution.',
     specs: ['Least-Privilege Capability Tokens', 'Universal Idempotency Keys', 'Mandatory 2FA Human Gates'],
-    ditherColor: [0.85, 0.62, 0.35],
-    grainientColors: { color1: '#362615', color2: '#573d1f', color3: '#825c2e' },
     codePreview: {
       title: 'blast_radius_ring_enforcer.go',
       badge: 'CONTAINMENT BARRIER',
       lines: [
         { label: 'RING_POLICY', code: 'enforceBlastRing(tool="database_upsert", requiredRing=Ring2)' },
         { label: 'IDEMPOTENCY_KEY', code: 'acquireKey("tx_9981a", ttl=300s, maxAttempts=1)' },
-        { label: 'SCOPE_CHECK', code: 'assertLeastPrivilege(caller="agent_worker", perm="crm:tickets:write")', tone: 'warn' },
+        { label: 'SCOPE_CHECK', code: 'assertLeastPrivilege(caller="agent_worker", perm="crm:tickets:write")', tone: 'highlight' },
         { label: 'IRREVERSIBLE_GATE', code: 'circuitBreaker.requireApprovalIf(mutationClass="financial_spend")', tone: 'accent' },
-        { label: 'STATUS', code: 'CONTAINMENT ENFORCED — ALL 5 MUTATION GATES ACTIVE', tone: 'success' },
+        { label: 'STATUS', code: 'CONTAINMENT ENFORCED — ALL 5 MUTATION GATES ACTIVE', tone: 'accent' },
       ],
     },
   },
   {
     id: 'pillar-4',
-    step: 'PILLAR 04',
+    category: 'AUDIT & CI GATE',
     title: 'Structured Audit & CI Evaluation',
     subtitle: 'Continuous regression suites wired to production',
     description:
       'Every execution emits structured, queryable OpenTelemetry traces documenting exact model prompts, retrieved documents, tool payloads, and latency costs. Production anomalies automatically seed automated CI regression tests.',
     specs: ['Structured OpenTelemetry Spans', 'Deterministic Replay Engines', 'Automated PR Quality Gates'],
-    ditherColor: [0.72, 0.42, 0.92],
-    grainientColors: { color1: '#2f1940', color2: '#4e246e', color3: '#7535a6' },
     codePreview: {
       title: 'audit_trace_eval_pipeline.py',
       badge: 'CONTINUOUS REGRESSION',
       lines: [
         { label: 'TRACE_EMISSION', code: 'tracer.span(name="tool_call:erp_sync", span_id="0xaa31e")' },
         { label: 'CRYPTOGRAPHIC_SIG', code: 'sign_execution_envelope(trace, key=KMS_HSM_KEY_PRIMARY)', tone: 'accent' },
-        { label: 'CI_REGRESSION_DELTA', code: 'assert_benchmark_suite(eval_dataset="q3_finance_failures")', tone: 'warn' },
-        { label: 'DRIFT_METRICS', code: 'ToolAccuracy: 99.4% | HallucinationRate: 0.00% | Latency: 1.4s', tone: 'success' },
-        { label: 'DECISION', code: 'AUTOMATED PR GATE CLEARED — ZERO REVERSIBLE ESCAPES', tone: 'success' },
+        { label: 'CI_REGRESSION_DELTA', code: 'assert_benchmark_suite(eval_dataset="q3_finance_failures")', tone: 'highlight' },
+        { label: 'DRIFT_METRICS', code: 'ToolAccuracy: 99.4% | HallucinationRate: 0.00% | Latency: 1.4s', tone: 'accent' },
+        { label: 'DECISION', code: 'AUTOMATED PR GATE CLEARED — ZERO REVERSIBLE ESCAPES', tone: 'accent' },
       ],
     },
   },
@@ -130,7 +120,6 @@ interface BlastRing {
   id: string;
   name: string;
   badge: string;
-  tone: 'green' | 'amber' | 'red';
   allowedScopes: string[];
   gateType: string;
   impactDesc: string;
@@ -148,7 +137,6 @@ const BLAST_RINGS: BlastRing[] = [
     id: 'ring-0',
     name: 'Ring 0: Read-Only Scoped',
     badge: 'SAFE / UNATTENDED',
-    tone: 'green',
     allowedScopes: ['kb:search', 'doc:read_metadata', 'sql:select_restricted'],
     gateType: 'No confirmation needed — zero mutation capability',
     impactDesc: 'A wrong answer or missed retrieval. Fully recoverable and visible to the immediate caller only.',
@@ -164,7 +152,6 @@ const BLAST_RINGS: BlastRing[] = [
     id: 'ring-1',
     name: 'Ring 1: Draft & Suggest',
     badge: 'CONTROLLED / STAGED',
-    tone: 'green',
     allowedScopes: ['draft:create_text', 'pr:stage_diff', 'ticket:compose_reply'],
     gateType: 'Human review queue — nothing leaves the system boundary unattended',
     impactDesc: 'Wasted human review time. The failure mode is productivity friction, not external legal liability.',
@@ -180,7 +167,6 @@ const BLAST_RINGS: BlastRing[] = [
     id: 'ring-2',
     name: 'Ring 2: Write Internal Systems',
     badge: 'MONITORED / IDEMPOTENT',
-    tone: 'amber',
     allowedScopes: ['crm:update_ticket', 'db:upsert_record', 'queue:publish_event'],
     gateType: 'Scoped credentials + Idempotency keys + Audit log recording',
     impactDesc: 'Corrupted internal records that could propagate. Recoverable only via deterministic rollback traces.',
@@ -196,7 +182,6 @@ const BLAST_RINGS: BlastRing[] = [
     id: 'ring-3',
     name: 'Ring 3: External Send',
     badge: 'ELEVATED RISK',
-    tone: 'amber',
     allowedScopes: ['smtp:send_email', 'webhook:trigger_partner', 'slack:notify_channel'],
     gateType: 'Rate limit ceiling + Destination allowlist + Policy checkpoint',
     impactDesc: 'Incorrect or unauthorized communication leaves the enterprise boundary. No undo exists.',
@@ -212,16 +197,15 @@ const BLAST_RINGS: BlastRing[] = [
     id: 'ring-4',
     name: 'Ring 4: Financial & Irreversible',
     badge: 'CRITICAL / HARD GATE',
-    tone: 'red',
-    allowedScopes: ['stripe:charge_customer', 'iam:mutate_policy', 'db:drop_table'],
-    gateType: 'Mandatory 2FA cryptographic approval — NEVER executed unattended',
-    impactDesc: 'Direct financial drain, data deletion, or regulatory compliance breach from single injected instruction.',
-    simulatedAction: 'Authorize payment disbursement of $14,850.00 via Stripe Connect',
+    allowedScopes: ['stripe:charge_card', 'db:drop_partition', 'wire:authorize_transfer'],
+    gateType: 'Mandatory 2FA human supervisor approval + HMAC signature',
+    impactDesc: 'Direct, permanent financial loss or destructive database corruption. Completely unrecoverable without operator intervention.',
+    simulatedAction: 'Authorize $24,500 vendor invoice wire transfer',
     simulatedTerminal: {
-      command: 'EXECUTE: tool.disburse_funds({ amount_cents: 1485000, recipient: "ACC-309" })',
-      result: 'BLOCK_TRIGGERED: Irreversible financial transaction requires hardware 2FA token',
-      status: 'CIRCUIT_BREAKER_HALT',
-      guardrailOutcome: 'BLOCKED — Action halted at Ring-4 hardware confirmation gate',
+      command: 'EXECUTE: tool.authorize_wire_transfer({ amount_usd: 24500, vendor_id: "V-91" })',
+      result: 'EXECUTION_HALTED: Action requires cryptographic supervisor signature',
+      status: 'BLOCKED_PENDING_SUPERVISOR_KEY',
+      guardrailOutcome: 'HARD_CIRCUIT_BREAKER — Agent cannot execute unilateral transactions > $500',
     },
   },
 ];
@@ -232,16 +216,34 @@ export default function EnterpriseWorkbenchSection() {
   const laserLineRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [activeMode, setActiveMode] = useState<'console' | 'simulator'>('console');
-  const [selectedRingId, setSelectedRingId] = useState<string>('ring-2');
+  const [selectedRingId, setSelectedRingId] = useState<string>('ring-0');
 
   const currentPillar = PILLARS[activeIndex] || PILLARS[0];
-  const currentRing = BLAST_RINGS.find((r) => r.id === selectedRingId) || BLAST_RINGS[2];
+  const currentRing = BLAST_RINGS.find((r) => r.id === selectedRingId) || BLAST_RINGS[0];
 
   useGSAP(
     () => {
       const section = sectionRef.current;
       const laser = laserLineRef.current;
       if (!section) return;
+
+      // Ensure fresh scroll position and active index on mount
+      if (typeof window !== 'undefined' && !window.location.hash) {
+        if ('scrollRestoration' in history) {
+          history.scrollRestoration = 'manual';
+        }
+        if (window.__lenis) {
+          window.__lenis.scrollTo(0, { immediate: true });
+        }
+        window.scrollTo(0, 0);
+        ScrollTrigger.clearScrollMemory?.();
+        ScrollTrigger.update();
+      }
+
+      setActiveIndex(0);
+      if (laser) {
+        gsap.set(laser, { scaleY: 0 });
+      }
 
       const mm = gsap.matchMedia();
 
@@ -250,7 +252,7 @@ export default function EnterpriseWorkbenchSection() {
         const scrollDistance = 2400;
 
         const st = ScrollTrigger.create({
-          id: 'workbench-pin',
+          id: 'workbench-pin-enterprise',
           trigger: section,
           start: 'top top',
           end: `+=${scrollDistance}`,
@@ -258,6 +260,13 @@ export default function EnterpriseWorkbenchSection() {
           scrub: 0.4,
           anticipatePin: 1,
           onUpdate: (self) => {
+            // Guard: Guarantee Pillar 1 if inactive at start
+            if (!self.isActive && self.progress === 0) {
+              setActiveIndex(0);
+              if (laser) gsap.set(laser, { scaleY: 0 });
+              return;
+            }
+
             const p = self.progress;
 
             if (laser) {
@@ -280,7 +289,7 @@ export default function EnterpriseWorkbenchSection() {
   const handlePillarClick = (index: number) => {
     setActiveIndex(index);
 
-    const st = ScrollTrigger.getById('workbench-pin');
+    const st = ScrollTrigger.getById('workbench-pin-enterprise');
     if (st) {
       const stepProgress = (index + 0.15) / PILLARS.length;
       const targetScroll = st.start + stepProgress * (st.end - st.start);
@@ -303,10 +312,10 @@ export default function EnterpriseWorkbenchSection() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-6 gap-3">
           <div className="max-w-2xl">
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-1.5">
-              ENTERPRISE AGENT ARCHITECTURE
+              AGENT SYSTEM ARCHITECTURE
             </span>
             <h2 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-tight">
-              Engineered for Containment. Governed for Production.
+              Four Pillars of Enterprise Agentic Runtime.
             </h2>
           </div>
 
@@ -320,7 +329,7 @@ export default function EnterpriseWorkbenchSection() {
 
         {/* 2-Column Interactive Workbench */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
-          {/* Left Column: 4 Pillar Navigation Cards with Vertical Laser Rail */}
+          {/* Left Column: 4 Pillar Navigation Cards */}
           <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col gap-3 sm:gap-3.5 lg:h-[530px]">
             <div className="hidden lg:block absolute left-[-14px] top-2 bottom-2 w-[2px] bg-neutral-800 rounded-full overflow-hidden pointer-events-none">
               <div
@@ -336,51 +345,59 @@ export default function EnterpriseWorkbenchSection() {
                 <button
                   key={pillar.id}
                   type="button"
-                  onClick={() => {
-                    handlePillarClick(idx);
-                    setActiveMode('console');
-                  }}
-                  className={`relative overflow-hidden w-full text-left p-4 sm:p-4.5 rounded-md border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-center ${
+                  onClick={() => handlePillarClick(idx)}
+                  className={`group relative overflow-hidden w-full flex-1 min-h-0 text-left px-4 py-3 sm:px-5 sm:py-3.5 rounded-md border transition-all duration-300 cursor-pointer flex flex-col justify-center ${
                     isActive
-                      ? 'border-neutral-500 bg-neutral-900/90 shadow-xl shadow-black/60 text-white'
-                      : 'bg-neutral-900/30 border-neutral-800/80 hover:border-neutral-700 hover:bg-neutral-900/50 text-neutral-300'
+                      ? 'border-white/40 bg-neutral-900/90 shadow-xl shadow-black/80 text-white'
+                      : 'bg-neutral-900/30 border-neutral-800 hover:border-neutral-700 hover:bg-neutral-900/60 text-neutral-400'
                   }`}
                 >
+                  {/* Monochromatic Fluid Grain Shader Background on Active Card */}
                   {isActive && (
                     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-85">
                       <Grainient
-                        color1={pillar.grainientColors.color1}
-                        color2={pillar.grainientColors.color2}
-                        color3={pillar.grainientColors.color3}
-                        timeSpeed={0.25}
+                        color1="#000000"
+                        color2="#2c2c2c"
+                        color3="#6c6c6c"
+                        saturation={0}
+                        timeSpeed={0.2}
                         warpStrength={0.5}
-                        grainAmount={0.06}
-                        contrast={1.15}
+                        grainAmount={0.07}
+                        contrast={1.3}
                       />
-                      <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+                      <div className="absolute inset-0 bg-neutral-950/40 pointer-events-none" />
                     </div>
                   )}
 
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-bold">
-                        {pillar.step}
-                      </span>
+                  <div className="relative z-10 flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2.5 mb-1">
+                        <span className="font-mono text-xs font-bold text-neutral-400">
+                          {String(idx + 1).padStart(2, '0')}
+                        </span>
+                        <span
+                          className={`font-mono text-[10px] uppercase tracking-wider font-semibold transition-colors ${
+                            isActive ? 'text-neutral-200' : 'text-neutral-500 group-hover:text-neutral-400'
+                          }`}
+                        >
+                          {pillar.category}
+                        </span>
+                      </div>
+                      <h3
+                        className={`font-display font-bold text-sm sm:text-base mb-0.5 transition-colors ${
+                          isActive ? 'text-white' : 'text-neutral-300 group-hover:text-white'
+                        }`}
+                      >
+                        {pillar.title}
+                      </h3>
+                      <p
+                        className={`font-sans text-xs line-clamp-2 leading-relaxed transition-colors ${
+                          isActive ? 'text-neutral-200' : 'text-neutral-400'
+                        }`}
+                      >
+                        {pillar.subtitle}
+                      </p>
                     </div>
-                    <h3
-                      className={`font-display font-bold text-base mb-1 transition-colors ${
-                        isActive ? 'text-white' : 'text-neutral-200'
-                      }`}
-                    >
-                      {pillar.title}
-                    </h3>
-                    <p
-                      className={`font-sans text-xs line-clamp-2 leading-relaxed font-normal transition-colors ${
-                        isActive ? 'text-neutral-200' : 'text-neutral-400'
-                      }`}
-                    >
-                      {pillar.subtitle}
-                    </p>
                   </div>
                 </button>
               );
@@ -388,21 +405,22 @@ export default function EnterpriseWorkbenchSection() {
           </div>
 
           {/* Right Column: Dynamic Inspection Console & Blast Radius Rings */}
-          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-neutral-950 overflow-hidden min-h-[500px] lg:h-[530px] shadow-xl shadow-black/80 flex flex-col justify-between">
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-75">
-              <Dither
-                waveSpeed={0.04}
-                waveFrequency={2.4}
-                waveAmplitude={0.3}
-                waveColor={currentPillar.ditherColor}
-                backgroundColor={[0.03, 0.03, 0.05]}
-                colorNum={4}
-                pixelSize={2}
-                enableMouseInteraction={false}
+          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-[#0c0d10] overflow-hidden min-h-[460px] lg:h-[530px] shadow-2xl shadow-black flex flex-col justify-between">
+            {/* Ambient Monochromatic Fluid Grain Shader Background on Console */}
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-85">
+              <Grainient
+                color1="#000000"
+                color2="#2c2c2c"
+                color3="#6c6c6c"
+                saturation={0}
+                timeSpeed={0.2}
+                warpStrength={0.5}
+                grainAmount={0.07}
+                contrast={1.3}
               />
             </div>
 
-            <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/70 via-transparent to-neutral-950/40" />
+            <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/85 via-neutral-950/30 to-neutral-950/50" />
 
             {/* Header with Mode Switcher */}
             <div className="relative z-10 p-4 sm:p-5 border-b border-neutral-800/80 flex flex-wrap items-center justify-between gap-3 bg-neutral-950/60 backdrop-blur-md">
@@ -447,18 +465,13 @@ export default function EnterpriseWorkbenchSection() {
                 {activeMode === 'console' ? (
                   <motion.div
                     key={currentPillar.id}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col justify-between h-full"
+                    initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex flex-col justify-center gap-6 h-full"
                   >
                     <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
-                          {currentPillar.step} ARCHITECTURE
-                        </span>
-                      </div>
                       <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight mb-2">
                         {currentPillar.title}
                       </h3>
@@ -471,7 +484,7 @@ export default function EnterpriseWorkbenchSection() {
                         {currentPillar.specs.map((spec) => (
                           <span
                             key={spec}
-                            className="font-mono text-[11px] text-neutral-300 bg-neutral-900/60 backdrop-blur-sm border border-neutral-700/80 px-2.5 py-1 rounded-sm"
+                            className="font-mono text-[10px] sm:text-[11px] text-neutral-200 bg-neutral-900/70 backdrop-blur-md border border-neutral-700/80 px-2.5 py-1 rounded-sm shadow-sm"
                           >
                             {spec}
                           </span>
@@ -479,30 +492,28 @@ export default function EnterpriseWorkbenchSection() {
                       </div>
                     </div>
 
-                    <div className="rounded-md bg-black/60 backdrop-blur-sm border border-neutral-800 p-4 font-mono text-xs overflow-hidden shadow-inner mt-4">
-                      <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-neutral-800/80 text-neutral-400 text-[11px]">
-                        <span className="truncate pr-2">{currentPillar.codePreview.title}</span>
-                        <span className="text-neutral-400 font-bold shrink-0">
+                    <div className="rounded-md bg-black/75 backdrop-blur-md border border-neutral-800 p-4 font-mono text-xs overflow-hidden shadow-2xl">
+                      <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-neutral-800 text-neutral-400 text-[11px]">
+                        <span className="truncate pr-2 text-neutral-300 font-medium">{currentPillar.codePreview.title}</span>
+                        <span className="px-2 py-0.5 rounded bg-white/10 text-white border border-white/20 text-[10px] font-bold shrink-0 uppercase tracking-wider">
                           {currentPillar.codePreview.badge}
                         </span>
                       </div>
-                      <div className="space-y-1.5 leading-relaxed overflow-x-auto">
+                      <div className="space-y-1.5 leading-relaxed overflow-x-auto text-[11px]">
                         {currentPillar.codePreview.lines.map((line, idx) => (
-                          <div key={idx} className="flex gap-2">
+                          <div key={idx} className="flex gap-2.5">
                             {line.label && (
-                              <span className="text-neutral-400 shrink-0 select-none">
+                              <span className="text-neutral-500 shrink-0 select-none">
                                 {line.label}:
                               </span>
                             )}
                             <span
                               className={
-                                line.tone === 'success'
-                                  ? 'text-emerald-400 font-medium'
-                                  : line.tone === 'warn'
-                                  ? 'text-amber-400 font-medium'
-                                  : line.tone === 'accent'
-                                  ? 'text-rose-400 font-bold'
-                                  : 'text-neutral-300'
+                                line.tone === 'accent'
+                                  ? 'text-white font-semibold'
+                                  : line.tone === 'highlight'
+                                  ? 'text-neutral-200 font-medium'
+                                  : 'text-neutral-400'
                               }
                             >
                               {line.code}
@@ -515,10 +526,10 @@ export default function EnterpriseWorkbenchSection() {
                 ) : (
                   <motion.div
                     key="simulator"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
                     className="flex flex-col justify-between h-full"
                   >
                     <div>
@@ -526,15 +537,7 @@ export default function EnterpriseWorkbenchSection() {
                         <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
                           LEAST-PRIVILEGE TOOL ISOLATION
                         </span>
-                        <span
-                          className={`font-mono text-[10px] px-2 py-0.5 rounded border uppercase font-bold ${
-                            currentRing.tone === 'green'
-                              ? 'bg-emerald-950/60 border-emerald-800 text-emerald-300'
-                              : currentRing.tone === 'amber'
-                              ? 'bg-amber-950/60 border-amber-800 text-amber-300'
-                              : 'bg-rose-950/60 border-rose-800 text-rose-300'
-                          }`}
-                        >
+                        <span className="font-mono text-[10px] px-2 py-0.5 rounded border uppercase font-bold bg-neutral-900 border-neutral-700 text-white">
                           {currentRing.badge}
                         </span>
                       </div>
@@ -582,30 +585,18 @@ export default function EnterpriseWorkbenchSection() {
                     </div>
 
                     {/* Terminal Simulation */}
-                    <div className="rounded-md bg-black/60 backdrop-blur-sm border border-neutral-800 p-3 font-mono text-xs overflow-hidden shadow-inner">
+                    <div className="rounded-md bg-black/75 backdrop-blur-md border border-neutral-800 p-3 font-mono text-xs overflow-hidden shadow-2xl">
                       <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-neutral-800 text-[10px] text-neutral-400">
                         <span>SIMULATED AGENT TOOL INVOCATION</span>
-                        <span className={
-                          currentRing.tone === 'green'
-                            ? 'text-emerald-400 font-bold'
-                            : currentRing.tone === 'amber'
-                            ? 'text-amber-400 font-bold'
-                            : 'text-rose-400 font-bold'
-                        }>
+                        <span className="text-white font-bold">
                           {currentRing.simulatedTerminal.status}
                         </span>
                       </div>
                       <div className="space-y-1 text-[11px] leading-relaxed">
-                        <div className="text-neutral-300 font-medium">{currentRing.simulatedTerminal.command}</div>
+                        <div className="text-neutral-200 font-medium">{currentRing.simulatedTerminal.command}</div>
                         <div className="text-neutral-400">{currentRing.simulatedTerminal.result}</div>
-                        <div className={`font-semibold ${
-                          currentRing.tone === 'green'
-                            ? 'text-emerald-400'
-                            : currentRing.tone === 'amber'
-                            ? 'text-amber-400'
-                            : 'text-rose-400'
-                        }`}>
-                          &gt; {currentRing.simulatedTerminal.guardrailOutcome}
+                        <div className="text-neutral-300 pt-1 border-t border-neutral-800/80 text-[10px]">
+                          {currentRing.simulatedTerminal.guardrailOutcome}
                         </div>
                       </div>
                     </div>
