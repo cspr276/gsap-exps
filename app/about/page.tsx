@@ -12,7 +12,7 @@ import AboutValuesSection from '@/components/about/AboutValuesSection';
 import AboutTenetsSection from '@/components/about/AboutTenetsSection';
 import AboutContributorSection from '@/components/about/AboutContributorSection';
 import AboutFAQSection from '@/components/about/AboutFAQSection';
-import ServiceCTASection from '@/components/services/agent-evaluation/ServiceCTASection';
+import AboutCTASection from '@/components/about/AboutCTASection';
 
 export const metadata: Metadata = {
   title: 'About Evalixa — Engineering Trust Into Autonomous Intelligence',
@@ -63,7 +63,7 @@ export default function AboutPage() {
           <AboutFAQSection />
 
           {/* 10. High-Contrast Conversion CTA */}
-          <ServiceCTASection />
+          <AboutCTASection />
 
           {/* 11. Architectural Footer */}
           <Footer />

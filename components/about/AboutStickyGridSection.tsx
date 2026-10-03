@@ -1,10 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 interface LabCard {
   id: string;
@@ -46,11 +51,88 @@ const LAB_CARDS: LabCard[] = [
   },
 ];
 
+const CARD_TRAJECTORIES = [
+  { x: -50, y: 35, rotateX: 12, rotateZ: -1.5 }, // Card 0: Left
+  { x: 0, y: 45, rotateX: 14, rotateZ: 0 },      // Card 1: Center
+  { x: 50, y: 35, rotateX: 12, rotateZ: 1.5 },   // Card 2: Right
+];
+
 export default function AboutStickyGridSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      const grid = gridRef.current;
+      if (!section || !grid) return;
+
+      const cards = gsap.utils.toArray<HTMLElement>('.lab-bento-card', grid);
+      const mm = gsap.matchMedia();
+
+      // Desktop: natural 1:1 scroll tracking with scrub: true & ease: 'none'
+      mm.add('(min-width: 768px)', () => {
+        cards.forEach((card, idx) => {
+          const trajectory = CARD_TRAJECTORIES[idx] || { x: 0, y: 35, rotateX: 10, rotateZ: 0 };
+          gsap.fromTo(
+            card,
+            {
+              x: trajectory.x,
+              y: trajectory.y,
+              rotateX: trajectory.rotateX,
+              rotateZ: trajectory.rotateZ,
+              opacity: 0.15,
+            },
+            {
+              x: 0,
+              y: 0,
+              rotateX: 0,
+              rotateZ: 0,
+              opacity: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 88%',
+                end: 'top 58%',
+                scrub: true,
+                invalidateOnRefresh: true,
+              },
+            }
+          );
+        });
+      });
+
+      // Mobile
+      mm.add('(max-width: 767px)', () => {
+        cards.forEach((card) => {
+          gsap.fromTo(
+            card,
+            { y: 30, opacity: 0.2 },
+            {
+              y: 0,
+              opacity: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 90%',
+                end: 'top 65%',
+                scrub: true,
+              },
+            }
+          );
+        });
+      });
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section className="relative z-20 w-full bg-white text-neutral-950 py-20 sm:py-28 border-b border-neutral-200 overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="relative z-20 w-full bg-white text-neutral-950 py-20 sm:py-28 border-b border-neutral-200 overflow-hidden"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
+        {/* Section Header (No tag numbering) */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-8 mb-12 border-b border-neutral-200 gap-4">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -60,7 +142,7 @@ export default function AboutStickyGridSection() {
             className="max-w-3xl"
           >
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-3">
-              03 // INSIDE EVALIXA LABS
+              INSIDE EVALIXA LABS
             </span>
             <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-neutral-950 tracking-tight leading-tight">
               Built by Security Researchers, ML Engineers & Domain Specialists.
@@ -78,16 +160,16 @@ export default function AboutStickyGridSection() {
           </motion.p>
         </div>
 
-        {/* 3 Clean Bento Cards matching WhyEvalixaSection style */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-14">
-          {LAB_CARDS.map((card, idx) => (
-            <motion.div
+        {/* 3 Clean Bento Cards with 1:1 Scroll Sync */}
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-14"
+          style={{ perspective: '1200px' }}
+        >
+          {LAB_CARDS.map((card) => (
+            <div
               key={card.id}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="group relative rounded-md border border-neutral-200/90 bg-neutral-950 p-7 sm:p-8 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl hover:border-neutral-400 transition-all duration-300"
+              className="lab-bento-card group relative rounded-md border border-neutral-200/90 bg-neutral-950 p-7 sm:p-8 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl hover:border-neutral-500 transition-[border-color,box-shadow] duration-200 will-change-transform"
             >
               {/* Background Architectural Image with Dark Gradient Overlay */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -96,7 +178,7 @@ export default function AboutStickyGridSection() {
                   alt={card.title}
                   fill
                   sizes="(max-width: 1024px) 100vw, 400px"
-                  className="w-full h-full object-cover object-center group-hover:scale-105 opacity-80 group-hover:opacity-90 transition-all duration-700 ease-out contrast-125"
+                  className="w-full h-full object-cover object-center group-hover:scale-105 opacity-80 group-hover:opacity-90 transition-transform duration-700 ease-out contrast-125"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/35" />
               </div>
@@ -104,10 +186,10 @@ export default function AboutStickyGridSection() {
               {/* Foreground Card Content */}
               <div className="relative z-10 flex flex-col justify-between h-full min-h-[300px]">
                 <div>
-                  {/* Top Row: Monospace Index & Category */}
-                  <div className="flex items-center justify-between pb-4 mb-5">
-                    <span className="font-mono text-xs font-bold tracking-widest text-neutral-200 uppercase">
-                      {card.id}
+                  {/* Top Row: Category in monospace (No card numbering) */}
+                  <div className="flex items-center justify-between pb-4 mb-5 border-b border-white/15">
+                    <span className="font-mono text-[11px] tracking-wider text-neutral-300 uppercase font-semibold">
+                      {card.category}
                     </span>
                   </div>
 
@@ -123,7 +205,7 @@ export default function AboutStickyGridSection() {
                 </div>
 
                 {/* Clean Bottom Metric Bar */}
-                <div className="pt-5 mt-6 flex items-center justify-between font-mono text-xs text-neutral-400">
+                <div className="pt-5 mt-6 border-t border-white/15 flex items-center justify-between font-mono text-xs text-neutral-400">
                   <span className="uppercase tracking-wider text-[11px]">
                     {card.metricLabel}
                   </span>
@@ -132,7 +214,7 @@ export default function AboutStickyGridSection() {
                   </span>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 

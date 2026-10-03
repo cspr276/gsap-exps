@@ -191,7 +191,7 @@ export default function AboutDualWaveSection() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-8 mb-10 border-b border-neutral-800/80 gap-4">
           <div className="max-w-3xl">
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-2">
-              02 // FULL-SPECTRUM COVERAGE
+              FULL-SPECTRUM COVERAGE
             </span>
             <h2 className="font-display font-bold text-3xl sm:text-5xl text-white tracking-tight leading-tight">
               Core Disciplines Meets Critical Enterprise Domains.

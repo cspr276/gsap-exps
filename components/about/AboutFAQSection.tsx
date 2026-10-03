@@ -78,7 +78,7 @@ export default function AboutFAQSection() {
           {/* Left Column: Sticky Header */}
           <div className="lg:col-span-4 lg:sticky lg:top-28">
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-3">
-              07 // FREQUENTLY ASKED QUESTIONS
+              FREQUENTLY ASKED QUESTIONS
             </span>
             <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight mb-4">
               Questions About Evalixa AI & Engagements.

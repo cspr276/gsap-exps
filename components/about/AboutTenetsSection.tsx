@@ -12,7 +12,7 @@ const Grainient = dynamic(() => import('@/components/Grainient'), { ssr: false }
 
 const TENETS = [
   {
-    code: '01 / EVIDENCE OVER VIBES',
+    code: 'EVIDENCE OVER VIBES',
     title: 'Deterministic Reproducibility',
     summary:
       'Every evaluation judgment ships with complete input/output execution traces, tool-call payloads, reviewer score sheets, and statistical confidence bounds.',
@@ -24,7 +24,7 @@ const TENETS = [
     ],
   },
   {
-    code: '02 / ADVERSARIAL BY DEFAULT',
+    code: 'ADVERSARIAL BY DEFAULT',
     title: 'Worst-Case Exploit Coverage',
     summary:
       'Production agents fail at the margins. We stress-test systems against adaptive multi-turn jailbreaks, indirect prompt injection, and privilege escalation.',
@@ -36,7 +36,7 @@ const TENETS = [
     ],
   },
   {
-    code: '03 / HUMAN-EXPERT GROUNDING',
+    code: 'HUMAN-EXPERT GROUNDING',
     title: 'Calibrated Specialist Panels',
     summary:
       'Automated verifiers are only as trustworthy as the human ground truth that anchors them. Our domain fellows adjudicate every ambiguous reasoning trace.',
@@ -48,7 +48,7 @@ const TENETS = [
     ],
   },
   {
-    code: '04 / DEPLOYMENT VELOCITY',
+    code: 'DEPLOYMENT VELOCITY',
     title: 'Continuous CI/CD Release Gates',
     summary:
       'Assurance cannot be a quarterly bottleneck. Every discovered failure mode compiles directly into an automated regression test inside your deployment pipeline.',
@@ -135,7 +135,7 @@ export default function AboutTenetsSection() {
         {/* Section Header */}
         <div className="max-w-2xl mb-14">
           <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-3">
-            04 // OPERATING TENETS
+            OPERATING TENETS
           </span>
           <h2 className="font-display font-bold text-3xl sm:text-5xl text-white tracking-tight leading-tight mb-4">
             Four Non-Negotiable Engineering Principles.

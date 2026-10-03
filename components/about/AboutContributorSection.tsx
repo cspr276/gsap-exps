@@ -1,30 +1,38 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, Award, ShieldCheck, Scale } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const CONTRIBUTOR_PILLARS = [
   {
     num: '01',
+    category: 'CREDENTIALED FELLOWS',
     icon: Award,
-    title: 'Credentialed Domain Specialists',
+    title: 'Domain Specialists & Practitioners',
     desc: 'We recruit certified clinicians, attorneys, financial analysts, and security researchers. Every contributor undergoes rigorous calibration against gold-standard rubrics before scoring production data.',
     metric: '1,200+ Verified Fellows',
     image: '/cards/card_05.jpg',
   },
   {
     num: '02',
+    category: 'REASONING ADJUDICATION',
     icon: Scale,
-    title: 'High-Horizon Reasoning Adjudication',
+    title: 'High-Horizon Decision Analysis',
     desc: 'Automated judges hallucinate on nuanced domain workflows. Our specialists evaluate multi-step tool calls, regulatory compliance boundaries, and multi-turn reasoning traces with granular failure categorization.',
     metric: 'Krippendorff α ≥ 0.90',
     image: '/cards/card_06.jpg',
   },
   {
     num: '03',
+    category: 'AUDITABLE EVIDENCE',
     icon: ShieldCheck,
     title: 'Deterministic Trace Auditing',
     desc: 'Every annotation, rubric score, and adjudication dispute is stamped with cryptographic hashes and reviewer provenance, ensuring auditable traceability for enterprise release gates.',
@@ -33,11 +41,88 @@ const CONTRIBUTOR_PILLARS = [
   },
 ];
 
+const CARD_TRAJECTORIES = [
+  { x: -50, y: 35, rotateX: 12, rotateZ: -1.5 }, // Card 0: Left
+  { x: 0, y: 45, rotateX: 14, rotateZ: 0 },      // Card 1: Center
+  { x: 50, y: 35, rotateX: 12, rotateZ: 1.5 },   // Card 2: Right
+];
+
 export default function AboutContributorSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      const grid = gridRef.current;
+      if (!section || !grid) return;
+
+      const cards = gsap.utils.toArray<HTMLElement>('.contributor-card', grid);
+      const mm = gsap.matchMedia();
+
+      // Desktop: natural 1:1 scroll tracking with scrub: true & ease: 'none'
+      mm.add('(min-width: 768px)', () => {
+        cards.forEach((card, idx) => {
+          const trajectory = CARD_TRAJECTORIES[idx] || { x: 0, y: 35, rotateX: 10, rotateZ: 0 };
+          gsap.fromTo(
+            card,
+            {
+              x: trajectory.x,
+              y: trajectory.y,
+              rotateX: trajectory.rotateX,
+              rotateZ: trajectory.rotateZ,
+              opacity: 0.15,
+            },
+            {
+              x: 0,
+              y: 0,
+              rotateX: 0,
+              rotateZ: 0,
+              opacity: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 88%',
+                end: 'top 58%',
+                scrub: true,
+                invalidateOnRefresh: true,
+              },
+            }
+          );
+        });
+      });
+
+      // Mobile
+      mm.add('(max-width: 767px)', () => {
+        cards.forEach((card) => {
+          gsap.fromTo(
+            card,
+            { y: 30, opacity: 0.2 },
+            {
+              y: 0,
+              opacity: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 90%',
+                end: 'top 65%',
+                scrub: true,
+              },
+            }
+          );
+        });
+      });
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section className="relative z-20 w-full py-24 sm:py-32 bg-[#09090b] text-white border-b border-neutral-900 overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="relative z-20 w-full py-24 sm:py-32 bg-[#09090b] text-white border-b border-neutral-900 overflow-hidden"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
+        {/* Section Header (No tag numbering) */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between pb-8 mb-14 border-b border-neutral-900 gap-6">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -47,7 +132,7 @@ export default function AboutContributorSection() {
             className="max-w-3xl"
           >
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-3">
-              06 // THE CONTRIBUTOR NETWORK
+              THE CONTRIBUTOR NETWORK
             </span>
             <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
               Grounding Autonomous Reasoning in Verified Human Truth.
@@ -65,18 +150,18 @@ export default function AboutContributorSection() {
           </motion.p>
         </div>
 
-        {/* 3 Pillar Cards with Architectural Image Background like Inside Evalixa Labs */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-16">
-          {CONTRIBUTOR_PILLARS.map((pillar, idx) => {
+        {/* 3 Pillar Cards with Architectural Image Background & 1:1 Scroll Sync */}
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-16"
+          style={{ perspective: '1200px' }}
+        >
+          {CONTRIBUTOR_PILLARS.map((pillar) => {
             const Icon = pillar.icon;
             return (
-              <motion.div
-                key={pillar.num}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="group relative rounded-md border border-neutral-800 bg-neutral-950 p-7 sm:p-8 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl hover:border-neutral-500 transition-all duration-300"
+              <div
+                key={pillar.title}
+                className="contributor-card group relative rounded-md border border-neutral-800 bg-neutral-950 p-7 sm:p-8 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl hover:border-neutral-500 transition-[border-color,box-shadow] duration-200 will-change-transform"
               >
                 {/* Background Architectural Image with Dark Gradient Overlay */}
                 <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -85,7 +170,7 @@ export default function AboutContributorSection() {
                     alt={pillar.title}
                     fill
                     sizes="(max-width: 1024px) 100vw, 400px"
-                    className="w-full h-full object-cover object-center group-hover:scale-105 opacity-80 group-hover:opacity-90 transition-all duration-700 ease-out contrast-125"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 opacity-80 group-hover:opacity-90 transition-transform duration-700 ease-out contrast-125"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/40" />
                 </div>
@@ -93,9 +178,10 @@ export default function AboutContributorSection() {
                 {/* Foreground Card Content */}
                 <div className="relative z-10 flex flex-col justify-between h-full min-h-[300px]">
                   <div>
+                    {/* Top Row: Category in monospace without index numbering */}
                     <div className="flex items-center justify-between pb-4 mb-5 border-b border-white/15">
-                      <span className="font-mono text-xs font-bold text-neutral-300">
-                        {pillar.num}
+                      <span className="font-mono text-[11px] tracking-wider text-neutral-300 uppercase font-semibold">
+                        {pillar.category}
                       </span>
                       <Icon className="w-4 h-4 text-neutral-400 group-hover:text-white transition-colors" />
                     </div>
@@ -118,7 +204,7 @@ export default function AboutContributorSection() {
                     </span>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>

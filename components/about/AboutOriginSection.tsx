@@ -111,7 +111,7 @@ export default function AboutOriginSection() {
             transition={{ duration: 0.5 }}
           >
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-3">
-              01 // ARCHITECTURAL MANIFESTO
+              ARCHITECTURAL MANIFESTO
             </span>
             <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-neutral-950 tracking-tight leading-tight">
               From Subjective Vibes to Deterministic Proof.
@@ -155,11 +155,8 @@ export default function AboutOriginSection() {
               className="rounded-md border border-neutral-200/90 bg-[#fafafa] hover:bg-white hover:border-neutral-400 hover:shadow-md transition-all duration-300 p-7 sm:p-8 flex flex-col justify-between shadow-xs"
             >
               <div>
-                {/* Clean Top Row: Index + Category */}
+                {/* Clean Top Row: Category */}
                 <div className="flex items-center justify-between pb-4 mb-5 border-b border-neutral-200">
-                  <span className="font-mono text-xs font-bold text-neutral-900">
-                    {item.id}
-                  </span>
                   <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
                     {item.category}
                   </span>

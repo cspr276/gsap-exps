@@ -165,7 +165,7 @@ export default function AboutValuesSection() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-8 mb-12 border-b border-neutral-200 gap-4">
           <div className="max-w-3xl">
             <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-3">
-              04 // VALUES & OPERATING CONTEXT
+              VALUES & OPERATING CONTEXT
             </span>
             <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-neutral-950 tracking-tight leading-tight">
               Values That Shape Every Production Engagement.
@@ -203,11 +203,8 @@ export default function AboutValuesSection() {
               {/* Foreground Card Content */}
               <div className="relative z-10 flex flex-col justify-between h-full min-h-[220px]">
                 <div>
-                  {/* Top Row: Index + Category */}
+                  {/* Top Row: Category */}
                   <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/15">
-                    <span className="font-mono text-xs font-bold text-neutral-300">
-                      {card.id}
-                    </span>
                     <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-400 font-semibold">
                       {card.category}
                     </span>
