@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { Plus, Minus, ArrowUpRight } from 'lucide-react';
+import { CAREERS_EMAIL } from '@/data/careerRoles';
 
 const CAREERS_FAQS = [
   {
@@ -34,7 +35,7 @@ const CAREERS_FAQS = [
 export default function CareersFAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  const toggle = (index: number) => {
+  const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
@@ -42,60 +43,76 @@ export default function CareersFAQSection() {
     <section className="relative z-20 w-full py-24 sm:py-32 bg-[#09090b] text-white border-b border-neutral-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          {/* Left Column: Sticky Header */}
+          {/* Left Column: Sticky Header matching AboutFAQSection */}
           <div className="lg:col-span-4 lg:sticky lg:top-28">
-            <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-3">
+            <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-3">
               FREQUENTLY ASKED QUESTIONS
             </span>
-            <h2 className="font-display font-bold text-3xl sm:text-4xl text-white tracking-tight leading-tight mb-4">
-              Answers for Prospective Candidates.
+            <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight mb-4">
+              Questions About Working at Evalixa.
             </h2>
-            <p className="font-sans text-sm sm:text-base text-neutral-400 leading-relaxed font-normal mb-6">
-              Everything you need to know about our culture, evaluation standards, compensation philosophy, and remote operations.
+            <p className="font-sans text-sm sm:text-base text-neutral-400 leading-relaxed font-normal mb-8">
+              Straightforward answers about our engineering culture, evaluation standards, remote policy, and compensation.
             </p>
-            <div className="p-4 rounded-md bg-neutral-950 border border-neutral-800 text-xs text-neutral-400">
-              <span className="text-white font-medium block mb-1">Have a specific question?</span>
-              Write directly to{' '}
-              <a href="mailto:careers@evalixa.com" className="text-white underline underline-offset-2">
-                careers@evalixa.com
+
+            <div className="pt-6 border-t border-neutral-900 hidden lg:block">
+              <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-400 font-semibold block mb-2">
+                Have a specific question?
+              </span>
+              <p className="text-xs text-neutral-500 leading-relaxed mb-4">
+                Our engineering and operations leads are available to answer candidate questions directly.
+              </p>
+              <a
+                href={`mailto:${CAREERS_EMAIL}`}
+                className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-white font-semibold hover:text-neutral-300 transition-colors"
+              >
+                <span>Write to {CAREERS_EMAIL}</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
               </a>
             </div>
           </div>
 
-          {/* Right Column: FAQ Accordion */}
-          <div className="lg:col-span-8 divide-y divide-neutral-800/80 border-y border-neutral-800/80">
-            {CAREERS_FAQS.map((faq, index) => {
-              const isOpen = openIndex === index;
+          {/* Right Column: Accordion List matching AboutFAQSection */}
+          <div className="lg:col-span-8 flex flex-col divide-y divide-neutral-900 border-y border-neutral-900">
+            {CAREERS_FAQS.map((faq, idx) => {
+              const isOpen = openIndex === idx;
               return (
-                <div key={index} className="py-6 sm:py-7 group">
+                <div key={idx}>
                   <button
-                    onClick={() => toggle(index)}
-                    className="w-full flex items-start justify-between gap-6 text-left cursor-pointer focus:outline-hidden"
+                    type="button"
+                    onClick={() => toggleFAQ(idx)}
+                    className="w-full py-6 sm:py-7 flex items-start justify-between text-left gap-4 cursor-pointer group"
+                    aria-expanded={isOpen}
                   >
-                    <span className="font-display font-semibold text-lg sm:text-xl text-neutral-200 group-hover:text-white transition-colors leading-snug">
-                      {faq.q}
-                    </span>
-                    <span
-                      className={`shrink-0 mt-1 w-7 h-7 rounded-md border border-neutral-800 flex items-center justify-center text-neutral-400 group-hover:text-white group-hover:border-neutral-700 transition-all ${
-                        isOpen ? 'rotate-180 bg-neutral-900 text-white' : ''
-                      }`}
-                    >
-                      <ChevronDown className="w-4 h-4" />
-                    </span>
+                    <div className="flex items-start gap-4">
+                      <span className="font-mono text-xs text-neutral-600 pt-1 select-none">
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                      <span className="font-display font-semibold text-lg sm:text-xl text-neutral-200 group-hover:text-white transition-colors">
+                        {faq.q}
+                      </span>
+                    </div>
+                    <div className="shrink-0 pt-1 text-neutral-500 group-hover:text-white transition-colors">
+                      {isOpen ? (
+                        <Minus className="w-5 h-5 text-neutral-300" />
+                      ) : (
+                        <Plus className="w-5 h-5 text-neutral-500" />
+                      )}
+                    </div>
                   </button>
 
                   <AnimatePresence initial={false}>
                     {isOpen && (
                       <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                         className="overflow-hidden"
                       >
-                        <p className="font-sans text-sm sm:text-base text-neutral-400 leading-relaxed font-normal pt-4 pr-10">
+                        <div className="pb-7 pl-9 pr-4 sm:pr-8 text-neutral-400 font-sans text-sm sm:text-base leading-relaxed">
                           {faq.a}
-                        </p>
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>

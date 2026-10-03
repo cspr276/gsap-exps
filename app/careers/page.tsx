@@ -29,26 +29,29 @@ export default function CareersPage() {
         {/* Universal Architectural Sticky Navbar */}
         <Navbar />
 
-        {/* 1. Atmospheric Careers Hero */}
+        {/* 1. Pinned Atmospheric Hero (Dark — Full Screen Height with Background Image) */}
         <CareersHero />
 
-        {/* 2. Life, Principles & Sustainable Growth (White Editorial) */}
-        <CareersCultureSection />
+        {/* Continuous Z-20 Stacking Layer */}
+        <div className="relative z-20 bg-[#09090b]">
+          {/* 2. Life, Principles & Sustainable Growth (White Editorial) */}
+          <CareersCultureSection />
 
-        {/* 3. Open Positions Directory with Live Filter, Search & Application Drawer (Dark) */}
-        <CareersOpenPositionsSection />
+          {/* 3. Open Positions Directory (Left Pinned Filter Ledger + Right Cards) */}
+          <CareersOpenPositionsSection />
 
-        {/* 4. Transparent 4-Step Evaluation Process (Dark) */}
-        <CareersHiringProcessSection />
+          {/* 4. How We Evaluate (Segmented Border Grid, Bare Icons in Top Line) */}
+          <CareersHiringProcessSection />
 
-        {/* 5. Frequently Asked Questions for Candidates (Dark) */}
-        <CareersFAQSection />
+          {/* 5. Frequently Asked Questions for Candidates (Matching Institutional FAQ Theme) */}
+          <CareersFAQSection />
 
-        {/* 6. General Inquiries & Contributor Fellowship CTA (Dark + Aurora) */}
-        <CareersCTASection />
+          {/* 6. Conversion CTA (Preserved as requested) */}
+          <CareersCTASection />
 
-        {/* 7. Institutional Footer */}
-        <Footer />
+          {/* 7. Institutional Footer */}
+          <Footer />
+        </div>
       </main>
     </SmoothScroll>
   );

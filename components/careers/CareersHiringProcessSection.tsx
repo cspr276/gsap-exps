@@ -11,6 +11,7 @@ const STEPS = [
     icon: Eye,
     description:
       'Every application is reviewed directly by an active engineer or domain lead—never an automated keyword parser. We prioritize actual code samples, deployed systems, papers, and demonstrated craft over pedigree.',
+    invariant: '100% human-practitioner triage',
   },
   {
     step: 'STEP 02',
@@ -19,6 +20,7 @@ const STEPS = [
     icon: MessageSquareCode,
     description:
       'A practical architectural conversation with the team you will work with. We discuss your past projects, edge-case debugging stories, trade-offs in evaluation systems, and how you approach ambiguous engineering challenges.',
+    invariant: 'Practical systems discussion',
   },
   {
     step: 'STEP 03',
@@ -27,6 +29,7 @@ const STEPS = [
     icon: Laptop,
     description:
       'No contrived Leetcode puzzles. Instead, we collaborate on a realistic, bounded exercise that mirrors our daily work—such as auditing an agent trace, writing a test harness, or hardening a Debian environment.',
+    invariant: 'Realistic production task',
   },
   {
     step: 'STEP 04',
@@ -35,6 +38,7 @@ const STEPS = [
     icon: FileCheck2,
     description:
       'We move decisively. You will receive an offer with clear compensation, equity breakdown, equipment stipend details, and mutual expectations. No artificial negotiating games.',
+    invariant: 'Direct terms & fast start',
   },
 ];
 
@@ -45,51 +49,49 @@ export default function CareersHiringProcessSection() {
         {/* Section Header */}
         <div className="max-w-3xl mb-16">
           <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-3">
-            TRANSPARENT EVALUATION
+            HOW WE EVALUATE
           </span>
           <h2 className="font-display font-bold text-3xl sm:text-5xl text-white tracking-tight leading-tight mb-4">
-            How We Evaluate Candidates.
+            A Respectful, Deterministic Hiring Process.
           </h2>
           <p className="font-sans text-base sm:text-lg text-neutral-400 leading-relaxed font-normal">
-            We hold our interview process to the same deterministic standards we bring to our client benchmarks: fast feedback, zero unnecessary bureaucracy, and deep respect for your time.
+            We hold our interview process to the same standards we bring to client benchmarks: fast feedback, zero unnecessary bureaucracy, and deep respect for your time.
           </p>
         </div>
 
-        {/* 4-Step Process Rail */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* 4-Step Segmented Process Rail: No gap, divide lines, bare icons in same line as top */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 rounded-md border border-neutral-800 divide-y md:divide-y-0 md:divide-x divide-neutral-800 bg-neutral-950 overflow-hidden shadow-2xl">
           {STEPS.map((step) => {
             const Icon = step.icon;
             return (
               <div
                 key={step.step}
-                className="relative p-7 rounded-md bg-neutral-950 border border-neutral-800/90 flex flex-col justify-between hover:border-neutral-700 transition-colors shadow-lg"
+                className="p-8 sm:p-9 flex flex-col justify-between hover:bg-neutral-900/40 transition-colors"
               >
                 <div>
-                  {/* Step Header */}
-                  <div className="flex items-center justify-between mb-5">
+                  {/* Top Line: Step label on left, bare icon on right in the same line */}
+                  <div className="flex items-center justify-between mb-6">
                     <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
                       {step.step}
                     </span>
-                    <span className="font-mono text-[11px] text-neutral-500">
-                      {step.timing}
-                    </span>
+                    <Icon className="w-5 h-5 text-neutral-400" />
                   </div>
 
-                  <div className="w-9 h-9 rounded-md bg-neutral-900 border border-neutral-800 flex items-center justify-center text-white mb-5">
-                    <Icon className="w-4 h-4" />
-                  </div>
-
-                  <h3 className="font-display font-bold text-xl text-white mb-3 tracking-tight">
+                  <h3 className="font-display font-bold text-xl text-white mb-2 tracking-tight">
                     {step.title}
                   </h3>
+
+                  <span className="font-mono text-xs text-neutral-500 block mb-5">
+                    {step.timing}
+                  </span>
 
                   <p className="font-sans text-sm text-neutral-400 leading-relaxed font-normal">
                     {step.description}
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-neutral-900 font-mono text-[11px] text-neutral-400">
-                  <span>✓ Direct senior practitioner loop</span>
+                <div className="mt-8 pt-4 border-t border-neutral-900 font-mono text-[11px] text-neutral-500">
+                  <span>✓ {step.invariant}</span>
                 </div>
               </div>
             );
