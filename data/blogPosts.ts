@@ -36,16 +36,17 @@ export interface BlogPost {
 
 const imagePaths = {
   blogCovers: {
-    'enterprise-ai-and-automation': '',
-    'ai-benchmarking-and-agent-evaluation': '',
-    'from-generative-ai-to-agentic-ai': '',
-    'enterprise-ai-strategy-and-roi': '',
-    'ai-in-healthcare-evaluation': '',
+    'enterprise-ai-and-automation': 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80',
+    'ai-benchmarking-and-agent-evaluation': 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1600&q=80',
+    'from-generative-ai-to-agentic-ai': 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1600&q=80',
+    'enterprise-ai-strategy-and-roi': 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80',
+    'ai-in-healthcare-evaluation': 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1600&q=80',
   },
   blogInline: {
+    // Architecture and flowchart diagrams remain empty to render clean schematic figure placeholders:
     'enterprise-ai-agent-architecture': '',
     'rpa-vs-ai-comparison': '',
-    'enterprise-ai-adoption': '',
+    'enterprise-ai-adoption': 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80',
     'production-ai-architecture': '',
     'benchmarking-testing-gap': '',
     'benchmarking-five-dimensions': '',
@@ -1571,7 +1572,7 @@ export const blogPosts: BlogPost[] = [
         type: 'p',
         text: "By late 2025, the pattern was clear. Companies had built impressive demos, deployed chatbots, and automated pockets of content production. But the transformational productivity gains that executives had been promised were not materialising. The ceiling was not model intelligence — it was model passivity. The most capable language model in the world still does nothing until you ask it a question.",
       },
-      { type: 'image', alt: 'Generative AI limitations — passive prompt-response cycle without persistence or action capability', caption: 'The fundamental constraint of generative AI: powerful reasoning trapped in a reactive loop.' },
+      { type: 'image', src: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80', alt: 'Generative AI limitations — passive prompt-response cycle without persistence or action capability', caption: 'The fundamental constraint of generative AI: powerful reasoning trapped in a reactive loop.' },
 
       /* ── SECTION 2: What Agentic AI Actually Means ── */
       {
@@ -1777,7 +1778,7 @@ export const blogPosts: BlogPost[] = [
         type: 'p',
         text: "SOC teams are using agentic systems that triage security alerts, correlate events across log sources, run initial investigation playbooks, enrich indicators of compromise against threat intelligence feeds, and produce incident summaries for human analysts. The agent handles the volume problem — most security teams are drowning in alerts — so human analysts can focus on the incidents that require judgement.",
       },
-      { type: 'image', alt: 'Agentic AI use cases across enterprise functions — customer ops, finance, engineering, recruiting, and security', caption: 'Agentic AI is already in production across these five enterprise functions. The pattern is consistent: the agent handles volume and routine complexity, humans handle exceptions and judgement calls.' },
+      { type: 'image', src: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80', alt: 'Agentic AI use cases across enterprise functions — customer ops, finance, engineering, recruiting, and security', caption: 'Agentic AI is already in production across these five enterprise functions. The pattern is consistent: the agent handles volume and routine complexity, humans handle exceptions and judgement calls.' },
 
       /* ── SECTION 7: The Hard Problems Nobody Talks About ── */
       {
@@ -2527,7 +2528,7 @@ export const blogPosts: BlogPost[] = [
         type: 'highlight',
         text: 'Healthcare AI is not a high-risk AI category because regulators say so. It is high-risk because the people affected by its errors cannot opt out, often do not know AI was involved, and may not survive the consequences of a wrong answer.',
       },
-      { type: 'image', alt: 'Healthcare AI adoption vs evaluation readiness — gap between deployment rate and evaluation maturity', caption: 'The growing gap between healthcare AI deployment and evaluation readiness is the most significant patient safety risk in health technology today.' },
+      { type: 'image', src: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1200&q=80', alt: 'Healthcare AI adoption vs evaluation readiness — gap between deployment rate and evaluation maturity', caption: 'The growing gap between healthcare AI deployment and evaluation readiness is the most significant patient safety risk in health technology today.' },
 
       /* ── SECTION 2: Why Evaluation Is Not Optional ── */
       {
@@ -2791,7 +2792,7 @@ export const blogPosts: BlogPost[] = [
           'EHR integration testing: verify that the system integrates cleanly with the electronic health record without disrupting existing documentation workflows.',
         ],
       },
-      { type: 'image', alt: 'Healthcare AI clinical workflow integration testing — shadow deployment, usability, alert burden', caption: 'Clinical workflow integration determines whether an accurate AI system creates value or creates noise. Test the integration, not just the model.' },
+      { type: 'image', src: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=1200&q=80', alt: 'Healthcare AI clinical workflow integration testing — shadow deployment, usability, alert burden', caption: 'Clinical workflow integration determines whether an accurate AI system creates value or creates noise. Test the integration, not just the model.' },
 
       /* ── SECTION 9: The Regulatory Landscape ── */
       {

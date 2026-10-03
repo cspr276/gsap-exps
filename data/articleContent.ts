@@ -37,17 +37,18 @@ export interface ArticlePost {
 const imagePaths = {
   articleCovers: {
     'ai-benchmarking-projects-swebench-terminal-bench-mlperf': '/articles/Articles.webp',
-    'software-company-startups-in-india': '',
-    'how-to-choose-a-software-development-company': '',
-    'what-makes-a-software-startup-succeed-globally': '',
-    'evalixa-solutions-services-and-approach': '',
-    'multimodal-ai-governance-and-security': '',
+    'software-company-startups-in-india': 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1600&q=80',
+    'how-to-choose-a-software-development-company': 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1600&q=80',
+    'what-makes-a-software-startup-succeed-globally': 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80',
+    'evalixa-solutions-services-and-approach': 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1600&q=80',
+    'multimodal-ai-governance-and-security': 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1600&q=80',
   },
   articleInline: {
-    'evalixa-team-and-company': '',
+    'evalixa-team-and-company': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80',
+    // Architecture and capability frameworks remain clean schematic placeholders:
     'evalixa-service-lines': '',
     'evalixa-ai-capabilities': '',
-    'evalixa-client-types': '',
+    'evalixa-client-types': 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
   },
 };
 

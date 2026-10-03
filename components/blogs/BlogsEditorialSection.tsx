@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -283,21 +284,33 @@ export default function BlogsEditorialSection() {
                   </div>
                 </div>
 
-                {/* Cover Media Placeholder (No AI images) */}
+                {/* Cover Media: Unsplash Photo or Schematic Placeholder */}
                 <div className="lg:col-span-5">
-                  <div className="relative aspect-16/10 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-950/80 flex flex-col items-center justify-center p-6 text-center space-y-3 group-hover:border-neutral-700 transition-colors">
-                    <div className="w-10 h-10 rounded-lg border border-neutral-800 bg-neutral-900 flex items-center justify-center text-neutral-400 group-hover:text-white transition-colors">
-                      <ImageIcon className="w-5 h-5" />
+                  {featuredBlog.coverImage ? (
+                    <div className="relative aspect-16/10 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-950">
+                      <Image
+                        src={featuredBlog.coverImage}
+                        alt={featuredBlog.coverImageAlt || featuredBlog.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-700 brightness-90 contrast-105"
+                      />
+                      <div className="absolute inset-0 bg-linear-to-t from-neutral-950/80 via-transparent to-transparent pointer-events-none" />
                     </div>
-                    <div className="space-y-1">
-                      <span className="font-mono text-[11px] uppercase tracking-widest text-neutral-400 block">
-                        IMAGE PLACEHOLDER // ARCHITECTURAL SCHEMATIC
-                      </span>
-                      <span className="font-sans text-xs text-neutral-400 block">
-                        Autonomous agents networked across enterprise systems
-                      </span>
+                  ) : (
+                    <div className="relative aspect-16/10 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-950/80 flex flex-col items-center justify-center p-6 text-center space-y-3 group-hover:border-neutral-700 transition-colors">
+                      <div className="w-10 h-10 rounded-lg border border-neutral-800 bg-neutral-900 flex items-center justify-center text-neutral-400 group-hover:text-white transition-colors">
+                        <ImageIcon className="w-5 h-5" />
+                      </div>
+                      <div className="space-y-1">
+                        <span className="font-mono text-[11px] uppercase tracking-widest text-neutral-400 block">
+                          IMAGE PLACEHOLDER // ARCHITECTURAL SCHEMATIC
+                        </span>
+                        <span className="font-sans text-xs text-neutral-400 block">
+                          Autonomous agents networked across enterprise systems
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </Link>
