@@ -2,9 +2,8 @@
 
 import React from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowDown, Mail, ArrowUpRight } from 'lucide-react';
+import { ArrowDown, Mail } from 'lucide-react';
 import { CAREERS_EMAIL } from '@/data/careerRoles';
 
 export default function CareersHero() {
@@ -44,16 +43,6 @@ export default function CareersHero() {
 
       {/* Main Centered Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center flex flex-col items-center justify-center pt-24 pb-16 my-auto">
-        {/* Eyebrow Label - No glow dots, no pills */}
-        <motion.span
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-4"
-        >
-          CAREERS AT EVALIXA
-        </motion.span>
-
         {/* Kinetic Main Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 36, filter: 'blur(10px)' }}
