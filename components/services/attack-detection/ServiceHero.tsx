@@ -24,9 +24,17 @@ export default function ServiceHero() {
   };
 
   return (
-    <section className="relative w-full min-h-screen flex flex-col justify-center items-center pt-28 sm:pt-36 pb-20 overflow-hidden">
-      {/* Authentic Unsplash tech infrastructure background (natural, non-AI) */}
-      <div className="absolute inset-0 z-0 pointer-events-none select-none">
+    <section
+      id="service-hero"
+      className="sticky top-0 z-0 w-full h-screen flex flex-col justify-center items-center overflow-hidden bg-[#09090b]"
+    >
+      {/* Dynamic Floating Frame / Chassis */}
+      <motion.div
+        initial={{ opacity: 0.5, scale: 1.1 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
+        className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none origin-center border border-white/5"
+      >
         <Image
           src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=2000&auto=format&fit=crop"
           alt="Enterprise AI Attack Detection Infrastructure"
@@ -34,9 +42,12 @@ export default function ServiceHero() {
           priority
           className="object-cover object-center brightness-[0.45] contrast-[1.05]"
         />
-      </div>
+        {/* Scrim Overlay */}
+        <div className="absolute inset-0 bg-[#09090b]/40 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-transparent to-[#09090b]/60 pointer-events-none" />
+      </motion.div>
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center flex flex-col items-center justify-center my-auto">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center flex flex-col items-center justify-center pt-28 pb-16 my-auto">
         <div className="max-w-4xl mx-auto">
           {/* Centered Main Headline (Display typography, bold, no serif) */}
           <motion.h1

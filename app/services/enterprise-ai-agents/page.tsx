@@ -35,29 +35,32 @@ export default function EnterpriseAIAgentsPage() {
         {/* 1. Atmospheric Ambient Hero */}
         <ServiceHero />
 
-        {/* 2. White-Themed Architectural Metrics Strip */}
-        <ServiceMetricsStrip />
-
-        {/* 3. White-Themed Core Failure Realities (Why Agent Prototypes Collapse) */}
+        {/* 2. Standout Curtain-Wipe Highlight Animation: The Production Gap */}
         <EnterpriseRealitiesSection />
 
-        {/* 4. Interactive Enterprise Workbench (4 Pillars + Blast Radius Simulator & Terminal) */}
-        <EnterpriseWorkbenchSection />
+        {/* Continuous Solid Z-30 Stacking Layer: Metrics, Workbench, and all subsequent sections */}
+        <div className="relative z-30 bg-[#09090b]">
+          {/* 3. High-Contrast Architectural Metrics Strip */}
+          <ServiceMetricsStrip />
 
-        {/* 5. 4 Dimension Cards (Agent Architectural Taxonomy) */}
-        <EnterpriseTaxonomySection />
+          {/* 4. Interactive Enterprise Workbench (4 Pillars + Blast Radius Simulator & Terminal) */}
+          <EnterpriseWorkbenchSection />
 
-        {/* 6. How We Deliver (12-Week Phased Delivery Grid) */}
-        <EnterpriseDeliverySection />
+          {/* 5. 4 Dimension Cards (Agent Architectural Taxonomy) */}
+          <EnterpriseTaxonomySection />
 
-        {/* 7. Frequently Asked Questions (Technical & Scoping) */}
-        <EnterpriseFAQSection />
+          {/* 6. How We Deliver (12-Week Phased Delivery Grid) */}
+          <EnterpriseDeliverySection />
 
-        {/* 8. High-Contrast Conversion CTA */}
-        <ServiceCTASection />
+          {/* 7. Frequently Asked Questions (Technical & Scoping) */}
+          <EnterpriseFAQSection />
 
-        {/* Universal Footer */}
-        <Footer />
+          {/* 8. High-Contrast Conversion CTA */}
+          <ServiceCTASection />
+
+          {/* Universal Footer */}
+          <Footer />
+        </div>
       </main>
     </SmoothScroll>
   );

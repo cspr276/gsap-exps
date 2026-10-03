@@ -35,29 +35,32 @@ export default function SftRlhfPage() {
         {/* 1. Atmospheric Ambient Hero */}
         <ServiceHero />
 
-        {/* 2. White-Themed Architectural Metrics Strip */}
-        <ServiceMetricsStrip />
-
-        {/* 3. White-Themed Core Failure Realities (Why standard training runs fail) */}
+        {/* 2. Standout Curtain-Wipe Highlight Animation: Adaptation Realities */}
         <SftRealitiesSection />
 
-        {/* 4. Interactive Adaptation Workbench (4 Pillars: Contract Rule-Out, Demonstration SFT, Preference DPO, Regression Gate) */}
-        <SftWorkbenchSection />
+        {/* Continuous Solid Z-30 Stacking Layer: Metrics, Workbench, and all subsequent sections */}
+        <div className="relative z-30 bg-[#09090b]">
+          {/* 3. High-Contrast Architectural Metrics Strip */}
+          <ServiceMetricsStrip />
 
-        {/* 5. The 4 Adaptation Dimensions (Taxonomy Breakdown) */}
-        <SftTaxonomySection />
+          {/* 4. Interactive Adaptation Workbench (4 Pillars: Contract Rule-Out, Demonstration SFT, Preference DPO, Regression Gate) */}
+          <SftWorkbenchSection />
 
-        {/* 6. How We Deliver (Progressive 4-Step Engagement Grid) */}
-        <SftDeliverySection />
+          {/* 5. The 4 Adaptation Dimensions */}
+          <SftTaxonomySection />
 
-        {/* 7. Frequently Asked Questions (Technical & Engagement) */}
-        <SftFAQSection />
+          {/* 6. How We Deliver (Progressive 4-Step Engagement Grid) */}
+          <SftDeliverySection />
 
-        {/* 8. High-Contrast Conversion CTA */}
-        <ServiceCTASection />
+          {/* 7. Frequently Asked Questions */}
+          <SftFAQSection />
 
-        {/* Universal Footer */}
-        <Footer />
+          {/* 8. High-Contrast Conversion CTA */}
+          <ServiceCTASection />
+
+          {/* Universal Footer */}
+          <Footer />
+        </div>
       </main>
     </SmoothScroll>
   );

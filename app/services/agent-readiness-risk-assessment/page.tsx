@@ -3,7 +3,7 @@ import SmoothScroll from '@/components/SmoothScroll';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-// Flagship Service Sections (Agent Readiness & Risk Assessment)
+// Flagship Service Sections (Neat, natural scroll, high-contrast)
 import ServiceHero from '@/components/services/agent-readiness/ServiceHero';
 import ServiceMetricsStrip from '@/components/services/agent-readiness/ServiceMetricsStrip';
 import ReadinessRealitiesSection from '@/components/services/agent-readiness/ReadinessRealitiesSection';
@@ -14,13 +14,13 @@ import ReadinessFAQSection from '@/components/services/agent-readiness/Readiness
 import ServiceCTASection from '@/components/services/agent-readiness/ServiceCTASection';
 
 export const metadata: Metadata = {
-  title: 'Agent Readiness & Risk Assessment — Evalixa',
+  title: 'AI Agent Readiness & Risk Assessment — Evalixa',
   description:
-    'Comprehensive AI estate discovery, autonomy risk classification, technical control verification, and defensible audit packs aligned to EU AI Act and NIST AI RMF.',
+    'Comprehensive AI agent governance and risk readiness: discovery of shadow AI, autonomy classification, credential scoping, and audit-ready regulatory evidence packs.',
   openGraph: {
-    title: 'Agent Readiness & Risk Assessment — Evalixa',
+    title: 'AI Agent Readiness & Risk Assessment — Evalixa',
     description:
-      'Comprehensive AI estate discovery, autonomy risk classification, technical control verification, and defensible audit packs aligned to EU AI Act and NIST AI RMF.',
+      'Comprehensive AI agent governance and risk readiness: discovery of shadow AI, autonomy classification, credential scoping, and audit-ready regulatory evidence packs.',
     type: 'website',
   },
 };
@@ -35,29 +35,32 @@ export default function AgentReadinessPage() {
         {/* 1. Atmospheric Ambient Hero */}
         <ServiceHero />
 
-        {/* 2. White-Themed Architectural Metrics Strip */}
-        <ServiceMetricsStrip />
-
-        {/* 3. White-Themed Core Governance Realities */}
+        {/* 2. Standout Curtain-Wipe Highlight Animation: Governance Gap */}
         <ReadinessRealitiesSection />
 
-        {/* 4. Interactive Readiness Workbench (4 Pillars: Discovery, Classification, Controls, Evidence) */}
-        <ReadinessWorkbenchSection />
+        {/* Continuous Solid Z-30 Stacking Layer: Metrics, Workbench, and all subsequent sections */}
+        <div className="relative z-30 bg-[#09090b]">
+          {/* 3. High-Contrast Architectural Metrics Strip */}
+          <ServiceMetricsStrip />
 
-        {/* 5. The 4 Risk Dimensions (Governance & Autonomy Taxonomy) */}
-        <ReadinessTaxonomySection />
+          {/* 4. Interactive Readiness Workbench (4 Pillars: Discovery, Risk Tiering, Control Gaps, Audit Evidence) */}
+          <ReadinessWorkbenchSection />
 
-        {/* 6. How We Deliver (Progressive 4-Step Engagement Grid) */}
-        <ReadinessDeliverySection />
+          {/* 5. The 4 Governance Framework Dimensions */}
+          <ReadinessTaxonomySection />
 
-        {/* 7. Frequently Asked Questions (Risk, Scope, and Remediation) */}
-        <ReadinessFAQSection />
+          {/* 6. How We Deliver (Progressive 4-Step Engagement Grid) */}
+          <ReadinessDeliverySection />
 
-        {/* 8. High-Contrast Conversion CTA */}
-        <ServiceCTASection />
+          {/* 7. Frequently Asked Questions */}
+          <ReadinessFAQSection />
 
-        {/* Universal Footer */}
-        <Footer />
+          {/* 8. High-Contrast Conversion CTA */}
+          <ServiceCTASection />
+
+          {/* Universal Footer */}
+          <Footer />
+        </div>
       </main>
     </SmoothScroll>
   );

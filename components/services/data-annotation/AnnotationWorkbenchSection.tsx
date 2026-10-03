@@ -1,9 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal, CheckSquare } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const Dither = dynamic(() => import('@/components/Dither'), { ssr: false });
 const Grainient = dynamic(() => import('@/components/Grainient'), { ssr: false });
@@ -190,11 +195,14 @@ const AGREEMENT_CELLS: AgreementCell[] = [
 ];
 
 export default function AnnotationWorkbenchSection() {
-  const [activeTab, setActiveTab] = useState<string>(PILLARS[0].id);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const leftColRef = useRef<HTMLDivElement>(null);
+  const laserLineRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
   const [activeMode, setActiveMode] = useState<'console' | 'matrix'>('console');
   const [selectedCellId, setSelectedCellId] = useState<string>('r1-r4');
 
-  const currentPillar = PILLARS.find((p) => p.id === activeTab) || PILLARS[0];
+  const currentPillar = PILLARS[activeIndex] || PILLARS[0];
   const selectedCell = AGREEMENT_CELLS.find((c) => c.id === selectedCellId) || AGREEMENT_CELLS[2];
 
   const getCellForPair = (a: string, b: string): AgreementCell | null => {
@@ -208,39 +216,115 @@ export default function AnnotationWorkbenchSection() {
 
   const reviewers = ['R1', 'R2', 'R3', 'R4'];
 
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      const laser = laserLineRef.current;
+      if (!section) return;
+
+      const mm = gsap.matchMedia();
+
+      mm.add('(min-width: 1024px)', () => {
+        const totalPillars = PILLARS.length;
+        const scrollDistance = 2400;
+
+        const st = ScrollTrigger.create({
+          id: 'workbench-pin',
+          trigger: section,
+          start: 'top top',
+          end: `+=${scrollDistance}`,
+          pin: true,
+          scrub: 0.4,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            const p = self.progress;
+
+            if (laser) {
+              gsap.set(laser, { scaleY: p });
+            }
+
+            const newIndex = Math.min(totalPillars - 1, Math.floor(p * totalPillars));
+            setActiveIndex(newIndex);
+          },
+        });
+
+        return () => {
+          st.kill();
+        };
+      });
+    },
+    { scope: sectionRef }
+  );
+
+  const handlePillarClick = (index: number) => {
+    setActiveIndex(index);
+
+    const st = ScrollTrigger.getById('workbench-pin');
+    if (st) {
+      const stepProgress = (index + 0.15) / PILLARS.length;
+      const targetScroll = st.start + stepProgress * (st.end - st.start);
+      if (typeof window !== 'undefined' && window.__lenis) {
+        window.__lenis.scrollTo(targetScroll, { duration: 1.0 });
+      } else {
+        window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
-    <section id="workbench" className="relative w-full py-20 sm:py-28 bg-[#09090b]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-12">
-          <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-2.5">
-            QUALITY SYSTEM WORKBENCH
-          </span>
-          <h2 className="font-display font-bold text-2xl sm:text-4xl text-white tracking-tight leading-tight">
-            Engineered for Precision. Governed by Inter-Rater Agreement.
-          </h2>
+    <section
+      ref={sectionRef}
+      id="workbench"
+      className="relative z-30 w-full min-h-screen lg:h-screen flex flex-col justify-center py-10 sm:py-12 lg:py-6 bg-[#09090b] text-white overflow-hidden"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col justify-center my-auto">
+        {/* Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-6 gap-3">
+          <div className="max-w-2xl">
+            <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-1.5">
+              QUALITY SYSTEM WORKBENCH
+            </span>
+            <h2 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-tight">
+              Engineered for Precision. Governed by Inter-Rater Agreement.
+            </h2>
+          </div>
+
+          <div className="hidden lg:flex items-center gap-2 text-neutral-400 font-mono text-xs pb-1">
+            <span className="text-white font-bold">PILLAR {String(activeIndex + 1).padStart(2, '0')}</span>
+            <span>/</span>
+            <span>04</span>
+            <span className="text-neutral-500 ml-2 text-[11px]">(Scroll to step through)</span>
+          </div>
         </div>
 
-        {/* 2-Column Interactive Workbench with clean rectangular borders */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          {/* Left Column: 4 Pillar Navigation Cards */}
-          <div className="lg:col-span-5 space-y-2.5 flex flex-col justify-start">
-            {PILLARS.map((pillar) => {
-              const isActive = activeTab === pillar.id;
+        {/* 2-Column Interactive Workbench */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+          {/* Left Column: 4 Pillar Navigation Cards with Vertical Laser Rail */}
+          <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col gap-3 sm:gap-3.5 lg:h-[530px]">
+            <div className="hidden lg:block absolute left-[-14px] top-2 bottom-2 w-[2px] bg-neutral-800 rounded-full overflow-hidden pointer-events-none">
+              <div
+                ref={laserLineRef}
+                className="w-full h-full bg-white origin-top"
+                style={{ transform: 'scaleY(0)' }}
+              />
+            </div>
+
+            {PILLARS.map((pillar, idx) => {
+              const isActive = activeIndex === idx;
               return (
                 <button
                   key={pillar.id}
                   type="button"
                   onClick={() => {
-                    setActiveTab(pillar.id);
+                    handlePillarClick(idx);
                     setActiveMode('console');
                   }}
-                  className={`relative overflow-hidden w-full text-left p-4 sm:p-5 rounded-md border transition-all duration-300 cursor-pointer ${
+                  className={`relative overflow-hidden w-full text-left p-4 sm:p-4.5 rounded-md border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-center ${
                     isActive
-                      ? 'border-neutral-600 bg-neutral-900/90 shadow-lg shadow-black/60 text-white'
+                      ? 'border-neutral-500 bg-neutral-900/90 shadow-xl shadow-black/60 text-white'
                       : 'bg-neutral-900/30 border-neutral-800/80 hover:border-neutral-700 hover:bg-neutral-900/50 text-neutral-300'
                   }`}
                 >
-                  {/* Active fluid grain shader background */}
                   {isActive && (
                     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-85">
                       <Grainient
@@ -257,7 +341,7 @@ export default function AnnotationWorkbenchSection() {
                   )}
 
                   <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center justify-between mb-1">
                       <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-bold">
                         {pillar.step}
                       </span>
@@ -283,14 +367,13 @@ export default function AnnotationWorkbenchSection() {
           </div>
 
           {/* Right Column: Dynamic Inspection Console & Pairwise Agreement Matrix */}
-          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-neutral-950 overflow-hidden min-h-[560px] shadow-xl shadow-black/80 flex flex-col justify-between">
-            {/* Ambient Dither Canvas Background */}
+          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-neutral-950 overflow-hidden min-h-[500px] lg:h-[530px] shadow-xl shadow-black/80 flex flex-col justify-between">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-75">
               <Dither
                 waveSpeed={0.04}
                 waveFrequency={2.4}
                 waveAmplitude={0.3}
-                waveColor={activeMode === 'matrix' ? [0.35, 0.65, 0.85] : currentPillar.ditherColor}
+                waveColor={currentPillar.ditherColor}
                 backgroundColor={[0.03, 0.03, 0.05]}
                 colorNum={4}
                 pixelSize={2}
@@ -298,18 +381,16 @@ export default function AnnotationWorkbenchSection() {
               />
             </div>
 
-            {/* Ambient subtle vignette overlay to keep text crisp */}
             <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/70 via-transparent to-neutral-950/40" />
 
             {/* Header with Mode Switcher */}
-            <div className="relative z-10 p-5 sm:p-6 border-b border-neutral-800/80 flex flex-wrap items-center justify-between gap-3 bg-neutral-950/50 backdrop-blur-md">
+            <div className="relative z-10 p-4 sm:p-5 border-b border-neutral-800/80 flex flex-wrap items-center justify-between gap-3 bg-neutral-950/60 backdrop-blur-md">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
-                  ENGINE CONSOLE
+                  QUALITY ENGINE
                 </span>
               </div>
 
-              {/* Console / Matrix Tabs */}
               <div className="flex items-center gap-1.5 p-1 rounded-md bg-neutral-900/90 border border-neutral-800 text-xs font-mono">
                 <button
                   type="button"
@@ -334,13 +415,13 @@ export default function AnnotationWorkbenchSection() {
                   }`}
                 >
                   <CheckSquare className="w-3.5 h-3.5" />
-                  <span>PAIRWISE AGREEMENT MATRIX</span>
+                  <span>AGREEMENT MATRIX</span>
                 </button>
               </div>
             </div>
 
             {/* Dynamic Content Body */}
-            <div className="relative z-10 p-6 sm:p-7 flex flex-col justify-between flex-1">
+            <div className="relative z-10 p-5 sm:p-6 flex flex-col justify-between flex-1 overflow-y-auto">
               <AnimatePresence mode="wait">
                 {activeMode === 'console' ? (
                   <motion.div
@@ -349,14 +430,19 @@ export default function AnnotationWorkbenchSection() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col justify-center gap-8 h-full"
+                    className="flex flex-col justify-between h-full"
                   >
                     <div>
-                      <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight mb-3">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
+                          {currentPillar.step} ARCHITECTURE
+                        </span>
+                      </div>
+                      <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight mb-2">
                         {currentPillar.title}
                       </h3>
 
-                      <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-5">
+                      <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-4">
                         {currentPillar.description}
                       </p>
 
@@ -364,7 +450,7 @@ export default function AnnotationWorkbenchSection() {
                         {currentPillar.specs.map((spec) => (
                           <span
                             key={spec}
-                            className="font-mono text-[11px] text-neutral-300 bg-neutral-900/40 backdrop-blur-sm border border-neutral-700/80 px-2.5 py-1 rounded-sm"
+                            className="font-mono text-[11px] text-neutral-300 bg-neutral-900/60 backdrop-blur-sm border border-neutral-700/80 px-2.5 py-1 rounded-sm"
                           >
                             {spec}
                           </span>
@@ -372,8 +458,7 @@ export default function AnnotationWorkbenchSection() {
                       </div>
                     </div>
 
-                    {/* Dark Inspection Code / Telemetry Console */}
-                    <div className="rounded-md bg-black/50 backdrop-blur-sm border border-neutral-800 p-4 font-mono text-xs overflow-hidden shadow-inner mt-4">
+                    <div className="rounded-md bg-black/60 backdrop-blur-sm border border-neutral-800 p-4 font-mono text-xs overflow-hidden shadow-inner mt-4">
                       <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-neutral-800/80 text-neutral-400 text-[11px]">
                         <span className="truncate pr-2">{currentPillar.codePreview.title}</span>
                         <span className="text-neutral-400 font-bold shrink-0">
@@ -395,7 +480,7 @@ export default function AnnotationWorkbenchSection() {
                                   : line.tone === 'warn'
                                   ? 'text-amber-400 font-medium'
                                   : line.tone === 'accent'
-                                  ? 'text-white font-bold'
+                                  ? 'text-rose-400 font-bold'
                                   : 'text-neutral-300'
                               }
                             >
@@ -413,133 +498,93 @@ export default function AnnotationWorkbenchSection() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col justify-center gap-6 h-full"
+                    className="flex flex-col justify-between h-full"
                   >
                     <div>
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center justify-between mb-1.5">
                         <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
-                          INTER-RATER CALIBRATION TELEMETRY
+                          INTER-ANNOTATOR CONCORDANCE
                         </span>
-                        <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-sm border bg-emerald-950/60 border-emerald-800 text-emerald-300">
-                          COHORT MEAN κ = 0.78
+                        <span className="font-mono text-xs font-bold text-neutral-300">
+                          COHEN&apos;S KAPPA HEATMAP
                         </span>
                       </div>
 
-                      <h3 className="font-display font-bold text-xl text-white tracking-tight mb-2">
-                        Pairwise Agreement Matrix (Cohen&apos;s κ)
+                      <h3 className="font-display font-bold text-lg sm:text-xl text-white tracking-tight mb-1.5">
+                        Pairwise Agreement Calibration Matrix
                       </h3>
-                      <p className="font-sans text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal mb-4">
-                        Select any reviewer pair to inspect root-cause disagreement telemetry. Low agreement marks questions the rubric hasn’t answered yet.
+                      <p className="font-sans text-xs text-neutral-300 leading-relaxed font-normal mb-3">
+                        Select a reviewer pair to diagnose underlying rubric alignment or jurisdictional discrepancies.
                       </p>
 
-                      {/* Interactive Pairwise Grid */}
-                      <div className="p-3.5 rounded-md bg-black/40 border border-neutral-800 mb-4 overflow-x-auto">
-                        <table className="w-full text-center font-mono text-xs">
-                          <thead>
-                            <tr>
-                              <th className="p-1.5 text-neutral-500 font-normal text-left">Pairs</th>
-                              {reviewers.map((r) => (
-                                <th key={r} className="p-1.5 text-neutral-400 font-semibold">
-                                  {r}
-                                </th>
-                              ))}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {reviewers.map((row) => (
-                              <tr key={row}>
-                                <td className="p-1.5 text-neutral-400 font-semibold text-left">{row}</td>
-                                {reviewers.map((col) => {
-                                  if (row === col) {
-                                    return (
-                                      <td key={col} className="p-1.5">
-                                        <div className="py-1 px-2 rounded-sm bg-neutral-900/60 text-neutral-600 border border-neutral-800/40 select-none">
-                                          1.00
-                                        </div>
-                                      </td>
-                                    );
-                                  }
-                                  const cellData = getCellForPair(row, col);
-                                  if (!cellData) {
-                                    return (
-                                      <td key={col} className="p-1.5 text-neutral-700">
-                                        -
-                                      </td>
-                                    );
-                                  }
-
-                                  const isSelected = selectedCell.id === cellData.id;
-                                  const colorClass =
-                                    cellData.band === 'high'
-                                      ? 'text-emerald-400 border-emerald-800/60 bg-emerald-950/30 hover:bg-emerald-900/40'
-                                      : cellData.band === 'mid'
-                                      ? 'text-amber-400 border-amber-800/60 bg-amber-950/30 hover:bg-amber-900/40'
-                                      : 'text-rose-400 border-rose-800/60 bg-rose-950/30 hover:bg-rose-900/40';
-
-                                  return (
-                                    <td key={col} className="p-1.5">
-                                      <button
-                                        type="button"
-                                        onClick={() => setSelectedCellId(cellData.id)}
-                                        className={`w-full py-1 px-2 rounded-sm border font-bold transition-all cursor-pointer ${colorClass} ${
-                                          isSelected ? 'ring-2 ring-white/80 scale-105 z-10' : ''
-                                        }`}
-                                      >
-                                        {cellData.kappa}
-                                      </button>
-                                    </td>
-                                  );
-                                })}
-                              </tr>
+                      {/* Interactive 4x4 Grid */}
+                      <div className="p-3 rounded-md bg-black/40 border border-neutral-800 mb-3 overflow-x-auto">
+                        <div className="min-w-[280px]">
+                          <div className="grid grid-cols-5 gap-1.5 text-center font-mono text-xs mb-1.5 text-neutral-400">
+                            <div></div>
+                            {reviewers.map((r) => (
+                              <div key={r} className="font-bold py-0.5">{r}</div>
                             ))}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      {/* Diagnostic Breakdown Card */}
-                      <div className="rounded-md bg-black/60 border border-neutral-800 p-4 font-mono text-xs">
-                        <div className="flex items-center justify-between pb-2 mb-2 border-b border-neutral-800 text-[11px]">
-                          <span className="text-white font-bold">
-                            PAIR: {selectedCell.reviewerA} ↔ {selectedCell.reviewerB}
-                          </span>
-                          <span
-                            className={`px-2 py-0.5 rounded-sm uppercase tracking-wider font-bold ${
-                              selectedCell.band === 'high'
-                                ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
-                                : selectedCell.band === 'mid'
-                                ? 'bg-amber-950 text-amber-400 border border-amber-800'
-                                : 'bg-rose-950 text-rose-400 border border-rose-800'
-                            }`}
-                          >
-                            {selectedCell.band === 'high'
-                              ? 'CONCORDANT (κ ≥ 0.75)'
-                              : selectedCell.band === 'mid'
-                              ? 'BORDERLINE (0.60 ≤ κ < 0.75)'
-                              : 'DIVERGENCE (κ < 0.60)'}
-                          </span>
-                        </div>
-
-                        <div className="space-y-2 text-neutral-300 font-sans text-xs">
-                          <div>
-                            <span className="font-mono text-neutral-400 block text-[10px] uppercase tracking-wider mb-0.5">
-                              Diagnostic Signal:
-                            </span>
-                            <p className="leading-relaxed">{selectedCell.diagnostic}</p>
                           </div>
 
-                          <div className="pt-1 border-t border-neutral-800/80">
-                            <span className="font-mono text-neutral-400 block text-[10px] uppercase tracking-wider mb-0.5">
-                              Engineering Remedy:
-                            </span>
-                            <p className="text-emerald-300/90 leading-relaxed">{selectedCell.remedy}</p>
-                          </div>
+                          {reviewers.map((row) => (
+                            <div key={row} className="grid grid-cols-5 gap-1.5 mb-1.5 items-center">
+                              <div className="font-mono text-xs font-bold text-neutral-400 text-center">{row}</div>
+                              {reviewers.map((col) => {
+                                const cell = getCellForPair(row, col);
+                                if (!cell) {
+                                  return (
+                                    <div
+                                      key={`${row}-${col}`}
+                                      className="h-8 rounded bg-neutral-900/40 border border-neutral-800/40 flex items-center justify-center font-mono text-neutral-600 text-[11px]"
+                                    >
+                                      —
+                                    </div>
+                                  );
+                                }
+                                const isSelected = selectedCell.id === cell.id;
+                                return (
+                                  <button
+                                    key={`${row}-${col}`}
+                                    type="button"
+                                    onClick={() => setSelectedCellId(cell.id)}
+                                    className={`h-8 rounded border font-mono text-xs font-bold flex items-center justify-center transition-all cursor-pointer ${
+                                      isSelected
+                                        ? 'ring-2 ring-white scale-105 z-10'
+                                        : 'hover:scale-102'
+                                    } ${
+                                      cell.band === 'high'
+                                        ? 'bg-emerald-950/60 border-emerald-700/80 text-emerald-300'
+                                        : cell.band === 'mid'
+                                        ? 'bg-amber-950/60 border-amber-700/80 text-amber-300'
+                                        : 'bg-rose-950/60 border-rose-700/80 text-rose-300'
+                                    }`}
+                                  >
+                                    {cell.kappa}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </div>
 
-                    <div className="text-[11px] font-mono text-neutral-400 border-t border-neutral-800/80 pt-3 flex items-center justify-between">
-                      <span>Invisible Audit Seed Accuracy: 98.6%</span>
-                      <span>Escalated Adjudication: 19.2%</span>
+                    {/* Diagnostic Callout */}
+                    <div className="rounded-md p-3 border border-neutral-800 bg-neutral-900/60 font-mono text-xs">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-bold text-white">{selectedCell.title}</span>
+                        <span className="text-[10px] text-neutral-400 uppercase tracking-wider">
+                          Pair: {selectedCell.reviewerA} ↔ {selectedCell.reviewerB}
+                        </span>
+                      </div>
+                      <p className="font-sans text-[11px] text-neutral-300 leading-relaxed mb-1.5 font-normal">
+                        {selectedCell.diagnostic}
+                      </p>
+                      <div className="text-[10px] text-neutral-400 pt-1.5 border-t border-neutral-800">
+                        <span className="font-bold text-neutral-200">Remedy: </span>
+                        {selectedCell.remedy}
+                      </div>
                     </div>
                   </motion.div>
                 )}

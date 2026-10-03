@@ -35,29 +35,32 @@ export default function ModelSecurityPage() {
         {/* 1. Atmospheric Ambient Hero */}
         <ServiceHero />
 
-        {/* 2. White-Themed Architectural Metrics Strip */}
-        <ServiceMetricsStrip />
-
-        {/* 3. White-Themed Core Security Realities */}
+        {/* 2. Standout Curtain-Wipe Highlight Animation: Attack Surface Realities */}
         <SecurityRealitiesSection />
 
-        {/* 4. Interactive Security Workbench (4 Pillars: Threat Modeling, Probes, Containment, CI Gate) */}
-        <SecurityWorkbenchSection />
+        {/* Continuous Solid Z-30 Stacking Layer: Metrics, Workbench, and all subsequent sections */}
+        <div className="relative z-30 bg-[#09090b]">
+          {/* 3. High-Contrast Architectural Metrics Strip */}
+          <ServiceMetricsStrip />
 
-        {/* 5. The 4 Core Vulnerability Dimensions */}
-        <SecurityTaxonomySection />
+          {/* 4. Interactive Security Workbench (4 Pillars: Threat Modeling, Probes, Containment, CI Gate) */}
+          <SecurityWorkbenchSection />
 
-        {/* 6. How We Deliver (Progressive 4-Step Red-Team Grid) */}
-        <SecurityDeliverySection />
+          {/* 5. The 4 Core Vulnerability Dimensions */}
+          <SecurityTaxonomySection />
 
-        {/* 7. Frequently Asked Questions */}
-        <SecurityFAQSection />
+          {/* 6. How We Deliver (Progressive 4-Step Red-Team Grid) */}
+          <SecurityDeliverySection />
 
-        {/* 8. High-Contrast Conversion CTA */}
-        <ServiceCTASection />
+          {/* 7. Frequently Asked Questions */}
+          <SecurityFAQSection />
 
-        {/* Universal Footer */}
-        <Footer />
+          {/* 8. High-Contrast Conversion CTA */}
+          <ServiceCTASection />
+
+          {/* Universal Footer */}
+          <Footer />
+        </div>
       </main>
     </SmoothScroll>
   );

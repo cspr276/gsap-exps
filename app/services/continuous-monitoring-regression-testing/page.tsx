@@ -16,11 +16,11 @@ import ServiceCTASection from '@/components/services/continuous-monitoring/Servi
 export const metadata: Metadata = {
   title: 'Continuous Monitoring & Regression Testing — Evalixa',
   description:
-    'Production quality signals for AI systems: drift detection, online and offline evaluation, structured tracing, and regression suites that stop a fixed failure from quietly returning.',
+    'Continuous monitoring and automated regression suites for production AI: cohort drift tracking, span versioning, and CI gates that prevent silent quality degradation.',
   openGraph: {
     title: 'Continuous Monitoring & Regression Testing — Evalixa',
     description:
-      'Production quality signals for AI systems: drift detection, online and offline evaluation, structured tracing, and regression suites that stop a fixed failure from quietly returning.',
+      'Continuous monitoring and automated regression suites for production AI: cohort drift tracking, span versioning, and CI gates that prevent silent quality degradation.',
     type: 'website',
   },
 };
@@ -35,29 +35,32 @@ export default function ContinuousMonitoringPage() {
         {/* 1. Atmospheric Ambient Hero */}
         <ServiceHero />
 
-        {/* 2. White-Themed Architectural Metrics Strip */}
-        <ServiceMetricsStrip />
-
-        {/* 3. White-Themed Core Failure Realities (Why standard APMs fail AI) */}
+        {/* 2. Standout Curtain-Wipe Highlight Animation: Observability Gap */}
         <MonitoringRealitiesSection />
 
-        {/* 4. Interactive Monitoring Workbench (4 Pillars: Drift, Traces, Implicit Signals, Gates) */}
-        <MonitoringWorkbenchSection />
+        {/* Continuous Solid Z-30 Stacking Layer: Metrics, Workbench, and all subsequent sections */}
+        <div className="relative z-30 bg-[#09090b]">
+          {/* 3. High-Contrast Architectural Metrics Strip */}
+          <ServiceMetricsStrip />
 
-        {/* 5. The 4 Monitoring Dimensions (Telemetry, Output Drift, Provenance, Interventions) */}
-        <MonitoringTaxonomySection />
+          {/* 4. Interactive Monitoring Workbench (4 Pillars: Cohort Drift, Traces, Implicit Signals, CI Gates) */}
+          <MonitoringWorkbenchSection />
 
-        {/* 6. How We Deliver (Progressive 4-Step Engagement Grid) */}
-        <MonitoringDeliverySection />
+          {/* 5. The 4 Observability Dimensions */}
+          <MonitoringTaxonomySection />
 
-        {/* 7. Frequently Asked Questions (Technical & Operations) */}
-        <MonitoringFAQSection />
+          {/* 6. How We Deliver (Progressive 4-Step Rollout Grid) */}
+          <MonitoringDeliverySection />
 
-        {/* 8. High-Contrast Conversion CTA */}
-        <ServiceCTASection />
+          {/* 7. Frequently Asked Questions */}
+          <MonitoringFAQSection />
 
-        {/* Universal Footer */}
-        <Footer />
+          {/* 8. High-Contrast Conversion CTA */}
+          <ServiceCTASection />
+
+          {/* Universal Footer */}
+          <Footer />
+        </div>
       </main>
     </SmoothScroll>
   );

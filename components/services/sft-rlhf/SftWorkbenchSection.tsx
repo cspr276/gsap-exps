@@ -1,9 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal, GitCompare } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const Dither = dynamic(() => import('@/components/Dither'), { ssr: false });
 const Grainient = dynamic(() => import('@/components/Grainient'), { ssr: false });
@@ -201,41 +206,123 @@ const PILLARS: Pillar[] = [
 ];
 
 export default function SftWorkbenchSection() {
-  const [activeTab, setActiveTab] = useState<string>(PILLARS[0].id);
-  const [viewMode, setViewMode] = useState<'telemetry' | 'comparison'>('telemetry');
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const leftColRef = useRef<HTMLDivElement>(null);
+  const laserLineRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [activeMode, setActiveMode] = useState<'console' | 'comparison'>('console');
 
-  const currentPillar = PILLARS.find((p) => p.id === activeTab) || PILLARS[0];
+  const currentPillar = PILLARS[activeIndex] || PILLARS[0];
+
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      const laser = laserLineRef.current;
+      if (!section) return;
+
+      const mm = gsap.matchMedia();
+
+      mm.add('(min-width: 1024px)', () => {
+        const totalPillars = PILLARS.length;
+        const scrollDistance = 2400;
+
+        const st = ScrollTrigger.create({
+          id: 'workbench-pin',
+          trigger: section,
+          start: 'top top',
+          end: `+=${scrollDistance}`,
+          pin: true,
+          scrub: 0.4,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            const p = self.progress;
+
+            if (laser) {
+              gsap.set(laser, { scaleY: p });
+            }
+
+            const newIndex = Math.min(totalPillars - 1, Math.floor(p * totalPillars));
+            setActiveIndex(newIndex);
+          },
+        });
+
+        return () => {
+          st.kill();
+        };
+      });
+    },
+    { scope: sectionRef }
+  );
+
+  const handlePillarClick = (index: number) => {
+    setActiveIndex(index);
+
+    const st = ScrollTrigger.getById('workbench-pin');
+    if (st) {
+      const stepProgress = (index + 0.15) / PILLARS.length;
+      const targetScroll = st.start + stepProgress * (st.end - st.start);
+      if (typeof window !== 'undefined' && window.__lenis) {
+        window.__lenis.scrollTo(targetScroll, { duration: 1.0 });
+      } else {
+        window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+      }
+    }
+  };
 
   return (
-    <section id="workbench" className="relative w-full py-20 sm:py-28 bg-[#09090b]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-12">
-          <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-2.5">
-            ADAPTATION WORKBENCH ARCHITECTURE
-          </span>
-          <h2 className="font-display font-bold text-2xl sm:text-4xl text-white tracking-tight leading-tight">
-            Engineered for Precision. Governed by Rigorous Baselines.
-          </h2>
+    <section
+      ref={sectionRef}
+      id="workbench"
+      className="relative z-30 w-full min-h-screen lg:h-screen flex flex-col justify-center py-10 sm:py-12 lg:py-6 bg-[#09090b] text-white overflow-hidden"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col justify-center my-auto">
+        {/* Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-6 gap-3">
+          <div className="max-w-2xl">
+            <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-1.5">
+              ADAPTATION ENGINE ARCHITECTURE
+            </span>
+            <h2 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-tight">
+              Engineered for Precision. Governed by Pre-Training Baselines.
+            </h2>
+          </div>
+
+          <div className="hidden lg:flex items-center gap-2 text-neutral-400 font-mono text-xs pb-1">
+            <span className="text-white font-bold">PILLAR {String(activeIndex + 1).padStart(2, '0')}</span>
+            <span>/</span>
+            <span>04</span>
+            <span className="text-neutral-500 ml-2 text-[11px]">(Scroll to step through)</span>
+          </div>
         </div>
 
-        {/* 2-Column Interactive Workbench with rectangular borders (rounded-md) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          {/* Left Column: 4 Pillar Navigation Cards */}
-          <div className="lg:col-span-5 space-y-2.5 flex flex-col justify-start">
-            {PILLARS.map((pillar) => {
-              const isActive = activeTab === pillar.id;
+        {/* 2-Column Interactive Workbench */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+          {/* Left Column: 4 Pillar Navigation Cards with Vertical Laser Rail */}
+          <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col gap-3 sm:gap-3.5 lg:h-[530px]">
+            <div className="hidden lg:block absolute left-[-14px] top-2 bottom-2 w-[2px] bg-neutral-800 rounded-full overflow-hidden pointer-events-none">
+              <div
+                ref={laserLineRef}
+                className="w-full h-full bg-white origin-top"
+                style={{ transform: 'scaleY(0)' }}
+              />
+            </div>
+
+            {PILLARS.map((pillar, idx) => {
+              const isActive = activeIndex === idx;
               return (
                 <button
                   key={pillar.id}
                   type="button"
-                  onClick={() => setActiveTab(pillar.id)}
-                  className={`relative overflow-hidden w-full text-left p-4 sm:p-5 rounded-md border transition-all duration-300 cursor-pointer ${
+                  onClick={() => {
+                    handlePillarClick(idx);
+                    setActiveMode('console');
+                  }}
+                  className={`relative overflow-hidden w-full text-left p-4 sm:p-4.5 rounded-md border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-center ${
                     isActive
-                      ? 'border-neutral-600 bg-neutral-900/90 shadow-lg shadow-black/60 text-white'
+                      ? 'border-neutral-500 bg-neutral-900/90 shadow-xl shadow-black/60 text-white'
                       : 'bg-neutral-900/30 border-neutral-800/80 hover:border-neutral-700 hover:bg-neutral-900/50 text-neutral-300'
                   }`}
                 >
-                  {/* Active fluid grain shader background */}
                   {isActive && (
                     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-85">
                       <Grainient
@@ -252,7 +339,7 @@ export default function SftWorkbenchSection() {
                   )}
 
                   <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center justify-between mb-1">
                       <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-bold">
                         {pillar.step}
                       </span>
@@ -277,9 +364,8 @@ export default function SftWorkbenchSection() {
             })}
           </div>
 
-          {/* Right Column: Dynamic Inspection Console & Details */}
-          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-neutral-950 overflow-hidden min-h-[540px] shadow-xl shadow-black/80 flex flex-col justify-between">
-            {/* Ambient Dither Canvas Background */}
+          {/* Right Column: Dynamic Inspection Console & Behavioral Diff Comparison */}
+          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-neutral-950 overflow-hidden min-h-[500px] lg:h-[530px] shadow-xl shadow-black/80 flex flex-col justify-between">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-75">
               <Dither
                 waveSpeed={0.04}
@@ -293,179 +379,198 @@ export default function SftWorkbenchSection() {
               />
             </div>
 
-            {/* Ambient subtle vignette overlay */}
-            <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/75 via-transparent to-neutral-950/40" />
+            <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/70 via-transparent to-neutral-950/40" />
 
-            {/* Dynamic Content */}
-            <div className="relative z-10 p-6 sm:p-7 flex flex-col justify-between h-full">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentPillar.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-col justify-center gap-8 h-full"
+            {/* Header with Mode Switcher */}
+            <div className="relative z-10 p-4 sm:p-5 border-b border-neutral-800/80 flex flex-wrap items-center justify-between gap-3 bg-neutral-950/60 backdrop-blur-md">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
+                  ADAPTATION CONSOLE
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1.5 p-1 rounded-md bg-neutral-900/90 border border-neutral-800 text-xs font-mono">
+                <button
+                  type="button"
+                  onClick={() => setActiveMode('console')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-all cursor-pointer ${
+                    activeMode === 'console'
+                      ? 'bg-neutral-800 text-white font-semibold'
+                      : 'text-neutral-400 hover:text-white'
+                  }`}
                 >
-                  <div>
-                    <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight mb-3">
-                      {currentPillar.title}
-                    </h3>
+                  <Terminal className="w-3.5 h-3.5" />
+                  <span>PILLAR TELEMETRY</span>
+                </button>
 
-                    <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-5">
-                      {currentPillar.description}
-                    </p>
+                <button
+                  type="button"
+                  onClick={() => setActiveMode('comparison')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-all cursor-pointer ${
+                    activeMode === 'comparison'
+                      ? 'bg-neutral-800 text-white font-semibold'
+                      : 'text-neutral-400 hover:text-white'
+                  }`}
+                >
+                  <GitCompare className="w-3.5 h-3.5" />
+                  <span>BEHAVIOR DIFF</span>
+                </button>
+              </div>
+            </div>
 
-                    <div className="flex flex-wrap gap-2">
-                      {currentPillar.specs.map((spec) => (
-                        <span
-                          key={spec}
-                          className="font-mono text-[11px] text-neutral-300 bg-neutral-900/40 backdrop-blur-sm border border-neutral-700/80 px-2.5 py-1 rounded-sm"
-                        >
-                          {spec}
+            {/* Dynamic Content Body */}
+            <div className="relative z-10 p-5 sm:p-6 flex flex-col justify-between flex-1 overflow-y-auto">
+              <AnimatePresence mode="wait">
+                {activeMode === 'console' ? (
+                  <motion.div
+                    key={currentPillar.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex flex-col justify-between h-full"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
+                          {currentPillar.step} ARCHITECTURE
                         </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Interactive Console with Mode Toggle Tabs */}
-                  <div className="rounded-md bg-black/65 backdrop-blur-md border border-neutral-800 p-4 font-mono text-xs overflow-hidden shadow-inner mt-4">
-                    {/* Console Header */}
-                    <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-neutral-800 text-[11px]">
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setViewMode('telemetry')}
-                          className={`flex items-center gap-1.5 px-2 py-1 rounded-sm cursor-pointer transition-colors ${
-                            viewMode === 'telemetry'
-                              ? 'bg-neutral-800 text-white font-semibold'
-                              : 'text-neutral-400 hover:text-neutral-200'
-                          }`}
-                        >
-                          <Terminal className="w-3.5 h-3.5" />
-                          <span>Training Telemetry</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setViewMode('comparison')}
-                          className={`flex items-center gap-1.5 px-2 py-1 rounded-sm cursor-pointer transition-colors ${
-                            viewMode === 'comparison'
-                              ? 'bg-neutral-800 text-white font-semibold'
-                              : 'text-neutral-400 hover:text-neutral-200'
-                          }`}
-                        >
-                          <GitCompare className="w-3.5 h-3.5" />
-                          <span>Preference / Output Pair</span>
-                        </button>
                       </div>
+                      <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight mb-2">
+                        {currentPillar.title}
+                      </h3>
 
-                      <span className="text-neutral-400 font-bold shrink-0 text-[10px]">
-                        {viewMode === 'telemetry'
-                          ? currentPillar.codePreview.badge
-                          : 'PAIRWISE COMPARISON'}
-                      </span>
-                    </div>
+                      <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-4">
+                        {currentPillar.description}
+                      </p>
 
-                    {/* Mode Content */}
-                    {viewMode === 'telemetry' ? (
-                      <div>
-                        <div className="text-neutral-500 mb-2 pb-1 text-[11px] border-b border-neutral-900">
-                          {currentPillar.codePreview.title}
-                        </div>
-                        <div className="space-y-1.5 leading-relaxed overflow-x-auto">
-                          {currentPillar.codePreview.lines.map((line, idx) => (
-                            <div key={idx} className="flex gap-2 text-xs">
-                              {line.label && (
-                                <span className="text-neutral-400 shrink-0 select-none">
-                                  {line.label}:
-                                </span>
-                              )}
-                              <span
-                                className={
-                                  line.tone === 'success'
-                                    ? 'text-emerald-400 font-medium'
-                                    : line.tone === 'warn'
-                                    ? 'text-amber-400 font-medium'
-                                    : line.tone === 'accent'
-                                    ? 'text-white font-bold'
-                                    : 'text-neutral-300'
-                                }
-                              >
-                                {line.code}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-3 font-sans text-xs">
-                        <div className="p-2.5 rounded-sm bg-neutral-900/60 border border-neutral-800">
-                          <span className="font-mono text-[10px] text-neutral-400 uppercase tracking-wider block mb-1">
-                            Prompt Input:
+                      <div className="flex flex-wrap gap-2">
+                        {currentPillar.specs.map((spec) => (
+                          <span
+                            key={spec}
+                            className="font-mono text-[11px] text-neutral-300 bg-neutral-900/60 backdrop-blur-sm border border-neutral-700/80 px-2.5 py-1 rounded-sm"
+                          >
+                            {spec}
                           </span>
-                          <p className="text-neutral-200 text-xs italic">
-                            &quot;{currentPillar.comparisonPreview.prompt}&quot;
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="rounded-md bg-black/60 backdrop-blur-sm border border-neutral-800 p-4 font-mono text-xs overflow-hidden shadow-inner mt-4">
+                      <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-neutral-800/80 text-neutral-400 text-[11px]">
+                        <span className="truncate pr-2">{currentPillar.codePreview.title}</span>
+                        <span className="text-neutral-400 font-bold shrink-0">
+                          {currentPillar.codePreview.badge}
+                        </span>
+                      </div>
+                      <div className="space-y-1.5 leading-relaxed overflow-x-auto">
+                        {currentPillar.codePreview.lines.map((line, idx) => (
+                          <div key={idx} className="flex gap-2">
+                            {line.label && (
+                              <span className="text-neutral-400 shrink-0 select-none">
+                                {line.label}:
+                              </span>
+                            )}
+                            <span
+                              className={
+                                line.tone === 'success'
+                                  ? 'text-emerald-400 font-medium'
+                                  : line.tone === 'warn'
+                                  ? 'text-amber-400 font-medium'
+                                  : line.tone === 'accent'
+                                  ? 'text-rose-400 font-bold'
+                                  : 'text-neutral-300'
+                              }
+                            >
+                              {line.code}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="comparison"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex flex-col justify-between h-full"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
+                          BEHAVIORAL DIFF INSPECTOR
+                        </span>
+                        <span className="font-mono text-xs text-neutral-400 font-bold">
+                          {currentPillar.step}
+                        </span>
+                      </div>
+
+                      <h3 className="font-display font-bold text-lg sm:text-xl text-white tracking-tight mb-2">
+                        Side-by-Side Model Output Comparison
+                      </h3>
+
+                      <div className="p-2.5 rounded-md bg-neutral-900/80 border border-neutral-800 mb-3 font-mono text-xs">
+                        <span className="text-neutral-500 block text-[10px] uppercase font-bold mb-0.5">Prompt:</span>
+                        <p className="text-neutral-200 italic">&ldquo;{currentPillar.comparisonPreview.prompt}&rdquo;</p>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                        {/* Option A */}
+                        <div className={`p-3 rounded-md border flex flex-col justify-between ${
+                          currentPillar.comparisonPreview.optionA.isWinner
+                            ? 'bg-emerald-950/20 border-emerald-800/80'
+                            : 'bg-black/40 border-neutral-800'
+                        }`}>
+                          <div>
+                            <span className="font-mono text-[10px] text-neutral-400 font-bold uppercase block mb-1">
+                              {currentPillar.comparisonPreview.optionA.label}
+                            </span>
+                            <p className="font-mono text-xs text-neutral-300 whitespace-pre-line mb-2 leading-relaxed">
+                              {currentPillar.comparisonPreview.optionA.text}
+                            </p>
+                          </div>
+                          <p className="font-sans text-[11px] text-neutral-400 pt-2 border-t border-neutral-800/60">
+                            {currentPillar.comparisonPreview.optionA.verdict}
                           </p>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {/* Option A */}
-                          <div className={`p-3 rounded-sm border ${
-                            currentPillar.comparisonPreview.optionA.isWinner
-                              ? 'border-emerald-700/80 bg-emerald-950/20'
-                              : 'border-neutral-800 bg-neutral-900/40'
-                          }`}>
-                            <div className="flex items-center justify-between mb-1.5">
-                              <span className="font-mono text-[10px] font-semibold text-neutral-300 uppercase">
-                                {currentPillar.comparisonPreview.optionA.label}
-                              </span>
-                              {currentPillar.comparisonPreview.optionA.isWinner && (
-                                <span className="font-mono text-[9px] text-emerald-400 uppercase tracking-wider font-bold">
-                                  CHOSEN
-                                </span>
-                              )}
-                            </div>
-                            <p className="font-mono text-[11px] text-neutral-300 whitespace-pre-wrap leading-relaxed mb-2">
-                              {currentPillar.comparisonPreview.optionA.text}
-                            </p>
-                            <p className="text-[11px] text-neutral-400 leading-snug">
-                              {currentPillar.comparisonPreview.optionA.verdict}
-                            </p>
-                          </div>
-
-                          {/* Option B */}
-                          <div className={`p-3 rounded-sm border ${
-                            currentPillar.comparisonPreview.optionB.isWinner
-                              ? 'border-emerald-700/80 bg-emerald-950/20'
-                              : 'border-neutral-800 bg-neutral-900/40'
-                          }`}>
-                            <div className="flex items-center justify-between mb-1.5">
-                              <span className="font-mono text-[10px] font-semibold text-neutral-300 uppercase">
+                        {/* Option B */}
+                        <div className={`p-3 rounded-md border flex flex-col justify-between ${
+                          currentPillar.comparisonPreview.optionB.isWinner
+                            ? 'bg-emerald-950/20 border-emerald-800/80'
+                            : 'bg-black/40 border-neutral-800'
+                        }`}>
+                          <div>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="font-mono text-[10px] text-neutral-400 font-bold uppercase">
                                 {currentPillar.comparisonPreview.optionB.label}
                               </span>
                               {currentPillar.comparisonPreview.optionB.isWinner && (
-                                <span className="font-mono text-[9px] text-emerald-400 uppercase tracking-wider font-bold">
+                                <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-emerald-900/60 text-emerald-300 border border-emerald-700">
                                   CHOSEN
                                 </span>
                               )}
                             </div>
-                            <p className="font-mono text-[11px] text-neutral-300 whitespace-pre-wrap leading-relaxed mb-2">
+                            <p className="font-mono text-xs text-neutral-200 whitespace-pre-line mb-2 leading-relaxed font-medium">
                               {currentPillar.comparisonPreview.optionB.text}
                             </p>
-                            <p className="text-[11px] text-neutral-400 leading-snug">
-                              {currentPillar.comparisonPreview.optionB.verdict}
-                            </p>
                           </div>
-                        </div>
-
-                        <div className="pt-2 border-t border-neutral-800/80 text-[11px] text-neutral-400 italic">
-                          {currentPillar.comparisonPreview.note}
+                          <p className="font-sans text-[11px] text-neutral-300 pt-2 border-t border-neutral-800/60">
+                            {currentPillar.comparisonPreview.optionB.verdict}
+                          </p>
                         </div>
                       </div>
-                    )}
-                  </div>
-                </motion.div>
+                    </div>
+
+                    <div className="rounded-md p-2.5 border border-neutral-800 bg-neutral-900/60 font-sans text-xs text-neutral-300 leading-relaxed">
+                      <span className="font-mono text-neutral-400 font-bold uppercase text-[10px] block mb-0.5">Architectural Rationale:</span>
+                      {currentPillar.comparisonPreview.note}
+                    </div>
+                  </motion.div>
+                )}
               </AnimatePresence>
             </div>
           </div>

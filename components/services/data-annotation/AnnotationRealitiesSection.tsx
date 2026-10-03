@@ -1,102 +1,500 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 
-interface RealityItem {
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+interface ExecutionStep {
+  label: string;
+  value: string;
+  isTerminal?: boolean;
+}
+
+interface ChapterItem {
   id: string;
-  title: string;
-  description: string;
-  stat: string;
-  statLabel: string;
+  index: string;
+  sectionCategory: string;
+  headlineLine1: string;
+  headlineLine2: string;
+  subtitle: string;
+  bigNumber: string;
+  numberLabel: string;
+  secondaryStat: string;
+  secondaryLabel: string;
+  traceTitle: string;
+  traceSteps: ExecutionStep[];
   image: string;
 }
 
-const REALITIES: RealityItem[] = [
+const CHAPTERS: ChapterItem[] = [
   {
     id: 'headcount-fallacy',
-    title: 'The Headcount Fallacy',
-    description:
-      'Buying volume instead of verifiable calibration. Throwing hundreds of unvetted annotators at subjective schemas guarantees noise. When guidelines lack operational definitions, adding headcount only compounds variance across your datasets.',
-    stat: '10× Variance',
-    statLabel: 'Uncalibrated annotator noise multiplier',
+    index: '01',
+    sectionCategory: 'QUALITY GAP 01',
+    headlineLine1: 'THE HEADCOUNT',
+    headlineLine2: 'VOLUME FALLACY',
+    subtitle:
+      'Buying volume instead of verifiable calibration. Throwing hundreds of uncalibrated annotators at subjective schemas only compounds noise across your datasets.',
+    bigNumber: '10×',
+    numberLabel: 'UNCALIBRATED NOISE MULTIPLIER',
+    secondaryStat: '0 CALIBRATION',
+    secondaryLabel: 'HEADCOUNT WITHOUT MEASURED AGREEMENT',
+    traceTitle: 'UNCHECKED NOISE COMPOUNDING',
+    traceSteps: [
+      { label: 'WORKER VOLUME', value: '100+' },
+      { label: 'INTER-RATER α', value: '0.41' },
+      { label: 'GROUND TRUTH', value: 'POISONED', isTerminal: true },
+    ],
     image: '/services/reality-01.jpg',
   },
   {
     id: 'pairwise-agreement',
-    title: 'Pairwise Agreement Over Absolute Scoring',
-    description:
-      'Scales drift while comparisons hold signal. Two experts will disagree whether a complex output is a 6 or a 7 on a 10-point scale, and the same reviewer drifts over an afternoon. Pairwise relative preference eliminates scale compression.',
-    stat: '0.85 vs 0.54 κ',
-    statLabel: 'Pairwise vs absolute Likert reliability',
+    index: '02',
+    sectionCategory: 'QUALITY GAP 02',
+    headlineLine1: 'PAIRWISE RELATIVE',
+    headlineLine2: 'VS LIKERT DRIFT',
+    subtitle:
+      'Subjective 1-10 numerical scales compress and drift across reviewers over time. Pairwise comparative preference captures consistent decision boundaries.',
+    bigNumber: '0.85 κ',
+    numberLabel: 'PAIRWISE AGREEMENT RELIABILITY',
+    secondaryStat: '0.54 κ',
+    secondaryLabel: 'VS NOISY 1-10 LIKERT SCALES',
+    traceTitle: 'SCALE COMPRESSION COLLAPSE',
+    traceSteps: [
+      { label: 'LIKERT 1-10', value: '0.54 κ' },
+      { label: 'PAIRWISE', value: '0.85 κ' },
+      { label: 'DECISION', value: 'CERTIFIED', isTerminal: true },
+    ],
     image: '/services/reality-02.jpg',
   },
   {
     id: 'guideline-ossification',
-    title: 'Guideline Ossification',
-    description:
-      'Specifications that don’t learn from adjudicated edge cases. Guidelines written once at project kickoff decay immediately as edge cases emerge. Without continuous adjudication feedback loops, annotators guess silently.',
-    stat: '100% Codified',
-    statLabel: 'Adjudicated edge cases fed back to rubrics',
+    index: '03',
+    sectionCategory: 'QUALITY GAP 03',
+    headlineLine1: 'STATIC GUIDELINE',
+    headlineLine2: 'OSSIFICATION',
+    subtitle:
+      'Guidelines drafted once decay rapidly as novel edge cases emerge. Without structured adjudication loops, annotators guess silently.',
+    bigNumber: '100%',
+    numberLabel: 'CODIFIED EDGE CASE ATTRIBUTION',
+    secondaryStat: 'LIVE RUBRIC',
+    secondaryLabel: 'DYNAMIC VERSIONING ON DISAGREEMENT',
+    traceTitle: 'ADJUDICATION FEEDBACK LOOP',
+    traceSteps: [
+      { label: 'DISPUTE', value: 'SURFACED' },
+      { label: 'EXPERT PANEL', value: 'ADJUDICATED' },
+      { label: 'RUBRIC V2', value: 'COMMITTED', isTerminal: true },
+    ],
     image: '/services/reality-03.jpg',
   },
 ];
 
 export default function AnnotationRealitiesSection() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const ghostContainerRef = useRef<HTMLDivElement>(null);
+  const ghostItemsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const fixedViewportRef = useRef<HTMLDivElement>(null);
+  const workItemsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+
+      mm.add('(min-width: 1024px)', () => {
+        const workItems = workItemsRef.current.filter((el): el is HTMLDivElement => el !== null);
+        const ghostItems = ghostItemsRef.current.filter((el): el is HTMLDivElement => el !== null);
+        const ghostContainer = ghostContainerRef.current;
+        const fixedViewport = fixedViewportRef.current;
+
+        if (workItems.length < 3 || ghostItems.length < 3 || !ghostContainer || !fixedViewport) {
+          return;
+        }
+
+        workItems.forEach((element) => {
+          gsap.set(element, {
+            clipPath: 'inset(100% 0 0% 0)',
+          });
+        });
+
+        ScrollTrigger.create({
+          trigger: ghostContainer,
+          start: 'bottom top',
+          onEnter: () => gsap.set(fixedViewport, { autoAlpha: 0 }),
+          onLeaveBack: () => gsap.set(fixedViewport, { autoAlpha: 1 }),
+        });
+
+        workItems.forEach((element, index) => {
+          const ghost = ghostItems[index];
+          if (!ghost) return;
+
+          const lines = element.querySelectorAll('[data-line]');
+          const workImage = element.querySelector('[data-work="image"]');
+          const numbersTrack = element.querySelector('[data-work="numbers"]');
+          const overlay = element.querySelector('[data-work="item-overlay"]');
+
+          if (workImage) {
+            gsap.set(workImage, {
+              scale: 1.4,
+              yPercent: 10,
+            });
+          }
+
+          const stStarting = {
+            trigger: ghost,
+            scrub: true,
+            start: 'top bottom',
+            end: '+75vh top',
+          };
+
+          gsap.to(element, {
+            clipPath: 'inset(0% 0 0 0)',
+            scrollTrigger: stStarting,
+          });
+
+          if (workImage) {
+            gsap.to(workImage, {
+              yPercent: 10,
+              scale: 1.2,
+              scrollTrigger: stStarting,
+            });
+          }
+
+          if (lines.length > 0) {
+            gsap.from(lines, {
+              yPercent: 125,
+              rotate: 2.5,
+              ease: 'power2.inOut',
+              duration: 1.25,
+              scrollTrigger: {
+                trigger: ghost,
+                start: 'top 75%',
+                toggleActions: 'play reverse restart reverse',
+              },
+            });
+          }
+
+          if (workImage) {
+            gsap.to(workImage, {
+              filter: 'blur(10px)',
+              opacity: 0.25,
+              ease: 'power2.inOut',
+              scrollTrigger: {
+                trigger: ghost,
+                scrub: true,
+                start: '0 top',
+                end: '35% top',
+              },
+            });
+          }
+
+          if (numbersTrack) {
+            gsap.from(numbersTrack, {
+              x: '100vw',
+              scrollTrigger: {
+                trigger: ghost,
+                scrub: true,
+                start: '0 top',
+                end: '65% top',
+                onLeave: () => {
+                  if (overlay) {
+                    gsap.set(overlay, {
+                      display: 'flex',
+                      opacity: 0,
+                    });
+                  }
+                },
+              },
+            });
+          }
+
+          const stFinal = {
+            trigger: ghost,
+            scrub: true,
+            start: '105% bottom',
+            toggleActions: 'play reverse play reverse',
+          };
+
+          if (overlay) {
+            gsap.fromTo(
+              overlay,
+              { opacity: 0 },
+              {
+                opacity: 0.9,
+                scrollTrigger: stFinal,
+              }
+            );
+          }
+
+          if (numbersTrack) {
+            gsap.to(numbersTrack, {
+              yPercent: 15,
+              scrollTrigger: stFinal,
+            });
+          }
+
+          gsap.to(element, {
+            filter: 'blur(1px)',
+            scrollTrigger: stFinal,
+          });
+        });
+      });
+
+      mm.add('(max-width: 1023px)', () => {
+        const mobileBlocks = gsap.utils.toArray<HTMLElement>('.mobile-chapter-block');
+
+        mobileBlocks.forEach((block) => {
+          gsap.fromTo(
+            block,
+            { opacity: 0, y: 35 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: block,
+                start: 'top 85%',
+                end: 'center 60%',
+                scrub: 0.5,
+              },
+            }
+          );
+        });
+      });
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section className="relative w-full py-20 sm:py-28 bg-white text-neutral-950">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-12">
-          <span className="font-mono text-xs uppercase tracking-widest text-neutral-500 font-semibold block mb-2.5">
-            THE QUALITY GAP
-          </span>
-          <h2 className="font-display font-bold text-2xl sm:text-4xl text-neutral-950 tracking-tight leading-tight">
-            Why Volume-First Data Pipelines Fail Production Models.
-          </h2>
-        </div>
+    <section
+      id="annotation-realities"
+      ref={sectionRef}
+      className="relative z-10 w-full bg-black text-white select-none"
+    >
+      {/* DESKTOP GHOST TRACK CONTAINER */}
+      <div
+        ref={ghostContainerRef}
+        className="ghost_work-container hidden lg:block relative w-full pointer-events-none"
+      >
+        {CHAPTERS.map((item, idx) => (
+          <div
+            key={`ghost-${item.id}`}
+            ref={(el) => {
+              ghostItemsRef.current[idx] = el;
+            }}
+            className="ghost_work-item w-full h-[300vh]"
+          />
+        ))}
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          {REALITIES.map((item, idx) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.45, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="group relative p-7 sm:p-8 rounded-md bg-[#f8f8fa] border border-neutral-200/90 hover:border-neutral-400 transition-all flex flex-col justify-between overflow-hidden min-h-85 shadow-sm hover:shadow-md"
-            >
-              {/* Background Image Layer with Subtle Light Tint & Smooth Zoom on Hover */}
-              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  className="object-cover object-center group-hover:scale-105 opacity-60 group-hover:opacity-80 transition-all duration-700 ease-out"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/70 to-black/60" />
+      {/* DESKTOP FIXED VIEWPORT */}
+      <div
+        ref={fixedViewportRef}
+        className="fixed-work-viewport hidden lg:block fixed inset-0 w-full h-screen pointer-events-none z-20 overflow-hidden"
+      >
+        {CHAPTERS.map((item, idx) => (
+          <div
+            key={`work-item-${item.id}`}
+            ref={(el) => {
+              workItemsRef.current[idx] = el;
+            }}
+            data-work="item"
+            className="work_item absolute inset-0 w-full h-screen bg-black flex flex-col justify-between py-8 sm:py-10 px-6 sm:px-10 lg:px-14 xl:px-16 overflow-hidden pointer-events-none"
+            style={{
+              zIndex: 10 + idx * 10,
+              clipPath: 'inset(100% 0 0% 0)',
+            }}
+          >
+            <div className="work_image-wrapper absolute inset-0 z-0 overflow-hidden pointer-events-none">
+              <Image
+                data-work="image"
+                src={item.image}
+                alt={item.headlineLine1}
+                fill
+                priority={idx === 0}
+                className="work_image object-cover object-center grayscale contrast-125 brightness-75 will-change-transform"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/75 to-black/85" />
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    'radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.85) 90%)',
+                }}
+              />
+            </div>
+
+            <div className="relative z-10 w-full flex items-center justify-between pb-5 border-b border-white/10 text-xs font-mono tracking-widest text-neutral-400">
+              <div className="flex items-center gap-3">
+                <span className="text-white font-semibold tracking-wider">
+                  THE QUALITY GAP
+                </span>
+                <span className="text-neutral-600">//</span>
+                <span className="text-neutral-400">{item.sectionCategory}</span>
               </div>
+              <div className="text-neutral-400 font-mono tracking-widest">
+                [ {item.index} / 03 ]
+              </div>
+            </div>
 
-              {/* Foreground Card Content */}
-              <div className="relative z-10">
-                <h3 className="font-display font-bold text-lg sm:text-xl text-neutral-100 tracking-tight mb-3 leading-snug">
-                  {item.title}
-                </h3>
+            <div
+              data-work="numbers"
+              className="work_video-wrapper relative z-10 my-auto py-4 will-change-transform overflow-visible"
+            >
+              <div className="flex items-center gap-6 sm:gap-8 lg:gap-10 xl:gap-12 whitespace-nowrap">
+                <div className="flex flex-col">
+                  <span className="font-mono text-6xl sm:text-7xl lg:text-8xl xl:text-9xl font-black text-white tracking-tighter leading-none drop-shadow-2xl">
+                    {item.bigNumber}
+                  </span>
+                  <span className="font-mono text-[11px] sm:text-xs text-neutral-400 uppercase tracking-widest font-semibold mt-2.5">
+                    {item.numberLabel}
+                  </span>
+                </div>
 
-                <p className="font-sans text-sm text-white leading-relaxed font-normal mb-8">
-                  {item.description}
+                <div className="h-16 lg:h-20 w-px bg-white/20 shrink-0" />
+
+                <div className="flex flex-col">
+                  <span className="font-mono text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-neutral-200 tracking-tight">
+                    {item.secondaryStat}
+                  </span>
+                  <span className="font-mono text-[11px] sm:text-xs text-neutral-400 uppercase tracking-widest font-semibold mt-2">
+                    {item.secondaryLabel}
+                  </span>
+                </div>
+
+                <div className="h-16 lg:h-20 w-px bg-white/20 shrink-0" />
+
+                <div className="flex flex-col justify-center">
+                  <span className="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-neutral-400 mb-2 font-semibold">
+                    {item.traceTitle}
+                  </span>
+                  <div className="flex items-center gap-2 sm:gap-2.5">
+                    {item.traceSteps.map((step, sIdx) => (
+                      <React.Fragment key={step.label}>
+                        <div
+                          className={`flex items-center gap-2 px-2.5 py-1.5 rounded border text-xs font-mono ${
+                            step.isTerminal
+                              ? 'bg-rose-500/10 border-rose-500/30 text-rose-200'
+                              : 'bg-white/[0.05] border-white/15 text-neutral-200'
+                          }`}
+                        >
+                          <span className="text-[10px] text-neutral-400 tracking-wider uppercase font-medium">
+                            {step.label}
+                          </span>
+                          <span className="font-bold text-white">
+                            {step.value}
+                          </span>
+                        </div>
+                        {sIdx < item.traceSteps.length - 1 && (
+                          <ArrowRight className="w-3.5 h-3.5 text-neutral-500 shrink-0" />
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative z-10 w-full max-w-5xl">
+              <div className="line-wrapper overflow-hidden">
+                <h2
+                  data-line
+                  className="line font-display font-black text-4xl sm:text-6xl lg:text-7xl xl:text-8xl text-white uppercase tracking-tight leading-[0.92] will-change-transform"
+                >
+                  {item.headlineLine1}
+                </h2>
+              </div>
+              <div className="line-wrapper overflow-hidden mt-1.5">
+                <div
+                  data-line
+                  className="line font-display font-black text-4xl sm:text-6xl lg:text-7xl xl:text-8xl text-neutral-400 uppercase tracking-tight leading-[0.92] will-change-transform"
+                >
+                  {item.headlineLine2}
+                </div>
+              </div>
+              <div className="line-wrapper overflow-hidden mt-4">
+                <p
+                  data-line
+                  className="line font-sans text-sm sm:text-lg text-neutral-300 font-normal max-w-2xl leading-relaxed will-change-transform"
+                >
+                  {item.subtitle}
                 </p>
               </div>
+            </div>
 
-              <div className="relative z-10 pt-5">
-                <span className="font-mono text-xl sm:text-2xl font-bold text-neutral-100 block mb-1">
-                  {item.stat}
+            <div
+              data-work="item-overlay"
+              className="work_item-overlay absolute inset-0 bg-black pointer-events-none z-20 opacity-0"
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* MOBILE / TABLET VIEW */}
+      <div className="lg:hidden relative z-10 w-full py-20 px-6 sm:px-8">
+        <div className="space-y-20 max-w-xl mx-auto">
+          {CHAPTERS.map((item) => (
+            <div
+              key={item.id}
+              className="mobile-chapter-block relative pb-16 border-b border-white/10 last:border-b-0"
+            >
+              <div className="flex items-center justify-between pb-4 border-b border-white/10 text-xs font-mono tracking-widest text-neutral-400 mb-6">
+                <span>THE QUALITY GAP</span>
+                <span>[ {item.index} / 03 ]</span>
+              </div>
+
+              <div className="my-6">
+                <span className="font-mono text-6xl sm:text-7xl font-black text-white block">
+                  {item.bigNumber}
                 </span>
-                <span className="font-mono text-[11px] text-neutral-200 uppercase tracking-wider">
-                  {item.statLabel}
+                <span className="font-mono text-xs text-neutral-400 uppercase tracking-widest block mt-2 font-semibold">
+                  {item.numberLabel}
                 </span>
               </div>
-            </motion.div>
+
+              <h3 className="font-display font-black text-3xl sm:text-4xl text-white uppercase tracking-tight mb-2 leading-tight">
+                {item.headlineLine1} <br />
+                <span className="text-neutral-400">{item.headlineLine2}</span>
+              </h3>
+
+              <p className="font-sans text-base text-neutral-300 leading-relaxed mb-6 font-normal">
+                {item.subtitle}
+              </p>
+
+              <div className="pt-4 border-t border-white/10">
+                <span className="font-mono text-[10px] text-neutral-500 uppercase tracking-widest font-semibold block mb-2">
+                  {item.traceTitle}
+                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {item.traceSteps.map((step, sIdx) => (
+                    <React.Fragment key={step.label}>
+                      <div
+                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded border text-xs font-mono ${
+                          step.isTerminal
+                            ? 'bg-rose-500/10 border-rose-500/30 text-rose-200'
+                            : 'bg-white/[0.05] border-white/15 text-neutral-200'
+                        }`}
+                      >
+                        <span className="text-[10px] text-neutral-400 tracking-wider uppercase">
+                          {step.label}
+                        </span>
+                        <span className="font-bold text-white">
+                          {step.value}
+                        </span>
+                      </div>
+                      {sIdx < item.traceSteps.length - 1 && (
+                        <ArrowRight className="w-3 h-3 text-neutral-500 shrink-0" />
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>

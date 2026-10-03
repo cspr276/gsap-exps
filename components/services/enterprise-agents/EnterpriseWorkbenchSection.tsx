@@ -1,9 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal, Shield, AlertTriangle, CheckCircle2, Lock, Layers } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const Dither = dynamic(() => import('@/components/Dither'), { ssr: false });
 const Grainient = dynamic(() => import('@/components/Grainient'), { ssr: false });
@@ -222,45 +227,125 @@ const BLAST_RINGS: BlastRing[] = [
 ];
 
 export default function EnterpriseWorkbenchSection() {
-  const [activeTab, setActiveTab] = useState<string>(PILLARS[0].id);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const leftColRef = useRef<HTMLDivElement>(null);
+  const laserLineRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
   const [activeMode, setActiveMode] = useState<'console' | 'simulator'>('console');
   const [selectedRingId, setSelectedRingId] = useState<string>('ring-2');
 
-  const currentPillar = PILLARS.find((p) => p.id === activeTab) || PILLARS[0];
+  const currentPillar = PILLARS[activeIndex] || PILLARS[0];
   const currentRing = BLAST_RINGS.find((r) => r.id === selectedRingId) || BLAST_RINGS[2];
 
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      const laser = laserLineRef.current;
+      if (!section) return;
+
+      const mm = gsap.matchMedia();
+
+      mm.add('(min-width: 1024px)', () => {
+        const totalPillars = PILLARS.length;
+        const scrollDistance = 2400;
+
+        const st = ScrollTrigger.create({
+          id: 'workbench-pin',
+          trigger: section,
+          start: 'top top',
+          end: `+=${scrollDistance}`,
+          pin: true,
+          scrub: 0.4,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            const p = self.progress;
+
+            if (laser) {
+              gsap.set(laser, { scaleY: p });
+            }
+
+            const newIndex = Math.min(totalPillars - 1, Math.floor(p * totalPillars));
+            setActiveIndex(newIndex);
+          },
+        });
+
+        return () => {
+          st.kill();
+        };
+      });
+    },
+    { scope: sectionRef }
+  );
+
+  const handlePillarClick = (index: number) => {
+    setActiveIndex(index);
+
+    const st = ScrollTrigger.getById('workbench-pin');
+    if (st) {
+      const stepProgress = (index + 0.15) / PILLARS.length;
+      const targetScroll = st.start + stepProgress * (st.end - st.start);
+      if (typeof window !== 'undefined' && window.__lenis) {
+        window.__lenis.scrollTo(targetScroll, { duration: 1.0 });
+      } else {
+        window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
-    <section id="workbench" className="relative w-full py-20 sm:py-28 bg-[#09090b]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-12">
-          <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-2.5">
-            ENTERPRISE AGENT ARCHITECTURE
-          </span>
-          <h2 className="font-display font-bold text-2xl sm:text-4xl text-white tracking-tight leading-tight">
-            Engineered for Containment. Governed for Production.
-          </h2>
+    <section
+      ref={sectionRef}
+      id="workbench"
+      className="relative z-30 w-full min-h-screen lg:h-screen flex flex-col justify-center py-10 sm:py-12 lg:py-6 bg-[#09090b] text-white overflow-hidden"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col justify-center my-auto">
+        {/* Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-6 gap-3">
+          <div className="max-w-2xl">
+            <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-1.5">
+              ENTERPRISE AGENT ARCHITECTURE
+            </span>
+            <h2 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-tight">
+              Engineered for Containment. Governed for Production.
+            </h2>
+          </div>
+
+          <div className="hidden lg:flex items-center gap-2 text-neutral-400 font-mono text-xs pb-1">
+            <span className="text-white font-bold">PILLAR {String(activeIndex + 1).padStart(2, '0')}</span>
+            <span>/</span>
+            <span>04</span>
+            <span className="text-neutral-500 ml-2 text-[11px]">(Scroll to step through)</span>
+          </div>
         </div>
 
-        {/* 2-Column Interactive Workbench with clean rectangular borders (rounded-md) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          {/* Left Column: 4 Pillar Navigation Cards */}
-          <div className="lg:col-span-5 space-y-2.5 flex flex-col justify-start">
-            {PILLARS.map((pillar) => {
-              const isActive = activeTab === pillar.id;
+        {/* 2-Column Interactive Workbench */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+          {/* Left Column: 4 Pillar Navigation Cards with Vertical Laser Rail */}
+          <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col gap-3 sm:gap-3.5 lg:h-[530px]">
+            <div className="hidden lg:block absolute left-[-14px] top-2 bottom-2 w-[2px] bg-neutral-800 rounded-full overflow-hidden pointer-events-none">
+              <div
+                ref={laserLineRef}
+                className="w-full h-full bg-white origin-top"
+                style={{ transform: 'scaleY(0)' }}
+              />
+            </div>
+
+            {PILLARS.map((pillar, idx) => {
+              const isActive = activeIndex === idx;
               return (
                 <button
                   key={pillar.id}
                   type="button"
                   onClick={() => {
-                    setActiveTab(pillar.id);
+                    handlePillarClick(idx);
+                    setActiveMode('console');
                   }}
-                  className={`relative overflow-hidden w-full text-left p-4 sm:p-5 rounded-md border transition-all duration-300 cursor-pointer ${
+                  className={`relative overflow-hidden w-full text-left p-4 sm:p-4.5 rounded-md border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-center ${
                     isActive
-                      ? 'border-neutral-600 bg-neutral-900/90 shadow-lg shadow-black/60 text-white'
+                      ? 'border-neutral-500 bg-neutral-900/90 shadow-xl shadow-black/60 text-white'
                       : 'bg-neutral-900/30 border-neutral-800/80 hover:border-neutral-700 hover:bg-neutral-900/50 text-neutral-300'
                   }`}
                 >
-                  {/* Active fluid grain shader background */}
                   {isActive && (
                     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-85">
                       <Grainient
@@ -277,7 +362,7 @@ export default function EnterpriseWorkbenchSection() {
                   )}
 
                   <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center justify-between mb-1">
                       <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-bold">
                         {pillar.step}
                       </span>
@@ -302,9 +387,8 @@ export default function EnterpriseWorkbenchSection() {
             })}
           </div>
 
-          {/* Right Column: Dynamic Inspection Console & Blast Radius Simulator */}
-          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-neutral-950 overflow-hidden min-h-[580px] shadow-xl shadow-black/80 flex flex-col justify-between">
-            {/* Ambient Dither Canvas Background */}
+          {/* Right Column: Dynamic Inspection Console & Blast Radius Rings */}
+          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-neutral-950 overflow-hidden min-h-[500px] lg:h-[530px] shadow-xl shadow-black/80 flex flex-col justify-between">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-75">
               <Dither
                 waveSpeed={0.04}
@@ -318,18 +402,16 @@ export default function EnterpriseWorkbenchSection() {
               />
             </div>
 
-            {/* Ambient subtle vignette overlay to keep text crisp */}
             <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/70 via-transparent to-neutral-950/40" />
 
             {/* Header with Mode Switcher */}
-            <div className="relative z-10 p-4 sm:p-5 border-b border-neutral-800/80 flex flex-wrap items-center justify-between gap-3 bg-neutral-950/50 backdrop-blur-md">
+            <div className="relative z-10 p-4 sm:p-5 border-b border-neutral-800/80 flex flex-wrap items-center justify-between gap-3 bg-neutral-950/60 backdrop-blur-md">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
-                  SYSTEM CONSOLE
+                  AGENT RUNTIME
                 </span>
               </div>
 
-              {/* Console / Simulator Tabs */}
               <div className="flex items-center gap-1.5 p-1 rounded-md bg-neutral-900/90 border border-neutral-800 text-xs font-mono">
                 <button
                   type="button"
@@ -360,7 +442,7 @@ export default function EnterpriseWorkbenchSection() {
             </div>
 
             {/* Dynamic Content Body */}
-            <div className="relative z-10 p-6 sm:p-7 flex flex-col justify-between flex-1">
+            <div className="relative z-10 p-5 sm:p-6 flex flex-col justify-between flex-1 overflow-y-auto">
               <AnimatePresence mode="wait">
                 {activeMode === 'console' ? (
                   <motion.div
@@ -369,10 +451,10 @@ export default function EnterpriseWorkbenchSection() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col justify-center gap-8 h-full"
+                    className="flex flex-col justify-between h-full"
                   >
                     <div>
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center justify-between mb-1.5">
                         <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
                           {currentPillar.step} ARCHITECTURE
                         </span>
@@ -381,7 +463,7 @@ export default function EnterpriseWorkbenchSection() {
                         {currentPillar.title}
                       </h3>
 
-                      <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-5">
+                      <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-4">
                         {currentPillar.description}
                       </p>
 
@@ -389,7 +471,7 @@ export default function EnterpriseWorkbenchSection() {
                         {currentPillar.specs.map((spec) => (
                           <span
                             key={spec}
-                            className="font-mono text-[11px] text-neutral-300 bg-neutral-900/50 backdrop-blur-sm border border-neutral-700/80 px-2.5 py-1 rounded-sm"
+                            className="font-mono text-[11px] text-neutral-300 bg-neutral-900/60 backdrop-blur-sm border border-neutral-700/80 px-2.5 py-1 rounded-sm"
                           >
                             {spec}
                           </span>
@@ -397,8 +479,7 @@ export default function EnterpriseWorkbenchSection() {
                       </div>
                     </div>
 
-                    {/* Dark Inspection Code / Telemetry Console */}
-                    <div className="rounded-md bg-black/60 backdrop-blur-md border border-neutral-800 p-4 font-mono text-xs overflow-hidden shadow-inner mt-4">
+                    <div className="rounded-md bg-black/60 backdrop-blur-sm border border-neutral-800 p-4 font-mono text-xs overflow-hidden shadow-inner mt-4">
                       <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-neutral-800/80 text-neutral-400 text-[11px]">
                         <span className="truncate pr-2">{currentPillar.codePreview.title}</span>
                         <span className="text-neutral-400 font-bold shrink-0">
@@ -420,7 +501,7 @@ export default function EnterpriseWorkbenchSection() {
                                   : line.tone === 'warn'
                                   ? 'text-amber-400 font-medium'
                                   : line.tone === 'accent'
-                                  ? 'text-cyan-300 font-bold'
+                                  ? 'text-rose-400 font-bold'
                                   : 'text-neutral-300'
                               }
                             >
@@ -433,138 +514,98 @@ export default function EnterpriseWorkbenchSection() {
                   </motion.div>
                 ) : (
                   <motion.div
-                    key="blast-simulator"
+                    key="simulator"
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col justify-center gap-5 h-full"
+                    className="flex flex-col justify-between h-full"
                   >
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
                         <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
-                          BLAST RADIUS CONTAINMENT RINGS
+                          LEAST-PRIVILEGE TOOL ISOLATION
                         </span>
                         <span
-                          className={`font-mono text-[10px] uppercase font-bold px-2 py-0.5 rounded-sm ${
+                          className={`font-mono text-[10px] px-2 py-0.5 rounded border uppercase font-bold ${
                             currentRing.tone === 'green'
-                              ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800'
+                              ? 'bg-emerald-950/60 border-emerald-800 text-emerald-300'
                               : currentRing.tone === 'amber'
-                              ? 'bg-amber-950/80 text-amber-300 border border-amber-800'
-                              : 'bg-red-950/80 text-red-300 border border-red-800'
+                              ? 'bg-amber-950/60 border-amber-800 text-amber-300'
+                              : 'bg-rose-950/60 border-rose-800 text-rose-300'
                           }`}
                         >
                           {currentRing.badge}
                         </span>
                       </div>
 
-                      <h3 className="font-display font-bold text-xl text-white tracking-tight mb-2">
-                        {currentRing.name}
+                      <h3 className="font-display font-bold text-lg sm:text-xl text-white tracking-tight mb-1.5">
+                        Blast Radius Containment Rings
                       </h3>
-                      <p className="font-sans text-xs sm:text-sm text-neutral-300 leading-relaxed mb-4">
-                        {currentRing.impactDesc}
+                      <p className="font-sans text-xs text-neutral-300 leading-relaxed font-normal mb-3">
+                        Select a privilege ring to inspect authority boundaries, confirmation gates, and real-time execution defense.
                       </p>
 
-                      {/* Interactive 5-Ring Selector Tabs */}
-                      <div className="grid grid-cols-5 gap-1.5 p-1 rounded-md bg-black/40 border border-neutral-800 mb-4">
-                        {BLAST_RINGS.map((ring, idx) => {
-                          const isSelected = selectedRingId === ring.id;
+                      {/* Ring Selector Tabs */}
+                      <div className="grid grid-cols-5 gap-1.5 mb-3">
+                        {BLAST_RINGS.map((ring) => {
+                          const isSel = selectedRingId === ring.id;
                           return (
                             <button
                               key={ring.id}
                               type="button"
                               onClick={() => setSelectedRingId(ring.id)}
-                              className={`py-2 px-1 text-center rounded-sm font-mono text-[11px] transition-all cursor-pointer ${
-                                isSelected
-                                  ? ring.tone === 'red'
-                                    ? 'bg-red-900/60 text-white border border-red-600 font-bold'
-                                    : ring.tone === 'amber'
-                                    ? 'bg-amber-900/60 text-white border border-amber-600 font-bold'
-                                    : 'bg-emerald-900/60 text-white border border-emerald-600 font-bold'
-                                  : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/40'
+                              className={`p-2 rounded border text-left transition-all cursor-pointer ${
+                                isSel
+                                  ? 'bg-neutral-800 border-white text-white shadow-md'
+                                  : 'bg-neutral-900/60 border-neutral-800 text-neutral-400 hover:text-white'
                               }`}
                             >
-                              Ring {idx}
+                              <span className="font-mono text-[10px] font-bold block">{ring.id.replace('ring-', 'R-')}</span>
+                              <span className="font-sans text-[10px] truncate block opacity-80">{ring.name.split(':')[1]?.trim() || ring.name}</span>
                             </button>
                           );
                         })}
                       </div>
 
-                      {/* Permissions & Gate Specs */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3 text-xs">
-                        <div className="p-3 rounded-md bg-neutral-900/50 border border-neutral-800">
-                          <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-semibold block mb-1">
-                            ALLOWED CAPABILITY SCOPES
-                          </span>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {currentRing.allowedScopes.map((scope) => (
-                              <span
-                                key={scope}
-                                className="font-mono text-[10px] text-neutral-300 bg-neutral-950 px-2 py-0.5 rounded-sm border border-neutral-800"
-                              >
-                                {scope}
-                              </span>
-                            ))}
-                          </div>
+                      {/* Ring Details */}
+                      <div className="p-3 rounded-md bg-neutral-900/80 border border-neutral-800 mb-3 space-y-2 font-mono text-xs">
+                        <div className="flex items-start gap-2">
+                          <span className="text-neutral-500 text-[10px] uppercase font-bold shrink-0 mt-0.5">Gate Type:</span>
+                          <span className="text-neutral-200">{currentRing.gateType}</span>
                         </div>
-
-                        <div className="p-3 rounded-md bg-neutral-900/50 border border-neutral-800">
-                          <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-semibold block mb-1">
-                            ACTIVE ENFORCEMENT GATE
-                          </span>
-                          <span className="font-sans text-xs text-neutral-200 block leading-snug">
-                            {currentRing.gateType}
-                          </span>
+                        <div className="flex items-start gap-2">
+                          <span className="text-neutral-500 text-[10px] uppercase font-bold shrink-0 mt-0.5">Impact:</span>
+                          <span className="text-neutral-300 font-sans">{currentRing.impactDesc}</span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Agent Execution Terminal Simulation */}
-                    <div className="rounded-md bg-black/70 backdrop-blur-md border border-neutral-800 p-4 font-mono text-xs overflow-hidden shadow-inner">
-                      <div className="flex items-center justify-between pb-2 mb-2 border-b border-neutral-800/80 text-neutral-400 text-[11px]">
-                        <span className="flex items-center gap-1.5">
-                          <Terminal className="w-3 h-3 text-neutral-400" />
-                          <span>agent_execution_runtime.log</span>
-                        </span>
-                        <span className="text-neutral-400 font-bold">
+                    {/* Terminal Simulation */}
+                    <div className="rounded-md bg-black/60 backdrop-blur-sm border border-neutral-800 p-3 font-mono text-xs overflow-hidden shadow-inner">
+                      <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-neutral-800 text-[10px] text-neutral-400">
+                        <span>SIMULATED AGENT TOOL INVOCATION</span>
+                        <span className={
+                          currentRing.tone === 'green'
+                            ? 'text-emerald-400 font-bold'
+                            : currentRing.tone === 'amber'
+                            ? 'text-amber-400 font-bold'
+                            : 'text-rose-400 font-bold'
+                        }>
                           {currentRing.simulatedTerminal.status}
                         </span>
                       </div>
-
-                      <div className="space-y-1.5 leading-relaxed overflow-x-auto text-[11px]">
-                        <div className="text-neutral-300">
-                          <span className="text-neutral-400 select-none">&gt; </span>
-                          <span className="text-cyan-300 font-semibold">ACTION:</span>{' '}
-                          {currentRing.simulatedAction}
-                        </div>
-                        <div className="text-neutral-400">
-                          <span className="text-neutral-400 select-none">&gt; </span>
-                          {currentRing.simulatedTerminal.command}
-                        </div>
-                        <div className="text-neutral-300">
-                          <span className="text-neutral-400 select-none">&gt; </span>
-                          <span className="text-neutral-400">RESULT:</span>{' '}
-                          {currentRing.simulatedTerminal.result}
-                        </div>
-                        <div className="pt-1.5 flex items-center gap-2">
-                          {currentRing.tone === 'red' ? (
-                            <Lock className="w-3.5 h-3.5 text-red-400 shrink-0" />
-                          ) : currentRing.tone === 'amber' ? (
-                            <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                          ) : (
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                          )}
-                          <span
-                            className={`font-semibold ${
-                              currentRing.tone === 'red'
-                                ? 'text-red-400'
-                                : currentRing.tone === 'amber'
-                                ? 'text-amber-400'
-                                : 'text-emerald-400'
-                            }`}
-                          >
-                            {currentRing.simulatedTerminal.guardrailOutcome}
-                          </span>
+                      <div className="space-y-1 text-[11px] leading-relaxed">
+                        <div className="text-neutral-300 font-medium">{currentRing.simulatedTerminal.command}</div>
+                        <div className="text-neutral-400">{currentRing.simulatedTerminal.result}</div>
+                        <div className={`font-semibold ${
+                          currentRing.tone === 'green'
+                            ? 'text-emerald-400'
+                            : currentRing.tone === 'amber'
+                            ? 'text-amber-400'
+                            : 'text-rose-400'
+                        }`}>
+                          &gt; {currentRing.simulatedTerminal.guardrailOutcome}
                         </div>
                       </div>
                     </div>

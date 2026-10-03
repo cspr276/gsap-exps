@@ -35,29 +35,32 @@ export default function DataAnnotationPage() {
         {/* 1. Atmospheric Ambient Hero */}
         <ServiceHero />
 
-        {/* 2. White-Themed Architectural Metrics Strip */}
-        <ServiceMetricsStrip />
-
-        {/* 3. White-Themed Core Failure Realities (Why volume-first pipelines fail) */}
+        {/* 2. Standout Curtain-Wipe Highlight Animation: Quality Gap */}
         <AnnotationRealitiesSection />
 
-        {/* 4. Interactive Quality Workbench (4 Pillars + Pairwise Agreement Matrix) */}
-        <AnnotationWorkbenchSection />
+        {/* Continuous Solid Z-30 Stacking Layer: Metrics, Workbench, and all subsequent sections */}
+        <div className="relative z-30 bg-[#09090b]">
+          {/* 3. High-Contrast Architectural Metrics Strip */}
+          <ServiceMetricsStrip />
 
-        {/* 5. Methodology Taxonomy (Matching annotation structure to human judgement) */}
-        <AnnotationTaxonomySection />
+          {/* 4. Interactive Quality Workbench (4 Pillars + Pairwise Agreement Matrix) */}
+          <AnnotationWorkbenchSection />
 
-        {/* 6. How We Deliver (Progressive 4-Step Engagement Grid) */}
-        <AnnotationDeliverySection />
+          {/* 5. Methodology Taxonomy */}
+          <AnnotationTaxonomySection />
 
-        {/* 7. Frequently Asked Questions (Technical & Governance) */}
-        <AnnotationFAQSection />
+          {/* 6. How We Deliver (Progressive 4-Step Engagement Grid) */}
+          <AnnotationDeliverySection />
 
-        {/* 8. High-Contrast Conversion CTA */}
-        <ServiceCTASection />
+          {/* 7. Frequently Asked Questions */}
+          <AnnotationFAQSection />
 
-        {/* Universal Footer */}
-        <Footer />
+          {/* 8. High-Contrast Conversion CTA */}
+          <ServiceCTASection />
+
+          {/* Universal Footer */}
+          <Footer />
+        </div>
       </main>
     </SmoothScroll>
   );

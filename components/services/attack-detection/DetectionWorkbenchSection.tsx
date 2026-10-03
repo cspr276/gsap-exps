@@ -1,9 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, ShieldAlert, Zap, Sliders, Terminal } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const Dither = dynamic(() => import('@/components/Dither'), { ssr: false });
 const Grainient = dynamic(() => import('@/components/Grainient'), { ssr: false });
@@ -178,7 +183,10 @@ const LATENCY_CONTROLS: LatencyControl[] = [
 ];
 
 export default function DetectionWorkbenchSection() {
-  const [activeTab, setActiveTab] = useState<string>(PILLARS[0].id);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const leftColRef = useRef<HTMLDivElement>(null);
+  const laserLineRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
   const [activeMode, setActiveMode] = useState<'console' | 'simulator'>('console');
   const [activeControls, setActiveControls] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
@@ -188,7 +196,62 @@ export default function DetectionWorkbenchSection() {
     return initial;
   });
 
-  const currentPillar = PILLARS.find((p) => p.id === activeTab) || PILLARS[0];
+  const currentPillar = PILLARS[activeIndex] || PILLARS[0];
+
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      const laser = laserLineRef.current;
+      if (!section) return;
+
+      const mm = gsap.matchMedia();
+
+      mm.add('(min-width: 1024px)', () => {
+        const totalPillars = PILLARS.length;
+        const scrollDistance = 2400;
+
+        const st = ScrollTrigger.create({
+          id: 'workbench-pin',
+          trigger: section,
+          start: 'top top',
+          end: `+=${scrollDistance}`,
+          pin: true,
+          scrub: 0.4,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            const p = self.progress;
+
+            if (laser) {
+              gsap.set(laser, { scaleY: p });
+            }
+
+            const newIndex = Math.min(totalPillars - 1, Math.floor(p * totalPillars));
+            setActiveIndex(newIndex);
+          },
+        });
+
+        return () => {
+          st.kill();
+        };
+      });
+    },
+    { scope: sectionRef }
+  );
+
+  const handlePillarClick = (index: number) => {
+    setActiveIndex(index);
+
+    const st = ScrollTrigger.getById('workbench-pin');
+    if (st) {
+      const stepProgress = (index + 0.15) / PILLARS.length;
+      const targetScroll = st.start + stepProgress * (st.end - st.start);
+      if (typeof window !== 'undefined' && window.__lenis) {
+        window.__lenis.scrollTo(targetScroll, { duration: 1.0 });
+      } else {
+        window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+      }
+    }
+  };
 
   const toggleControl = (id: string) => {
     setActiveControls((prev) => ({
@@ -203,40 +266,58 @@ export default function DetectionWorkbenchSection() {
 
   const budgetCeilingMs = 120;
   const isOverBudget = totalLatencyMs > budgetCeilingMs;
-  const budgetPercentage = Math.min(100, Math.round((totalLatencyMs / budgetCeilingMs) * 100));
 
   return (
-    <section id="workbench" className="relative w-full py-20 sm:py-28 bg-[#09090b]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-12">
-          <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-2.5">
-            DEFENSE WORKBENCH & LATENCY ENGINE
-          </span>
-          <h2 className="font-display font-bold text-2xl sm:text-4xl text-white tracking-tight leading-tight">
-            Layered Runtime Defenses. Sized for Real-World Latency.
-          </h2>
+    <section
+      ref={sectionRef}
+      id="workbench"
+      className="relative z-30 w-full min-h-screen lg:h-screen flex flex-col justify-center py-10 sm:py-12 lg:py-6 bg-[#09090b] text-white overflow-hidden"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col justify-center my-auto">
+        {/* Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-6 gap-3">
+          <div className="max-w-2xl">
+            <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-1.5">
+              DEFENSE WORKBENCH & LATENCY ENGINE
+            </span>
+            <h2 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-tight">
+              Layered Runtime Defenses. Sized for Real-World Latency.
+            </h2>
+          </div>
+
+          <div className="hidden lg:flex items-center gap-2 text-neutral-400 font-mono text-xs pb-1">
+            <span className="text-white font-bold">PILLAR {String(activeIndex + 1).padStart(2, '0')}</span>
+            <span>/</span>
+            <span>04</span>
+            <span className="text-neutral-500 ml-2 text-[11px]">(Scroll to step through)</span>
+          </div>
         </div>
 
-        {/* 2-Column Interactive Workbench with clean rectangular borders (rounded-md) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          {/* Left Column: 4 Pillar Navigation Cards */}
-          <div className="lg:col-span-5 space-y-2.5 flex flex-col justify-start">
-            {PILLARS.map((pillar) => {
-              const isActive = activeTab === pillar.id;
+        {/* 2-Column Interactive Workbench */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+          {/* Left Column: 4 Pillar Navigation Cards with Vertical Laser Rail */}
+          <div ref={leftColRef} className="lg:col-span-5 relative flex flex-col gap-3 sm:gap-3.5 lg:h-[530px]">
+            <div className="hidden lg:block absolute left-[-14px] top-2 bottom-2 w-[2px] bg-neutral-800 rounded-full overflow-hidden pointer-events-none">
+              <div
+                ref={laserLineRef}
+                className="w-full h-full bg-white origin-top"
+                style={{ transform: 'scaleY(0)' }}
+              />
+            </div>
+
+            {PILLARS.map((pillar, idx) => {
+              const isActive = activeIndex === idx;
               return (
                 <button
                   key={pillar.id}
                   type="button"
-                  onClick={() => {
-                    setActiveTab(pillar.id);
-                  }}
-                  className={`relative overflow-hidden w-full text-left p-4 sm:p-5 rounded-md border transition-all duration-300 cursor-pointer ${
+                  onClick={() => handlePillarClick(idx)}
+                  className={`relative overflow-hidden w-full text-left p-4 sm:p-4.5 rounded-md border transition-all duration-300 cursor-pointer flex-1 flex flex-col justify-center ${
                     isActive
-                      ? 'border-neutral-600 bg-neutral-900/90 shadow-lg shadow-black/60 text-white'
+                      ? 'border-neutral-500 bg-neutral-900/90 shadow-xl shadow-black/60 text-white'
                       : 'bg-neutral-900/30 border-neutral-800/80 hover:border-neutral-700 hover:bg-neutral-900/50 text-neutral-300'
                   }`}
                 >
-                  {/* Active fluid grain shader background */}
                   {isActive && (
                     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-85">
                       <Grainient
@@ -253,7 +334,7 @@ export default function DetectionWorkbenchSection() {
                   )}
 
                   <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center justify-between mb-1">
                       <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-bold">
                         {pillar.step}
                       </span>
@@ -279,8 +360,7 @@ export default function DetectionWorkbenchSection() {
           </div>
 
           {/* Right Column: Dynamic Inspection Console & Latency Budget Simulator */}
-          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-neutral-950 overflow-hidden min-h-[560px] shadow-xl shadow-black/80 flex flex-col justify-between">
-            {/* Ambient Dither Canvas Background */}
+          <div className="lg:col-span-7 relative rounded-md border border-neutral-800 bg-neutral-950 overflow-hidden min-h-[500px] lg:h-[530px] shadow-xl shadow-black/80 flex flex-col justify-between">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-75">
               <Dither
                 waveSpeed={0.04}
@@ -294,18 +374,16 @@ export default function DetectionWorkbenchSection() {
               />
             </div>
 
-            {/* Ambient subtle vignette overlay to keep text crisp */}
             <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-neutral-950/70 via-transparent to-neutral-950/40" />
 
             {/* Header with Mode Switcher */}
-            <div className="relative z-10 p-5 sm:p-6 border-b border-neutral-800/80 flex flex-wrap items-center justify-between gap-3 bg-neutral-950/50 backdrop-blur-md">
+            <div className="relative z-10 p-4 sm:p-5 border-b border-neutral-800/80 flex flex-wrap items-center justify-between gap-3 bg-neutral-950/60 backdrop-blur-md">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
                   ENGINE CONSOLE
                 </span>
               </div>
 
-              {/* Console / Simulator Tabs */}
               <div className="flex items-center gap-1.5 p-1 rounded-md bg-neutral-900/90 border border-neutral-800 text-xs font-mono">
                 <button
                   type="button"
@@ -336,7 +414,7 @@ export default function DetectionWorkbenchSection() {
             </div>
 
             {/* Dynamic Content Body */}
-            <div className="relative z-10 p-6 sm:p-7 flex flex-col justify-between flex-1">
+            <div className="relative z-10 p-5 sm:p-6 flex flex-col justify-between flex-1 overflow-y-auto">
               <AnimatePresence mode="wait">
                 {activeMode === 'console' ? (
                   <motion.div
@@ -345,10 +423,10 @@ export default function DetectionWorkbenchSection() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col justify-center gap-8 h-full"
+                    className="flex flex-col justify-between h-full"
                   >
                     <div>
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center justify-between mb-1.5">
                         <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
                           {currentPillar.step} ARCHITECTURE
                         </span>
@@ -357,7 +435,7 @@ export default function DetectionWorkbenchSection() {
                         {currentPillar.title}
                       </h3>
 
-                      <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-5">
+                      <p className="font-sans text-sm text-neutral-300 leading-relaxed font-normal mb-4">
                         {currentPillar.description}
                       </p>
 
@@ -365,7 +443,7 @@ export default function DetectionWorkbenchSection() {
                         {currentPillar.specs.map((spec) => (
                           <span
                             key={spec}
-                            className="font-mono text-[11px] text-neutral-300 bg-neutral-900/40 backdrop-blur-sm border border-neutral-700/80 px-2.5 py-1 rounded-sm"
+                            className="font-mono text-[11px] text-neutral-300 bg-neutral-900/60 backdrop-blur-sm border border-neutral-700/80 px-2.5 py-1 rounded-sm"
                           >
                             {spec}
                           </span>
@@ -373,7 +451,6 @@ export default function DetectionWorkbenchSection() {
                       </div>
                     </div>
 
-                    {/* Dark Inspection Code / Telemetry Console */}
                     <div className="rounded-md bg-black/60 backdrop-blur-sm border border-neutral-800 p-4 font-mono text-xs overflow-hidden shadow-inner mt-4">
                       <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-neutral-800/80 text-neutral-400 text-[11px]">
                         <span className="truncate pr-2">{currentPillar.codePreview.title}</span>
@@ -414,10 +491,10 @@ export default function DetectionWorkbenchSection() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col justify-center gap-6 h-full"
+                    className="flex flex-col justify-between h-full"
                   >
                     <div>
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center justify-between mb-1.5">
                         <span className="font-mono text-xs uppercase tracking-wider text-neutral-400 font-semibold">
                           HOT PATH COST MODEL
                         </span>
@@ -432,16 +509,16 @@ export default function DetectionWorkbenchSection() {
                         </span>
                       </div>
 
-                      <h3 className="font-display font-bold text-xl text-white tracking-tight mb-2">
+                      <h3 className="font-display font-bold text-lg sm:text-xl text-white tracking-tight mb-1.5">
                         Interactive Latency Budget Simulator
                       </h3>
-                      <p className="font-sans text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal mb-4">
-                        Toggle defense layers to calculate live request overhead. A defense that exceeds your platform team’s SLA will be turned off in production.
+                      <p className="font-sans text-xs text-neutral-300 leading-relaxed font-normal mb-3">
+                        Toggle defense layers to calculate live request overhead against your platform team’s SLA ceiling.
                       </p>
 
                       {/* Budget Gauge Bar */}
-                      <div className="p-3.5 rounded-md bg-black/40 border border-neutral-800 mb-5">
-                        <div className="flex items-center justify-between font-mono text-xs mb-2">
+                      <div className="p-3 rounded-md bg-black/40 border border-neutral-800 mb-3">
+                        <div className="flex items-center justify-between font-mono text-xs mb-1.5">
                           <span className="text-neutral-400">Total Added Overhead:</span>
                           <span className={`font-bold ${isOverBudget ? 'text-rose-400' : 'text-emerald-400'}`}>
                             {totalLatencyMs}ms{' '}
@@ -449,7 +526,7 @@ export default function DetectionWorkbenchSection() {
                           </span>
                         </div>
 
-                        <div className="w-full bg-neutral-900 rounded-full h-2 overflow-hidden border border-neutral-800">
+                        <div className="w-full bg-neutral-900 rounded-full h-1.5 overflow-hidden border border-neutral-800">
                           <div
                             className={`h-full transition-all duration-300 ${
                               isOverBudget ? 'bg-rose-500' : 'bg-emerald-400'
@@ -460,7 +537,7 @@ export default function DetectionWorkbenchSection() {
                       </div>
 
                       {/* Toggles */}
-                      <div className="space-y-2">
+                      <div className="space-y-1.5">
                         {LATENCY_CONTROLS.map((control) => {
                           const isActive = !!activeControls[control.id];
                           return (
@@ -468,7 +545,7 @@ export default function DetectionWorkbenchSection() {
                               key={control.id}
                               type="button"
                               onClick={() => toggleControl(control.id)}
-                              className={`w-full flex items-center justify-between p-2.5 rounded-md border text-left transition-all cursor-pointer ${
+                              className={`w-full flex items-center justify-between p-2 rounded-md border text-left transition-all cursor-pointer ${
                                 isActive
                                   ? control.isHeavyWarning
                                     ? 'bg-rose-950/30 border-rose-800/80 text-white'
@@ -476,9 +553,9 @@ export default function DetectionWorkbenchSection() {
                                   : 'bg-black/30 border-neutral-800/60 text-neutral-400 hover:border-neutral-700'
                               }`}
                             >
-                              <div className="flex items-center gap-2.5">
+                              <div className="flex items-center gap-2">
                                 <div
-                                  className={`w-4 h-4 rounded-sm flex items-center justify-center border transition-all ${
+                                  className={`w-3.5 h-3.5 rounded-sm flex items-center justify-center border transition-all ${
                                     isActive
                                       ? control.isHeavyWarning
                                         ? 'bg-rose-500 border-rose-400 text-white'
@@ -486,20 +563,17 @@ export default function DetectionWorkbenchSection() {
                                       : 'border-neutral-700 bg-neutral-900'
                                   }`}
                                 >
-                                  {isActive && <Check className="w-3 h-3 stroke-[3]" />}
+                                  {isActive && <Check className="w-2.5 h-2.5 stroke-[3]" />}
                                 </div>
                                 <div>
-                                  <div className="font-mono text-xs font-semibold flex items-center gap-2">
+                                  <div className="font-mono text-xs font-semibold flex items-center gap-1.5">
                                     <span>{control.name}</span>
                                     {control.isHeavyWarning && (
-                                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-sm bg-rose-900/60 text-rose-300 border border-rose-800">
-                                        HEAVY INLINE JUDGE
+                                      <span className="text-[9px] font-mono px-1 py-0.2 rounded-sm bg-rose-900/60 text-rose-300 border border-rose-800">
+                                        HEAVY JUDGE
                                       </span>
                                     )}
                                   </div>
-                                  <p className="font-sans text-[11px] text-neutral-400 leading-tight">
-                                    {control.description}
-                                  </p>
                                 </div>
                               </div>
                               <span className="font-mono text-xs font-bold shrink-0 pl-2">
@@ -513,7 +587,7 @@ export default function DetectionWorkbenchSection() {
 
                     {/* Advisory Callout */}
                     <div
-                      className={`rounded-md p-3.5 border font-mono text-xs flex items-start gap-2.5 ${
+                      className={`rounded-md p-3 border font-mono text-xs flex items-start gap-2 mt-3 ${
                         isOverBudget
                           ? 'bg-rose-950/40 border-rose-800 text-rose-200'
                           : 'bg-neutral-900/60 border-neutral-800 text-neutral-300'
@@ -530,8 +604,8 @@ export default function DetectionWorkbenchSection() {
                         </span>
                         <p className="font-sans text-[11px] text-neutral-400 leading-relaxed font-normal">
                           {isOverBudget
-                            ? 'Adding model-based judges directly in the user request path adds 600ms+ of user-facing lag. Move deep evaluation to Pillar 4 (Async Review) to retain full security coverage with 0ms user penalty.'
-                            : 'Layered defense: µs rate limits and sub-5ms compact classifiers absorb volumetric and known threats, leaving deep reasoning to asynchronous background workers.'}
+                            ? 'Adding model-based judges in user request paths adds 600ms+ lag. Move deep evaluation to Pillar 4 (Async Review) to retain full security with 0ms user penalty.'
+                            : 'Layered defense: µs rate limits and sub-5ms compact classifiers absorb volumetric threats, leaving deep reasoning to async workers.'}
                         </p>
                       </div>
                     </div>
