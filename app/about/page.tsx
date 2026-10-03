@@ -6,7 +6,6 @@ import Footer from '@/components/Footer';
 import AboutHero from '@/components/about/AboutHero';
 import AboutMetricsSection from '@/components/about/AboutMetricsSection';
 import AboutOriginSection from '@/components/about/AboutOriginSection';
-import AboutOrbitSection from '@/components/about/AboutOrbitSection';
 import AboutDualWaveSection from '@/components/about/AboutDualWaveSection';
 import AboutStickyGridSection from '@/components/about/AboutStickyGridSection';
 import AboutValuesSection from '@/components/about/AboutValuesSection';
@@ -37,7 +36,6 @@ export default function AboutPage() {
         <AboutHero />
         <AboutMetricsSection />
         <AboutOriginSection />
-        <AboutOrbitSection />
         <AboutDualWaveSection />
         <AboutStickyGridSection />
         <AboutValuesSection />
