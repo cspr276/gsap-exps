@@ -27,6 +27,14 @@ const instrumentSerif = Instrument_Serif({
 export const metadata: Metadata = {
   title: "Evalixa — Autonomous Intelligence Platform",
   description: "Deploy deterministic neural swarms, low-latency vector meshes, and self-orchestrating execution pipelines designed for scale.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon.png", type: "image/png" },
+    ],
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
