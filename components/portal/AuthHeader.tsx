@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 
 export default function AuthHeader() {
   return (
-    <header className="w-full h-16 sm:h-20 px-6 sm:px-12 flex items-center justify-between border-b border-neutral-100 bg-white/80 backdrop-blur-sm z-20">
+    <header className="w-full h-16 sm:h-20 px-6 sm:px-12 flex items-center justify-between border-b border-neutral-200/40 bg-transparent z-20">
       {/* Brand Logo */}
       <Link href="/" className="flex items-center gap-2 group transition-opacity hover:opacity-85">
         <Image
