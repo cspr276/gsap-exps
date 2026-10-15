@@ -1,176 +1,351 @@
 'use client';
 
-import React, { useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
-import SpotlightCard from './SpotlightCard';
-import { ArrowRight } from 'lucide-react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+interface ExtendedServiceItem {
+  num: string;
+  category: string;
+  title: string;
+  desc: string;
+  image: string;
+  link: string;
+}
 
-const HORIZONTAL_SERVICES = [
+const EXTENDED_SERVICES: ExtendedServiceItem[] = [
+  {
+    num: '01',
+    category: 'SERVICE / 01',
+    title: 'Requirement Definition & Rubrics',
+    desc: 'Define measurable quality goals, task-grounded rubrics, scene boundaries, and delivery standards.',
+    image: '/services/ai-agent-evaluation.webp',
+    link: '/services/ai-agent-evaluation-benchmarking'
+  },
+  {
+    num: '02',
+    category: 'SERVICE / 02',
+    title: 'Model Security & Adversarial Testing',
+    desc: 'Adversarial red-teaming, prompt injection vectors, jailbreak assessments, and severity-graded triages.',
+    image: '/services/reality-02.jpg',
+    link: '/services/ai-model-security-testing'
+  },
+  {
+    num: '03',
+    category: 'SERVICE / 03',
+    title: 'Real-Time Attack Detection',
+    desc: 'Sub-millisecond runtime mitigation identifying prompt exploits, data leakage, and automated abuse.',
+    image: '/services/reality-03.jpg',
+    link: '/services/ai-attack-detection-systems'
+  },
   {
     num: '04',
-    category: 'DATA OPS & RLHF',
-    title: 'Data Annotation & Expert Workflows',
-    desc: 'High-quality, domain-specific data labeling, supervised fine-tuning, and human-in-the-loop preference ranking powering frontier AI systems.',
-    metric: 'Vetted Domain Experts',
-    image: '/cards/card_04.jpg'
+    category: 'SERVICE / 04',
+    title: 'Data Annotation & Gold Standards',
+    desc: 'High-quality domain-specific data labeling, supervised fine-tuning, and calibrated human ranking.',
+    image: '/cards/card_04.jpg',
+    link: '/services/data-annotation'
   },
   {
     num: '05',
-    category: 'ENTERPRISE AUTOMATION',
+    category: 'SERVICE / 05',
     title: 'Enterprise AI Agents & Systems',
-    desc: 'Production-minded AI workflows, autonomous agent clusters, and intelligent system design engineered for internal efficiency and operational reliability.',
-    metric: 'Zero Context Drift',
-    image: '/cards/card_05.jpg'
+    desc: 'Autonomous agent clusters, production workflows, and deterministic reliability architectures.',
+    image: '/cards/card_05.jpg',
+    link: '/services/enterprise-ai-agents'
   },
   {
     num: '06',
-    category: 'GOVERNANCE & AUDIT',
+    category: 'SERVICE / 06',
     title: 'Agent Readiness & Risk Assessment',
-    desc: 'Governance-focused architectural reviews, failure taxonomies, and adoption audits to identify critical risks before business impact.',
-    metric: 'Pre-Production Triage',
-    image: '/cards/card_06.jpg'
+    desc: 'Pre-deployment audits, failure taxonomies, and architectural risk mitigation strategies.',
+    image: '/cards/card_06.jpg',
+    link: '/services/agent-readiness-risk-assessment'
   },
   {
     num: '07',
-    category: 'CONTINUOUS ASSURANCE',
+    category: 'SERVICE / 07',
     title: 'Continuous Monitoring & Regression',
-    desc: 'Ongoing quality signals, live canary evaluations, and automated regression suites that keep complex generative systems dependable post-launch.',
-    metric: '24/7 Automated Delta Tracking',
-    image: '/cards/card_07.jpg'
+    desc: 'Live canary evaluations, automated regression suites, and 24/7 delta tracking post-launch.',
+    image: '/cards/card_07.jpg',
+    link: '/services/continuous-monitoring-regression-testing'
   },
   {
     num: '08',
-    category: 'MODEL ADAPTATION',
+    category: 'SERVICE / 08',
     title: 'Supervised Fine-Tuning & Alignment',
-    desc: 'Model improvement loops calibrated by domain expectations and user experience goals, bridging foundation models to production performance.',
-    metric: 'Domain-Calibrated RLHF',
-    image: '/cards/card_08.jpg'
+    desc: 'Domain-calibrated model improvement loops bridging foundation models to production performance.',
+    image: '/cards/card_08.jpg',
+    link: '/services/sft-rlhf'
   }
 ];
 
 export default function HorizontalServicesSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<(HTMLAnchorElement | null)[]>([]);
 
-  useGSAP(
-    () => {
-      const track = trackRef.current;
-      const section = sectionRef.current;
-      if (!track || !section) return;
+  const rotationRef = useRef<number>(0);
+  const isPausedRef = useRef<boolean>(false);
+  const hoveredIndexRef = useRef<number | null>(null);
 
-      const mm = gsap.matchMedia();
+  // Dragging support
+  const isDraggingRef = useRef<boolean>(false);
+  const startXRef = useRef<number>(0);
+  const hasMovedRef = useRef<boolean>(false);
 
-      mm.add('(min-width: 1024px)', () => {
-        // Distance from card 04 to card 08 brings 08 to center (50vw).
-        // Adding 120px lets card 08 settle comfortably "just after middle".
-        const getScrollDistance = () => {
-          const cards = track.children;
-          if (cards.length > 1) {
-            const lastCard = cards[cards.length - 1] as HTMLElement;
-            return lastCard.offsetLeft + 60;
-          }
-          return 2200;
-        };
+  // Responsive dimensions
+  const [dimensions, setDimensions] = useState({
+    radius: 460,
+    cardWidth: 310,
+    cardHeight: 440
+  });
 
-        gsap.to(track, {
-          x: () => -getScrollDistance(),
-          ease: 'none', // Official GSAP rule for horizontal containerAnimation
-          scrollTrigger: {
-            trigger: section,
-            pin: true,
-            start: 'top top',
-            end: () => `+=${getScrollDistance()}`,
-            scrub: 1,
-            anticipatePin: 1,
-            invalidateOnRefresh: true
-          }
-        });
+  const updateDimensions = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    const w = window.innerWidth;
+    if (w < 640) {
+      setDimensions({
+        radius: 290,
+        cardWidth: 235,
+        cardHeight: 360
       });
-    },
-    { scope: sectionRef }
-  );
+    } else if (w < 1024) {
+      setDimensions({
+        radius: 370,
+        cardWidth: 270,
+        cardHeight: 400
+      });
+    } else {
+      setDimensions({
+        radius: 460,
+        cardWidth: 310,
+        cardHeight: 440
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, [updateDimensions]);
+
+  // Main 3D cylinder rotation animation loop
+  useEffect(() => {
+    let animId: number;
+    let lastTime = performance.now();
+    const count = EXTENDED_SERVICES.length;
+    const angleStep = 360 / count;
+
+    const frame = (now: number) => {
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
+      // Auto-rotate when not paused or dragging
+      // 12.5 degrees per second -> full rotation in ~28.8s
+      if (!isPausedRef.current && !isDraggingRef.current) {
+        rotationRef.current = (rotationRef.current - 12.5 * dt) % 360;
+      }
+
+      const currentRot = rotationRef.current;
+      if (ringRef.current) {
+        ringRef.current.style.transform = `rotateY(${currentRot}deg)`;
+      }
+
+      // Dynamically calculate and apply opacities based on distance from the viewer
+      cardsRef.current.forEach((card, idx) => {
+        if (!card) return;
+        const baseAngle = idx * angleStep;
+        const apparentAngle = (baseAngle + currentRot) % 360;
+        // Normalize angle to [-180, 180]
+        const diff = ((apparentAngle + 180) % 360 + 360) % 360 - 180;
+        const cosVal = Math.cos((diff * Math.PI) / 180);
+
+        if (hoveredIndexRef.current === idx) {
+          // On hover: full opacity
+          card.style.opacity = '1';
+          card.style.pointerEvents = 'auto';
+        } else if (cosVal > 0) {
+          // Front-facing cards: smooth falloff from 1.0 (center) to ~0.35 (sides)
+          const norm = Math.pow(cosVal, 1.35);
+          const opacity = 0.35 + 0.65 * norm;
+          card.style.opacity = opacity.toFixed(3);
+          card.style.pointerEvents = cosVal > 0.25 ? 'auto' : 'none';
+        } else {
+          // Back-facing cards: hidden / culled
+          card.style.opacity = '0.05';
+          card.style.pointerEvents = 'none';
+        }
+      });
+
+      animId = requestAnimationFrame(frame);
+    };
+
+    animId = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(animId);
+  }, []);
+
+  // Hover handlers: pause rotation & highlight card
+  const handleCardEnter = (idx: number) => {
+    isPausedRef.current = true;
+    hoveredIndexRef.current = idx;
+  };
+
+  const handleCardLeave = () => {
+    isPausedRef.current = false;
+    hoveredIndexRef.current = null;
+  };
+
+  // Pointer / Drag handlers for tactile touch & mouse dragging
+  const handlePointerDown = (e: React.PointerEvent) => {
+    isDraggingRef.current = true;
+    startXRef.current = e.clientX;
+    hasMovedRef.current = false;
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDraggingRef.current) return;
+    const deltaX = e.clientX - startXRef.current;
+    if (Math.abs(deltaX) > 4) {
+      hasMovedRef.current = true;
+    }
+    rotationRef.current = (rotationRef.current + deltaX * 0.22) % 360;
+    startXRef.current = e.clientX;
+  };
+
+  const handlePointerUp = () => {
+    isDraggingRef.current = false;
+  };
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    // If the user was dragging, don't trigger the navigation link
+    if (hasMovedRef.current) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
+  const { radius, cardWidth, cardHeight } = dimensions;
+  const angleStep = 360 / EXTENDED_SERVICES.length;
 
   return (
     <section
       id="capabilities"
-      ref={sectionRef}
-      className="relative z-30 lg:-mt-[100vh] w-full min-h-screen h-screen bg-neutral-950 text-white pt-16 sm:pt-20 lg:pt-22 pb-8 flex flex-col justify-start overflow-hidden border-t border-neutral-800/80 shadow-[0_-30px_70px_rgba(0,0,0,0.95)]"
+      className="relative z-30 lg:-mt-[100vh] w-full min-h-[780px] lg:min-h-screen bg-neutral-950 text-white pt-20 sm:pt-24 pb-16 flex flex-col justify-between items-center overflow-hidden border-t border-neutral-800/80 shadow-[0_-30px_70px_rgba(0,0,0,0.95)]"
     >
       {/* Section Header */}
-      <div className="px-6 sm:px-12 lg:px-20 max-w-4xl flex-shrink-0">
-        <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 mb-1.5 block">
+      <div className="px-6 sm:px-12 lg:px-20 max-w-4xl text-center mx-auto mb-8 sm:mb-12 flex-shrink-0">
+        <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 mb-2 block">
           EXTENDED SERVICES
         </span>
-        <h2 className="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl uppercase tracking-tight text-white mb-2 leading-tight">
+        <h2 className="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl uppercase tracking-tight text-white mb-3 leading-tight">
           ADDITIONAL PLATFORM MODULES
         </h2>
-        <p className="text-neutral-400 text-xs sm:text-sm font-normal max-w-xl">
-          Scroll vertically to pan through the remaining core services and capabilities in horizontal sequence.
+        <p className="text-neutral-400 text-xs sm:text-sm font-normal max-w-xl mx-auto">
+          Explore our complete architectural capabilities across autonomous intelligence, model safety, and high-assurance evaluation.
         </p>
       </div>
 
-      {/* Horizontal Pinned Track: Card 04 starts centered in viewport on desktop */}
-      <div className="relative w-full overflow-hidden md:overflow-visible pl-6 sm:pl-12 lg:pl-[calc(50vw-245px)] mt-6 sm:mt-8 lg:mt-10 pb-4">
+      {/* 3D Cylindrical Rotating Carousel Stage */}
+      <div
+        ref={stageRef}
+        className="relative w-full overflow-hidden flex items-center justify-center select-none cursor-grab active:cursor-grabbing my-auto"
+        style={{
+          perspective: '1300px',
+          perspectiveOrigin: '50% 50%',
+          height: `${cardHeight + 80}px`
+        }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+      >
+        {/* 3D Rotating Ring */}
         <div
-          ref={trackRef}
-          className="flex flex-col md:flex-row items-stretch gap-6 sm:gap-8 will-change-transform w-fit pr-20"
+          ref={ringRef}
+          className="relative will-change-transform"
+          style={{
+            width: `${cardWidth}px`,
+            height: `${cardHeight}px`,
+            transformStyle: 'preserve-3d'
+          }}
         >
-          {HORIZONTAL_SERVICES.map((item) => (
-            <SpotlightCard
-              key={item.num}
-              spotlightColor="rgba(255, 255, 255, 0.08)"
-              className="group/card w-full md:w-115 lg:w-[490px] h-[380px] sm:h-[420px] lg:h-[440px] flex-shrink-0 relative rounded-md border border-border-dark-muted bg-surface-card hover:border-border-dark transition-all shadow-xl shadow-black/50 cursor-default overflow-hidden p-8 sm:p-9"
-            >
-              {/* Background Image Layer with Dark Overlay & Subtle Zoom on Hover */}
-              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-full object-cover object-center group-hover/card:scale-105 group-hover/card:opacity-30 transition-all duration-700 ease-out"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-surface-overlay/80 via-surface-overlay/40 to-surface-overlay/25" />
-              </div>
+          {EXTENDED_SERVICES.map((item, idx) => {
+            const cardAngle = idx * angleStep;
 
-              {/* Foreground Card Content */}
-              <div className="relative z-10 flex flex-col justify-between h-full">
-                <div className="flex flex-col">
-                  {/* 1. Top Number */}
-                  <div className="mb-4 sm:mb-6">
-                    <span className="font-mono text-xs sm:text-sm font-semibold tracking-widest text-white uppercase">
-                      {item.num}
+            return (
+              <Link
+                key={item.num}
+                href={item.link}
+                ref={(el) => {
+                  cardsRef.current[idx] = el;
+                }}
+                onClick={handleCardClick}
+                onMouseEnter={() => handleCardEnter(idx)}
+                onMouseLeave={handleCardLeave}
+                className="group absolute top-0 left-0 w-full h-full rounded-2xl overflow-hidden bg-[#0e131f]/95 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.85)] cursor-pointer flex flex-col justify-between transition-[border-color,box-shadow] duration-300 hover:border-white/30"
+                style={{
+                  transform: `rotateY(${cardAngle}deg) translateZ(${radius}px)`,
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden',
+                  willChange: 'transform, opacity'
+                }}
+              >
+                {/* Top Half: Photo with Large Translucent Number */}
+                <div className="relative w-full h-[52%] overflow-hidden bg-neutral-900 flex-shrink-0">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    draggable={false}
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out select-none pointer-events-none"
+                  />
+                  {/* Bottom Image Gradient Overlay into Dark Body */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0e131f] via-[#0e131f]/35 to-black/25 pointer-events-none" />
+
+                  {/* Large Light Cyan/White Translucent Number in Top-Left Corner */}
+                  <span className="absolute top-3.5 left-4 font-mono text-2xl sm:text-3xl font-light tracking-tight text-cyan-200/85 select-none drop-shadow-md">
+                    {item.num}
+                  </span>
+
+                  {/* Subtle Minimalist Indicator Dot in Top-Right Corner */}
+                  <span className="absolute top-4.5 right-4 w-1.5 h-1.5 rounded-full bg-white/40" />
+                </div>
+
+                {/* Bottom Half: Category, Title, Description, and Progress Line */}
+                <div className="p-5 sm:p-6 flex flex-col justify-between h-[48%] bg-[#0e131f]">
+                  <div>
+                    {/* Category Label */}
+                    <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-neutral-400 font-semibold mb-1 block">
+                      {item.category}
                     </span>
+
+                    {/* Service Title */}
+                    <h3 className="font-display font-bold text-base sm:text-lg text-white tracking-tight leading-snug line-clamp-1 mb-1.5 group-hover:text-cyan-100 transition-colors">
+                      {item.title}
+                    </h3>
+
+                    {/* Short Description */}
+                    <p className="text-neutral-300 text-xs sm:text-[13px] leading-relaxed line-clamp-2 font-normal">
+                      {item.desc}
+                    </p>
                   </div>
 
-                  {/* 2. Heading below number */}
-                  <h3 className="font-display font-bold text-xl sm:text-2xl text-white uppercase tracking-tight mb-3 sm:mb-4 leading-snug">
-                    {item.title}
-                  </h3>
-
-                  {/* 3. Content below heading */}
-                  <p className="text-neutral-300 text-xs sm:text-sm sm:text-[15px] leading-relaxed font-normal">
-                    {item.desc}
-                  </p>
+                  {/* Subtle Bottom Progress Line Indicator */}
+                  <div className="w-full h-[2px] bg-white/10 rounded-full mt-4 overflow-hidden">
+                    <div className="w-1/3 h-full bg-white/40 rounded-full" />
+                  </div>
                 </div>
-
-                {/* 4. Link below with hover rotation from 45deg to straight 0deg */}
-                <div className="pt-5 sm:pt-6">
-                  <Link
-                    href="/"
-                    className="group/link inline-flex items-center gap-2 text-xs sm:text-sm font-mono tracking-wider uppercase text-neutral-300 group-hover/card:text-white font-semibold transition-colors"
-                  >
-                    <span>Learn more</span>
-                    <ArrowRight className="w-4 h-4 text-neutral-400 -rotate-45 group-hover/card:rotate-0 group-hover/card:text-white group-hover/card:translate-x-0.5 transition-all duration-300 ease-out origin-center" />
-                  </Link>
-                </div>
-              </div>
-            </SpotlightCard>
-          ))}
+              </Link>
+            );
+          })}
         </div>
+      </div>
+
+      {/* Subtle Hint */}
+      <div className="text-center mt-6 flex-shrink-0">
+        <span className="font-mono text-[11px] text-neutral-500 uppercase tracking-widest">
+          Hover to inspect module • Drag or swipe to rotate
+        </span>
       </div>
     </section>
   );
