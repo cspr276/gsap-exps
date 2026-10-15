@@ -1,39 +1,42 @@
 export default function PortalAurora() {
   return (
     <div
-      className="pointer-events-none absolute top-0 left-0 right-0 h-[360px] sm:h-[440px] overflow-hidden -z-0 select-none"
+      className="pointer-events-none absolute top-0 left-0 right-0 h-[170px] sm:h-[210px] overflow-hidden -z-0 select-none"
       aria-hidden="true"
     >
-      {/* Soft Aurora Glow Orbs (matching Screenshot 1 pastel colors) */}
-      {/* 1. Mint / Emerald subtle wash on the left */}
+      {/* 1. Full-width continuous spread horizontal aurora ribbon */}
       <div
-        className="absolute -top-[100px] left-[5%] sm:left-[12%] w-[480px] sm:w-[620px] h-[320px] rounded-full blur-[100px] opacity-70 transform-gpu mix-blend-multiply"
+        className="absolute -top-[40px] -left-[10%] -right-[10%] h-[110px] sm:h-[140px] blur-[55px] sm:blur-[70px] opacity-80 transform-gpu mix-blend-multiply"
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(52, 211, 153, 0.35) 0%, rgba(45, 212, 191, 0.2) 45%, transparent 75%)',
+          background:
+            'linear-gradient(90deg, rgba(56, 189, 248, 0.28) 0%, rgba(45, 212, 191, 0.34) 18%, rgba(163, 230, 53, 0.38) 45%, rgba(251, 191, 36, 0.22) 65%, rgba(192, 132, 252, 0.32) 85%, rgba(129, 140, 248, 0.22) 100%)',
         }}
       />
 
-      {/* 2. Lime / Spring Green glow in the center */}
+      {/* 2. Wide stretched soft accent: Teal / Cyan (spread across left half) */}
       <div
-        className="absolute -top-[120px] left-[35%] sm:left-[38%] w-[440px] sm:w-[560px] h-[300px] rounded-full blur-[90px] opacity-65 transform-gpu mix-blend-multiply"
+        className="absolute -top-[50px] -left-[5%] w-[55vw] min-w-[500px] h-[100px] sm:h-[130px] rounded-[100%] blur-[65px] sm:blur-[80px] opacity-70 transform-gpu mix-blend-multiply"
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(163, 230, 53, 0.38) 0%, rgba(132, 204, 22, 0.18) 50%, transparent 75%)',
+          background:
+            'radial-gradient(ellipse at center, rgba(45, 212, 191, 0.36) 0%, rgba(52, 211, 153, 0.2) 55%, transparent 80%)',
         }}
       />
 
-      {/* 3. Soft Sky Blue / Cyan accent */}
+      {/* 3. Wide stretched soft accent: Lime / Green (spread across center) */}
       <div
-        className="absolute -top-[90px] left-[20%] sm:left-[26%] w-[380px] sm:w-[480px] h-[260px] rounded-full blur-[95px] opacity-60 transform-gpu mix-blend-multiply"
+        className="absolute -top-[60px] left-[20%] w-[60vw] min-w-[600px] h-[110px] sm:h-[140px] rounded-[100%] blur-[60px] sm:blur-[75px] opacity-65 transform-gpu mix-blend-multiply"
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(56, 189, 248, 0.3) 0%, rgba(14, 165, 233, 0.15) 50%, transparent 75%)',
+          background:
+            'radial-gradient(ellipse at center, rgba(163, 230, 53, 0.38) 0%, rgba(132, 204, 22, 0.15) 60%, transparent 85%)',
         }}
       />
 
-      {/* 4. Soft Lavender / Lilac / Violet on the right */}
+      {/* 4. Wide stretched soft accent: Lilac / Violet / Sky (spread across right half) */}
       <div
-        className="absolute -top-[110px] right-[5%] sm:right-[15%] w-[420px] sm:w-[540px] h-[310px] rounded-full blur-[105px] opacity-60 transform-gpu mix-blend-multiply"
+        className="absolute -top-[50px] right-[-5%] w-[55vw] min-w-[500px] h-[100px] sm:h-[130px] rounded-[100%] blur-[70px] sm:blur-[85px] opacity-65 transform-gpu mix-blend-multiply"
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(192, 132, 252, 0.28) 0%, rgba(129, 140, 248, 0.16) 45%, transparent 75%)',
+          background:
+            'radial-gradient(ellipse at center, rgba(192, 132, 252, 0.32) 0%, rgba(129, 140, 248, 0.18) 55%, transparent 80%)',
         }}
       />
 
