@@ -70,12 +70,12 @@ export default function HorizontalServicesSection() {
   const startXRef = useRef<number>(0);
   const hasMovedRef = useRef<boolean>(false);
 
-  // Oval geometry & compact card dimensions
+  // Compact card dimensions & balanced oval geometry
   const [dimensions, setDimensions] = useState({
-    radiusX: 460,
-    radiusZ: 160,
-    cardWidth: 250,
-    cardHeight: 350
+    radiusX: 350,
+    radiusZ: 145,
+    cardWidth: 245,
+    cardHeight: 345
   });
 
   const updateDimensions = useCallback(() => {
@@ -83,24 +83,24 @@ export default function HorizontalServicesSection() {
     const w = window.innerWidth;
     if (w < 640) {
       setDimensions({
-        radiusX: Math.min(Math.max(w * 0.42, 190), 250),
-        radiusZ: 100,
-        cardWidth: 195,
-        cardHeight: 290
+        radiusX: Math.min(Math.max(w * 0.38, 160), 200),
+        radiusZ: 85,
+        cardWidth: 190,
+        cardHeight: 285
       });
     } else if (w < 1024) {
       setDimensions({
-        radiusX: Math.min(w * 0.4, 380),
-        radiusZ: 130,
-        cardWidth: 225,
-        cardHeight: 320
+        radiusX: Math.min(w * 0.32, 280),
+        radiusZ: 115,
+        cardWidth: 220,
+        cardHeight: 315
       });
     } else {
       setDimensions({
-        radiusX: Math.min(w * 0.36, 480),
-        radiusZ: 160,
-        cardWidth: 250,
-        cardHeight: 350
+        radiusX: Math.min(w * 0.26, 350),
+        radiusZ: 145,
+        cardWidth: 245,
+        cardHeight: 345
       });
     }
   }, []);
@@ -122,8 +122,8 @@ export default function HorizontalServicesSection() {
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
-      // Reversed rotation direction: angle increases (+14 deg/s in radians)
-      const speedRad = (14 * Math.PI) / 180;
+      // Rotation direction: clockwise / forward (+13.5 deg/s in radians)
+      const speedRad = (13.5 * Math.PI) / 180;
       if (!isPausedRef.current && !isDraggingRef.current) {
         rotationRef.current = (rotationRef.current + speedRad * dt) % (2 * Math.PI);
       }
@@ -136,12 +136,12 @@ export default function HorizontalServicesSection() {
         if (!card) return;
         const cardAngle = currentRot + idx * angleStepRad;
 
-        // Parametric Oval: wide X horizontal spread, shallow Z depth
+        // Parametric Oval
         const x = Math.sin(cardAngle) * radiusX;
         const z = Math.cos(cardAngle) * radiusZ;
 
-        // Subtle inward tilt facing toward the center/camera (-18 deg to +18 deg)
-        const tiltY = -(x / radiusX) * 18;
+        // Inward tilt facing toward the center/camera
+        const tiltY = -(x / radiusX) * 16;
 
         // Normalized Z depth: 1 at front (z = +radiusZ), 0 at back (z = -radiusZ)
         const normZ = Math.max(0, Math.min(1, (z + radiusZ) / (2 * radiusZ)));
@@ -149,20 +149,18 @@ export default function HorizontalServicesSection() {
         const isHovered = hoveredIndexRef.current === idx;
 
         // Depth-of-field blur & opacity calculation
-        // Back cards have blur (~3.5px) and reduced opacity (~0.38)
-        // Front cards have 0px blur and full opacity (1.0)
         let blurPx = 0;
         let opacity = 1;
-        let scale = 0.85 + 0.15 * normZ;
+        let scale = 0.86 + 0.14 * normZ;
 
         if (isHovered) {
           blurPx = 0;
           opacity = 1;
-          scale = 1.03;
+          scale = 1.02;
         } else {
           // As card goes to the back (normZ < 0.6), blur increases smoothly
           if (normZ < 0.6) {
-            blurPx = ((0.6 - normZ) / 0.6) * 3.5;
+            blurPx = ((0.6 - normZ) / 0.6) * 3.2;
           } else {
             blurPx = 0;
           }
@@ -208,7 +206,6 @@ export default function HorizontalServicesSection() {
     if (Math.abs(deltaX) > 4) {
       hasMovedRef.current = true;
     }
-    // Adjust rotation angle based on drag
     rotationRef.current = (rotationRef.current - deltaX * 0.005) % (2 * Math.PI);
     startXRef.current = e.clientX;
   };
@@ -279,7 +276,7 @@ export default function HorizontalServicesSection() {
                 onClick={handleCardClick}
                 onMouseEnter={() => handleCardEnter(idx)}
                 onMouseLeave={handleCardLeave}
-                className="group absolute top-0 left-0 w-full h-full rounded-2xl overflow-hidden bg-black border border-neutral-800/80 flex flex-col justify-between shadow-2xl hover:border-neutral-500 transition-[border-color,box-shadow] duration-300"
+                className="group absolute top-0 left-0 w-full h-full rounded-xl overflow-hidden bg-black border border-neutral-800/80 flex flex-col justify-between shadow-2xl transition-shadow duration-300"
                 style={{
                   width: `${cardWidth}px`,
                   height: `${cardHeight}px`,
