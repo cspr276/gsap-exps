@@ -11,14 +11,14 @@ import {
   PortalProject,
   PortalApplication,
 } from '@/lib/portal-data';
+import { usePortalTheme } from '@/components/portal/PortalThemeContext';
 
-export default function PortalProjectsPage() {
-  const [profile, setProfile] = useState<ContributorProfile>(getStoredProfile);
+function ProjectsContent() {
   const [projects, setProjects] = useState<PortalProject[]>(getStoredProjects);
   const [applications, setApplications] = useState<PortalApplication[]>(getStoredApplications);
+  const { isDark } = usePortalTheme();
 
   const refreshData = () => {
-    setProfile(getStoredProfile());
     setProjects(getStoredProjects());
     setApplications(getStoredApplications());
   };
@@ -30,12 +30,16 @@ export default function PortalProjectsPage() {
   const appliedProjectIds = new Set(applications.map((a) => a.projectId));
 
   return (
-    <PortalShell profile={profile}>
+    <>
       <div className="mb-6">
-        <h1 className="font-display font-bold text-2xl sm:text-3xl text-neutral-900 tracking-tight">
+        <h1
+          className={`font-display font-bold text-2xl sm:text-3xl tracking-tight ${
+            isDark ? 'text-white' : 'text-neutral-900'
+          }`}
+        >
           Find Projects
         </h1>
-        <p className="text-sm text-neutral-600 mt-1">
+        <p className={`text-sm mt-1 ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
           Explore all active benchmarking and evaluation opportunities open for application.
         </p>
       </div>
@@ -45,6 +49,16 @@ export default function PortalProjectsPage() {
         appliedProjectIds={appliedProjectIds}
         onApplicationSuccess={refreshData}
       />
+    </>
+  );
+}
+
+export default function PortalProjectsPage() {
+  const [profile] = useState<ContributorProfile>(getStoredProfile);
+
+  return (
+    <PortalShell profile={profile}>
+      <ProjectsContent />
     </PortalShell>
   );
 }

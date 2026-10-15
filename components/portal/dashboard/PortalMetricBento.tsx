@@ -1,6 +1,7 @@
 'use client';
 
 import { ContributorProfile } from '@/lib/portal-data';
+import { usePortalTheme } from '../PortalThemeContext';
 
 interface PortalMetricBentoProps {
   profile: ContributorProfile;
@@ -13,58 +14,58 @@ export default function PortalMetricBento({
   activeApplicationsCount,
   openProjectsCount,
 }: PortalMetricBentoProps) {
+  const { isDark } = usePortalTheme();
+
+  const tileClasses = `border rounded-xl p-5 shadow-xs transition-colors ${
+    isDark
+      ? 'bg-neutral-900/60 border-neutral-800 text-white'
+      : 'bg-white border-neutral-200/90 text-neutral-900'
+  }`;
+
+  const labelClasses = `font-mono text-xs uppercase tracking-wider font-medium block mb-2 ${
+    isDark ? 'text-neutral-400' : 'text-neutral-500'
+  }`;
+
+  const numberClasses = `font-display font-bold text-2xl sm:text-3xl tracking-tight ${
+    isDark ? 'text-white' : 'text-neutral-900'
+  }`;
+
+  const subClasses = `text-xs mt-1.5 font-sans ${
+    isDark ? 'text-neutral-400' : 'text-neutral-500'
+  }`;
+
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       {/* 1. Total Earnings */}
-      <div className="bg-white border border-neutral-200/90 rounded-xl p-5 shadow-xs">
-        <span className="font-mono text-xs uppercase tracking-wider text-neutral-500 font-medium block mb-2">
-          Total Earnings
-        </span>
-        <div className="font-display font-bold text-2xl sm:text-3xl text-neutral-900 tracking-tight">
+      <div className={tileClasses}>
+        <span className={labelClasses}>Total Earnings</span>
+        <div className={numberClasses}>
           ${profile.totalEarnings.toLocaleString()}.00
         </div>
-        <p className="text-xs text-neutral-500 mt-1.5 font-sans">
+        <p className={subClasses}>
           ${profile.availableBalance.toLocaleString()}.00 available to withdraw
         </p>
       </div>
 
       {/* 2. Available Projects */}
-      <div className="bg-white border border-neutral-200/90 rounded-xl p-5 shadow-xs">
-        <span className="font-mono text-xs uppercase tracking-wider text-neutral-500 font-medium block mb-2">
-          Available Modules
-        </span>
-        <div className="font-display font-bold text-2xl sm:text-3xl text-neutral-900 tracking-tight">
-          {openProjectsCount} Modules
-        </div>
-        <p className="text-xs text-neutral-500 mt-1.5 font-sans">
-          Across SWE-bench, RLHF, and FrontierMath
-        </p>
+      <div className={tileClasses}>
+        <span className={labelClasses}>Available Modules</span>
+        <div className={numberClasses}>{openProjectsCount} Modules</div>
+        <p className={subClasses}>Across SWE-bench, RLHF, and FrontierMath</p>
       </div>
 
       {/* 3. Applications In Queue */}
-      <div className="bg-white border border-neutral-200/90 rounded-xl p-5 shadow-xs">
-        <span className="font-mono text-xs uppercase tracking-wider text-neutral-500 font-medium block mb-2">
-          Applications
-        </span>
-        <div className="font-display font-bold text-2xl sm:text-3xl text-neutral-900 tracking-tight">
-          {activeApplicationsCount} In Review
-        </div>
-        <p className="text-xs text-neutral-500 mt-1.5 font-sans">
-          1 contract active, 2 under review
-        </p>
+      <div className={tileClasses}>
+        <span className={labelClasses}>Applications</span>
+        <div className={numberClasses}>{activeApplicationsCount} In Review</div>
+        <p className={subClasses}>1 contract active, 2 under review</p>
       </div>
 
       {/* 4. Review Accuracy */}
-      <div className="bg-white border border-neutral-200/90 rounded-xl p-5 shadow-xs">
-        <span className="font-mono text-xs uppercase tracking-wider text-neutral-500 font-medium block mb-2">
-          Review Accuracy
-        </span>
-        <div className="font-display font-bold text-2xl sm:text-3xl text-neutral-900 tracking-tight">
-          {profile.reviewAccuracy}
-        </div>
-        <p className="text-xs text-neutral-500 mt-1.5 font-sans">
-          {profile.completedTasks} completed verification tasks
-        </p>
+      <div className={tileClasses}>
+        <span className={labelClasses}>Review Accuracy</span>
+        <div className={numberClasses}>{profile.reviewAccuracy}</div>
+        <p className={subClasses}>{profile.completedTasks} completed verification tasks</p>
       </div>
     </div>
   );
