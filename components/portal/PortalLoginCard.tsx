@@ -149,12 +149,6 @@ export default function PortalLoginCard({ initialEmail = '', onSuccessRedirect =
 
   return (
     <div className="w-full max-w-[440px] bg-white border border-neutral-200/90 rounded-2xl p-7 sm:p-9 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative z-10 transition-all">
-      {/* Brand Icon Mark (Matching Screenshot 1 Accent) */}
-      <div className="flex items-center justify-center mb-5">
-        <div className="w-12 h-12 rounded-xl bg-black text-white flex items-center justify-center font-display font-black text-xl tracking-tight shadow-sm select-none border border-neutral-800">
-          E
-        </div>
-      </div>
 
       {/* Header Titles */}
       <div className="text-center mb-6">
