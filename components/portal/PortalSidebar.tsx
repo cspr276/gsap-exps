@@ -10,12 +10,10 @@ import {
   User,
   LogOut,
   ArrowUpRight,
-  Sun,
-  Moon,
 } from 'lucide-react';
 import { authApi } from '@/lib/portal-auth';
 import { ContributorProfile } from '@/lib/portal-data';
-import { usePortalTheme } from './PortalThemeContext';
+import { ModeToggle } from '@/components/mode-toggle';
 
 interface PortalSidebarProps {
   profile: ContributorProfile;
@@ -32,7 +30,6 @@ const NAV_ITEMS = [
 export default function PortalSidebar({ profile, onCloseMobile }: PortalSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { isDark, toggleTheme } = usePortalTheme();
 
   const handleSignOut = async () => {
     await authApi.logout();
@@ -41,34 +38,36 @@ export default function PortalSidebar({ profile, onCloseMobile }: PortalSidebarP
 
   return (
     <aside
-      className={`w-64 h-full border-r flex flex-col justify-between p-5 select-none transition-colors duration-150 ${
-        isDark
-          ? 'bg-[#0d0f12] border-neutral-800 text-white'
-          : 'bg-white border-neutral-200 text-neutral-900'
-      }`}
+      className="w-64 h-full border-r flex flex-col justify-between p-5 select-none bg-white dark:bg-[#0d0f12] border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-white"
     >
       {/* Top: Logo & Nav Links */}
       <div>
-        {/* Brand Logo */}
-        <div className={`pb-6 border-b ${isDark ? 'border-neutral-800' : 'border-neutral-100'}`}>
+        {/* Brand Logo with pure CSS dark/light swap to prevent any flash */}
+        <div className="pb-6 border-b border-neutral-100 dark:border-neutral-800">
           <Link
             href="/portal"
             onClick={onCloseMobile}
             className="flex items-center gap-2 group transition-opacity hover:opacity-85"
           >
             <Image
-              src={isDark ? '/logo-negative.png' : '/logo.png'}
+              src="/logo.png"
               alt="Evalixa AI"
               width={125}
               height={30}
-              className="h-7 w-auto object-contain"
+              className="h-7 w-auto object-contain dark:hidden"
+              priority
+            />
+            <Image
+              src="/logo-negative.png"
+              alt="Evalixa AI"
+              width={125}
+              height={30}
+              className="h-7 w-auto object-contain hidden dark:block"
               priority
             />
           </Link>
           <div
-            className={`font-mono text-[10px] uppercase tracking-wider mt-2 font-medium ${
-              isDark ? 'text-neutral-500' : 'text-neutral-400'
-            }`}
+            className="font-mono text-[10px] uppercase tracking-wider mt-2 font-medium text-neutral-400 dark:text-neutral-500"
           >
             Evaluation Portal
           </div>
@@ -90,23 +89,15 @@ export default function PortalSidebar({ profile, onCloseMobile }: PortalSidebarP
                 onClick={onCloseMobile}
                 className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isActive
-                    ? isDark
-                      ? 'bg-neutral-800 text-white font-semibold'
-                      : 'bg-neutral-100 text-neutral-900 font-semibold'
-                    : isDark
-                    ? 'text-neutral-400 hover:text-white hover:bg-neutral-800/40'
-                    : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50'
+                    ? 'bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white font-semibold'
+                    : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800/40'
                 }`}
               >
                 <Icon
                   className={`w-4 h-4 ${
                     isActive
-                      ? isDark
-                        ? 'text-white'
-                        : 'text-neutral-900'
-                      : isDark
-                      ? 'text-neutral-500'
-                      : 'text-neutral-400'
+                      ? 'text-neutral-900 dark:text-white'
+                      : 'text-neutral-400 dark:text-neutral-500'
                   }`}
                 />
                 <span>{item.label}</span>
@@ -117,39 +108,19 @@ export default function PortalSidebar({ profile, onCloseMobile }: PortalSidebarP
       </div>
 
       {/* Bottom: User Card, Theme Toggle & Actions */}
-      <div className={`pt-5 border-t space-y-2.5 ${isDark ? 'border-neutral-800' : 'border-neutral-100'}`}>
-        {/* Theme Toggle Button */}
-        <button
-          type="button"
-          onClick={toggleTheme}
-          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer ${
-            isDark
-              ? 'bg-neutral-900/80 hover:bg-neutral-800 text-neutral-300 border border-neutral-800'
-              : 'bg-neutral-50 hover:bg-neutral-100 text-neutral-700 border border-neutral-200'
-          }`}
-          aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
-        >
-          <div className="flex items-center gap-2">
-            {isDark ? (
-              <Sun className="w-3.5 h-3.5 text-amber-400" />
-            ) : (
-              <Moon className="w-3.5 h-3.5 text-neutral-600" />
-            )}
-            <span>Theme</span>
-          </div>
-          <span className={`font-semibold ${isDark ? 'text-amber-400' : 'text-neutral-900'}`}>
-            {isDark ? 'Dark' : 'Light'}
+      <div className="pt-5 border-t border-neutral-100 dark:border-neutral-800 space-y-2.5">
+        {/* Theme Dropdown */}
+        <div className="flex items-center justify-between px-3 py-2 rounded-lg border bg-neutral-50 dark:bg-neutral-900/60 border-neutral-200/80 dark:border-neutral-800">
+          <span className="text-xs font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-medium">
+            Theme
           </span>
-        </button>
+          <ModeToggle />
+        </div>
 
         {/* Public Website Link */}
         <Link
           href="/"
-          className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-mono uppercase tracking-wider transition-colors ${
-            isDark
-              ? 'text-neutral-400 hover:text-white hover:bg-neutral-800/40'
-              : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-50'
-          }`}
+          className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-mono uppercase tracking-wider transition-colors text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800/40"
         >
           <span>Main Website</span>
           <ArrowUpRight className="w-3.5 h-3.5" />
@@ -157,34 +128,22 @@ export default function PortalSidebar({ profile, onCloseMobile }: PortalSidebarP
 
         {/* Contributor Profile Info */}
         <div
-          className={`px-3 py-2.5 rounded-lg border ${
-            isDark
-              ? 'bg-neutral-900/90 border-neutral-800'
-              : 'bg-neutral-50 border-neutral-200/80'
-          }`}
+          className="px-3 py-2.5 rounded-lg border bg-neutral-50 dark:bg-neutral-900/90 border-neutral-200/80 dark:border-neutral-800"
         >
           <div className="flex items-center gap-2.5">
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center font-mono text-xs font-bold flex-shrink-0 ${
-                isDark
-                  ? 'bg-neutral-800 text-white border border-neutral-700'
-                  : 'bg-neutral-200 text-neutral-800'
-              }`}
+              className="w-8 h-8 rounded-full flex items-center justify-center font-mono text-xs font-bold flex-shrink-0 bg-neutral-200 dark:bg-neutral-800 text-neutral-800 dark:text-white border border-transparent dark:border-neutral-700"
             >
               {profile.avatarInitials}
             </div>
             <div className="truncate">
               <div
-                className={`text-xs font-semibold truncate ${
-                  isDark ? 'text-white' : 'text-neutral-900'
-                }`}
+                className="text-xs font-semibold truncate text-neutral-900 dark:text-white"
               >
                 {profile.name}
               </div>
               <div
-                className={`text-[11px] font-mono truncate ${
-                  isDark ? 'text-neutral-500' : 'text-neutral-500'
-                }`}
+                className="text-[11px] font-mono truncate text-neutral-500 dark:text-neutral-500"
               >
                 {profile.email}
               </div>

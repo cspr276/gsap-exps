@@ -1,7 +1,45 @@
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
+  /* Core Canvas Surfaces */
+  --background: #f8fafc;
+  --foreground: #09090b;
+
+  /* Surfaces */
+  --surface-canvas: #f8fafc;
+  --surface-card: #ffffff;
+  --surface-card-elevated: #ffffff;
+  --surface-card-subtle: #f1f5f9;
+  --surface-overlay: #ffffff;
+
+  /* Borders */
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-dark: #e2e8f0;
+  --border-dark-muted: rgba(226, 232, 240, 0.8);
+  --border-light: #e5e5e5;
+
+  /* Light Theme Surfaces (Manifesto & Why Evalixa) */
+  --surface-light: #ffffff;
+  --surface-light-muted: #f6f6f8;
+  --foreground-dark: #09090b;
+  --foreground-dark-muted: #52525b;
+
+  /* Accents */
+  --accent-blue: #2563eb;
+  --accent-blue-hover: #1d4ed8;
+
+  /* UI Tokens for HoverCard and Minimap */
+  --popover: #ffffff;
+  --popover-foreground: #09090b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --ring: #18181b;
+}
+
+.dark {
   /* Core Canvas Surfaces */
   --background: #09090b;
   --foreground: #ffffff;
@@ -18,12 +56,6 @@
   --border-dark: #27272a;
   --border-dark-muted: rgba(39, 39, 42, 0.8);
   --border-light: #e5e5e5;
-
-  /* Light Theme Surfaces (Manifesto & Why Evalixa) */
-  --surface-light: #ffffff;
-  --surface-light-muted: #f6f6f8;
-  --foreground-dark: #09090b;
-  --foreground-dark-muted: #52525b;
 
   /* Accents */
   --accent-blue: #2563eb;

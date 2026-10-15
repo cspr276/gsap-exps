@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function PortalRegisterPage() {
   return (
-    <div className="min-h-screen relative flex flex-col bg-[#FAFAFA] text-neutral-900 selection:bg-neutral-900 selection:text-white overflow-x-hidden">
+    <div className="min-h-screen relative flex flex-col bg-[#FAFAFA] dark:bg-[#09090b] text-neutral-900 dark:text-neutral-100 selection:bg-neutral-900 selection:text-white dark:selection:bg-neutral-800 transition-colors overflow-x-hidden">
       {/* Subtle Aurora Glow at the top */}
       <PortalAurora />
 

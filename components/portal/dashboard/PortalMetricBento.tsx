@@ -1,7 +1,6 @@
 'use client';
 
 import { ContributorProfile } from '@/lib/portal-data';
-import { usePortalTheme } from '../PortalThemeContext';
 
 interface PortalMetricBentoProps {
   profile: ContributorProfile;
@@ -9,31 +8,23 @@ interface PortalMetricBentoProps {
   openProjectsCount: number;
 }
 
+const tileClasses =
+  'border rounded-xl p-5 shadow-xs bg-white dark:bg-neutral-900/60 border-neutral-200/90 dark:border-neutral-800 text-neutral-900 dark:text-white';
+
+const labelClasses =
+  'font-mono text-xs uppercase tracking-wider font-medium block mb-2 text-neutral-500 dark:text-neutral-400';
+
+const numberClasses =
+  'font-display font-bold text-2xl sm:text-3xl tracking-tight text-neutral-900 dark:text-white';
+
+const subClasses =
+  'text-xs mt-1.5 font-sans text-neutral-500 dark:text-neutral-400';
+
 export default function PortalMetricBento({
   profile,
   activeApplicationsCount,
   openProjectsCount,
 }: PortalMetricBentoProps) {
-  const { isDark } = usePortalTheme();
-
-  const tileClasses = `border rounded-xl p-5 shadow-xs transition-colors ${
-    isDark
-      ? 'bg-neutral-900/60 border-neutral-800 text-white'
-      : 'bg-white border-neutral-200/90 text-neutral-900'
-  }`;
-
-  const labelClasses = `font-mono text-xs uppercase tracking-wider font-medium block mb-2 ${
-    isDark ? 'text-neutral-400' : 'text-neutral-500'
-  }`;
-
-  const numberClasses = `font-display font-bold text-2xl sm:text-3xl tracking-tight ${
-    isDark ? 'text-white' : 'text-neutral-900'
-  }`;
-
-  const subClasses = `text-xs mt-1.5 font-sans ${
-    isDark ? 'text-neutral-400' : 'text-neutral-500'
-  }`;
-
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       {/* 1. Total Earnings */}

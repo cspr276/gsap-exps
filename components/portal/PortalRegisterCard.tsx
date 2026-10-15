@@ -140,29 +140,29 @@ export default function PortalRegisterCard({ onSuccessRedirect = '/portal' }: Po
   };
 
   return (
-    <div className="w-full max-w-[440px] bg-white border border-neutral-200/90 rounded-2xl p-7 sm:p-9 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative z-10 transition-all">
+    <div className="w-full max-w-[440px] bg-white dark:bg-neutral-900/95 border border-neutral-200/90 dark:border-neutral-800 rounded-2xl p-7 sm:p-9 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.5)] relative z-10 transition-all">
 
       {/* Header Titles */}
       <div className="text-center mb-6">
-        <h1 className="font-display font-bold text-xl sm:text-2xl text-neutral-900 tracking-tight mb-1.5">
+        <h1 className="font-display font-bold text-xl sm:text-2xl text-neutral-900 dark:text-white tracking-tight mb-1.5">
           Create an account
         </h1>
-        <p className="text-neutral-500 text-xs sm:text-sm">
+        <p className="text-neutral-500 dark:text-neutral-400 text-xs sm:text-sm">
           Get started with your work email to join our contributor network.
         </p>
       </div>
 
       {/* Alert Notices */}
       {error && (
-        <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200/80 flex items-start gap-2.5 text-xs text-red-700 animate-in fade-in duration-200">
-          <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+        <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-950/80 border border-red-200/80 dark:border-red-800 flex items-start gap-2.5 text-xs text-red-700 dark:text-red-300 animate-in fade-in duration-200">
+          <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
           <div className="leading-snug">{error}</div>
         </div>
       )}
 
       {successMessage && (
-        <div className="mb-4 p-3 rounded-lg bg-emerald-50 border border-emerald-200/80 flex items-start gap-2.5 text-xs text-emerald-800 animate-in fade-in duration-200">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+        <div className="mb-4 p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-200/80 dark:border-emerald-800 flex items-start gap-2.5 text-xs text-emerald-800 dark:text-emerald-300 animate-in fade-in duration-200">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
           <div className="leading-snug">{successMessage}</div>
         </div>
       )}
@@ -171,7 +171,7 @@ export default function PortalRegisterCard({ onSuccessRedirect = '/portal' }: Po
       <form onSubmit={handleRegisterSubmit} className="space-y-4" noValidate>
         {/* Full Name */}
         <div>
-          <label htmlFor="reg-name" className="block text-xs font-medium text-neutral-700 mb-1.5 tracking-wide">
+          <label htmlFor="reg-name" className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1.5 tracking-wide">
             Full Name
           </label>
           <div className="relative">
@@ -186,18 +186,20 @@ export default function PortalRegisterCard({ onSuccessRedirect = '/portal' }: Po
                 setFieldErrors((prev) => ({ ...prev, name: '' }));
               }}
               disabled={loading || otpSent}
-              className={`w-full px-3.5 py-2.5 text-sm text-neutral-900 bg-white border ${
-                fieldErrors.name ? 'border-red-500 ring-1 ring-red-500' : 'border-neutral-300'
-              } rounded-lg placeholder:text-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900 transition-colors disabled:bg-neutral-50 disabled:text-neutral-600`}
+              className={`w-full px-3.5 py-2.5 text-sm text-neutral-900 dark:text-white bg-white dark:bg-neutral-950 border ${
+                fieldErrors.name
+                  ? 'border-red-500 ring-1 ring-red-500'
+                  : 'border-neutral-300 dark:border-neutral-800'
+              } rounded-lg placeholder:text-neutral-400 dark:placeholder:text-neutral-600 focus:outline-none focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-400 focus:border-neutral-900 dark:focus:border-neutral-400 transition-colors disabled:bg-neutral-50 dark:disabled:bg-neutral-900 disabled:text-neutral-500`}
             />
-            <User className="absolute right-3.5 top-3 w-4 h-4 text-neutral-400 pointer-events-none" />
+            <User className="absolute right-3.5 top-3 w-4 h-4 text-neutral-400 dark:text-neutral-600 pointer-events-none" />
           </div>
-          {fieldErrors.name && <p className="mt-1 text-xs text-red-600">{fieldErrors.name}</p>}
+          {fieldErrors.name && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{fieldErrors.name}</p>}
         </div>
 
         {/* Work Email */}
         <div>
-          <label htmlFor="reg-email" className="block text-xs font-medium text-neutral-700 mb-1.5 tracking-wide">
+          <label htmlFor="reg-email" className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1.5 tracking-wide">
             Work Email
           </label>
           <div className="relative">
@@ -217,18 +219,20 @@ export default function PortalRegisterCard({ onSuccessRedirect = '/portal' }: Po
                 }
               }}
               disabled={loading || otpSent}
-              className={`w-full px-3.5 py-2.5 text-sm text-neutral-900 bg-white border ${
-                fieldErrors.email ? 'border-red-500 ring-1 ring-red-500' : 'border-neutral-300'
-              } rounded-lg placeholder:text-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900 transition-colors disabled:bg-neutral-50 disabled:text-neutral-600`}
+              className={`w-full px-3.5 py-2.5 text-sm text-neutral-900 dark:text-white bg-white dark:bg-neutral-950 border ${
+                fieldErrors.email
+                  ? 'border-red-500 ring-1 ring-red-500'
+                  : 'border-neutral-300 dark:border-neutral-800'
+              } rounded-lg placeholder:text-neutral-400 dark:placeholder:text-neutral-600 focus:outline-none focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-400 focus:border-neutral-900 dark:focus:border-neutral-400 transition-colors disabled:bg-neutral-50 dark:disabled:bg-neutral-900 disabled:text-neutral-500`}
             />
-            <Mail className="absolute right-3.5 top-3 w-4 h-4 text-neutral-400 pointer-events-none" />
+            <Mail className="absolute right-3.5 top-3 w-4 h-4 text-neutral-400 dark:text-neutral-600 pointer-events-none" />
           </div>
-          {fieldErrors.email && <p className="mt-1 text-xs text-red-600">{fieldErrors.email}</p>}
+          {fieldErrors.email && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{fieldErrors.email}</p>}
         </div>
 
         {/* Password */}
         <div>
-          <label htmlFor="reg-password" className="block text-xs font-medium text-neutral-700 mb-1.5 tracking-wide">
+          <label htmlFor="reg-password" className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1.5 tracking-wide">
             Password
           </label>
           <div className="relative">
@@ -243,25 +247,27 @@ export default function PortalRegisterCard({ onSuccessRedirect = '/portal' }: Po
                 setFieldErrors((prev) => ({ ...prev, password: '' }));
               }}
               disabled={loading || otpSent}
-              className={`w-full px-3.5 py-2.5 text-sm text-neutral-900 bg-white border ${
-                fieldErrors.password ? 'border-red-500 ring-1 ring-red-500' : 'border-neutral-300'
-              } rounded-lg placeholder:text-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900 transition-colors disabled:bg-neutral-50 disabled:text-neutral-600`}
+              className={`w-full px-3.5 py-2.5 text-sm text-neutral-900 dark:text-white bg-white dark:bg-neutral-950 border ${
+                fieldErrors.password
+                  ? 'border-red-500 ring-1 ring-red-500'
+                  : 'border-neutral-300 dark:border-neutral-800'
+              } rounded-lg placeholder:text-neutral-400 dark:placeholder:text-neutral-600 focus:outline-none focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-400 focus:border-neutral-900 dark:focus:border-neutral-400 transition-colors disabled:bg-neutral-50 dark:disabled:bg-neutral-900 disabled:text-neutral-500`}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               tabIndex={-1}
-              className="absolute right-3.5 top-3 text-neutral-400 hover:text-neutral-600 transition-colors"
+              className="absolute right-3.5 top-3 text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
             >
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
-          {fieldErrors.password && <p className="mt-1 text-xs text-red-600">{fieldErrors.password}</p>}
+          {fieldErrors.password && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{fieldErrors.password}</p>}
 
           {/* Password Requirements Checklist */}
           {password && !otpSent && (
-            <div className="mt-2.5 p-2.5 bg-neutral-50 rounded-lg border border-neutral-100 text-[11px] space-y-1">
-              <span className="font-semibold text-neutral-700 block mb-1">Password Requirements:</span>
+            <div className="mt-2.5 p-2.5 bg-neutral-50 dark:bg-neutral-950/80 rounded-lg border border-neutral-100 dark:border-neutral-800 text-[11px] space-y-1">
+              <span className="font-semibold text-neutral-700 dark:text-neutral-300 block mb-1">Password Requirements:</span>
               {PASSWORD_REQUIREMENTS.map((rule) => {
                 const ok =
                   (rule.startsWith('At least') && password.length >= MIN_PASSWORD_LENGTH) ||
@@ -273,9 +279,9 @@ export default function PortalRegisterCard({ onSuccessRedirect = '/portal' }: Po
                 return (
                   <div
                     key={rule}
-                    className={`flex items-center gap-1.5 ${ok ? 'text-emerald-700 font-medium' : 'text-neutral-400'}`}
+                    className={`flex items-center gap-1.5 ${ok ? 'text-emerald-700 dark:text-emerald-400 font-medium' : 'text-neutral-400 dark:text-neutral-600'}`}
                   >
-                    <Check className={`w-3 h-3 ${ok ? 'text-emerald-600 stroke-[3]' : 'text-neutral-300'}`} />
+                    <Check className={`w-3 h-3 ${ok ? 'text-emerald-600 dark:text-emerald-400 stroke-[3]' : 'text-neutral-300 dark:text-neutral-700'}`} />
                     <span>{rule}</span>
                   </div>
                 );
@@ -288,7 +294,7 @@ export default function PortalRegisterCard({ onSuccessRedirect = '/portal' }: Po
         <div>
           <label
             htmlFor="reg-confirm-password"
-            className="block text-xs font-medium text-neutral-700 mb-1.5 tracking-wide"
+            className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1.5 tracking-wide"
           >
             Confirm Password
           </label>
@@ -304,33 +310,35 @@ export default function PortalRegisterCard({ onSuccessRedirect = '/portal' }: Po
                 setFieldErrors((prev) => ({ ...prev, confirmPassword: '' }));
               }}
               disabled={loading || otpSent}
-              className={`w-full px-3.5 py-2.5 text-sm text-neutral-900 bg-white border ${
-                fieldErrors.confirmPassword ? 'border-red-500 ring-1 ring-red-500' : 'border-neutral-300'
-              } rounded-lg placeholder:text-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900 transition-colors disabled:bg-neutral-50 disabled:text-neutral-600`}
+              className={`w-full px-3.5 py-2.5 text-sm text-neutral-900 dark:text-white bg-white dark:bg-neutral-950 border ${
+                fieldErrors.confirmPassword
+                  ? 'border-red-500 ring-1 ring-red-500'
+                  : 'border-neutral-300 dark:border-neutral-800'
+              } rounded-lg placeholder:text-neutral-400 dark:placeholder:text-neutral-600 focus:outline-none focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-400 focus:border-neutral-900 dark:focus:border-neutral-400 transition-colors disabled:bg-neutral-50 dark:disabled:bg-neutral-900 disabled:text-neutral-500`}
             />
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               tabIndex={-1}
-              className="absolute right-3.5 top-3 text-neutral-400 hover:text-neutral-600 transition-colors"
+              className="absolute right-3.5 top-3 text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
             >
               {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
           {fieldErrors.confirmPassword && (
-            <p className="mt-1 text-xs text-red-600">{fieldErrors.confirmPassword}</p>
+            <p className="mt-1 text-xs text-red-600 dark:text-red-400">{fieldErrors.confirmPassword}</p>
           )}
         </div>
 
         {/* OTP Verification Box */}
         {otpSent && (
-          <div className="p-3.5 rounded-lg bg-neutral-50 border border-neutral-200 animate-in fade-in-50 duration-200">
+          <div className="p-3.5 rounded-lg bg-neutral-50 dark:bg-neutral-950/80 border border-neutral-200 dark:border-neutral-800 animate-in fade-in-50 duration-200">
             <div className="flex items-center justify-between mb-1.5">
-              <label htmlFor="reg-otp" className="block text-xs font-medium text-neutral-800 tracking-wide">
+              <label htmlFor="reg-otp" className="block text-xs font-medium text-neutral-800 dark:text-neutral-200 tracking-wide">
                 Email Verification Code
               </label>
               {devOtp && (
-                <span className="font-mono text-[10px] bg-neutral-200/80 px-2 py-0.5 rounded text-neutral-700">
+                <span className="font-mono text-[10px] bg-neutral-200/80 dark:bg-neutral-800 px-2 py-0.5 rounded text-neutral-700 dark:text-neutral-300">
                   Dev Code: {devOtp}
                 </span>
               )}
@@ -347,22 +355,22 @@ export default function PortalRegisterCard({ onSuccessRedirect = '/portal' }: Po
                   setOtp(e.target.value.replace(/\D/g, '').slice(0, 6));
                   setFieldErrors((prev) => ({ ...prev, otp: '' }));
                 }}
-                className={`w-full px-3.5 py-2.5 font-mono text-center tracking-widest text-base text-neutral-900 bg-white border ${
-                  fieldErrors.otp ? 'border-red-500 ring-1 ring-red-500' : 'border-neutral-300'
-                } rounded-lg focus:outline-none focus:ring-1 focus:ring-neutral-900`}
+                className={`w-full px-3.5 py-2.5 font-mono text-center tracking-widest text-base text-neutral-900 dark:text-white bg-white dark:bg-neutral-950 border ${
+                  fieldErrors.otp ? 'border-red-500 ring-1 ring-red-500' : 'border-neutral-300 dark:border-neutral-800'
+                } rounded-lg focus:outline-none focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-400`}
               />
               <KeyRound className="absolute right-3.5 top-3 w-4 h-4 text-neutral-400 pointer-events-none" />
             </div>
-            {fieldErrors.otp && <p className="text-xs text-red-600 mb-2">{fieldErrors.otp}</p>}
+            {fieldErrors.otp && <p className="text-xs text-red-600 dark:text-red-400 mb-2">{fieldErrors.otp}</p>}
 
-            <div className="flex items-center justify-between text-xs text-neutral-500">
+            <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
               <button
                 type="button"
                 onClick={() => {
                   setOtpSent(false);
                   setOtp('');
                 }}
-                className="text-neutral-600 hover:text-neutral-900 underline"
+                className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white underline"
               >
                 Change details
               </button>
@@ -370,7 +378,7 @@ export default function PortalRegisterCard({ onSuccessRedirect = '/portal' }: Po
                 type="button"
                 onClick={handleRequestOtp}
                 disabled={resendCooldown > 0 || otpSending}
-                className="text-neutral-900 font-medium hover:underline disabled:opacity-50 disabled:no-underline"
+                className="text-neutral-900 dark:text-white font-medium hover:underline disabled:opacity-50 disabled:no-underline"
               >
                 {resendCooldown > 0 ? `Resend code (${resendCooldown}s)` : 'Resend code'}
               </button>
@@ -384,7 +392,7 @@ export default function PortalRegisterCard({ onSuccessRedirect = '/portal' }: Po
             type="button"
             onClick={handleRequestOtp}
             disabled={otpSending}
-            className="w-full py-2.5 px-4 bg-neutral-900 hover:bg-black text-white text-sm font-medium rounded-lg shadow-sm transition-all duration-150 active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed mt-2"
+            className="w-full py-2.5 px-4 bg-neutral-900 hover:bg-black dark:bg-white dark:hover:bg-neutral-200 text-white dark:text-neutral-900 text-sm font-semibold rounded-lg shadow-xs transition-all duration-150 active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed mt-2"
           >
             {otpSending ? (
               <>
@@ -399,7 +407,7 @@ export default function PortalRegisterCard({ onSuccessRedirect = '/portal' }: Po
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 px-4 bg-neutral-900 hover:bg-black text-white text-sm font-medium rounded-lg shadow-sm transition-all duration-150 active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed mt-2"
+            className="w-full py-2.5 px-4 bg-neutral-900 hover:bg-black dark:bg-white dark:hover:bg-neutral-200 text-white dark:text-neutral-900 text-sm font-semibold rounded-lg shadow-xs transition-all duration-150 active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed mt-2"
           >
             {loading ? (
               <>
@@ -413,12 +421,12 @@ export default function PortalRegisterCard({ onSuccessRedirect = '/portal' }: Po
         )}
 
         {/* Switcher: Link to Login */}
-        <div className="text-center pt-3 border-t border-neutral-100 mt-5">
-          <p className="text-xs text-neutral-600">
+        <div className="text-center pt-3 border-t border-neutral-100 dark:border-neutral-800 mt-5">
+          <p className="text-xs text-neutral-600 dark:text-neutral-400">
             Already have an account?{' '}
             <Link
               href="/portal/login"
-              className="text-neutral-950 font-semibold underline underline-offset-2 hover:text-black transition-colors"
+              className="text-neutral-950 dark:text-white font-semibold underline underline-offset-2 hover:text-black dark:hover:text-neutral-200 transition-colors"
             >
               Sign In
             </Link>

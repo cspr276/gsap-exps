@@ -11,12 +11,10 @@ import {
   PortalProject,
   PortalApplication,
 } from '@/lib/portal-data';
-import { usePortalTheme } from '@/components/portal/PortalThemeContext';
 
 function ProjectsContent() {
   const [projects, setProjects] = useState<PortalProject[]>(getStoredProjects);
   const [applications, setApplications] = useState<PortalApplication[]>(getStoredApplications);
-  const { isDark } = usePortalTheme();
 
   const refreshData = () => {
     setProjects(getStoredProjects());
@@ -33,13 +31,11 @@ function ProjectsContent() {
     <>
       <div className="mb-6">
         <h1
-          className={`font-display font-bold text-2xl sm:text-3xl tracking-tight ${
-            isDark ? 'text-white' : 'text-neutral-900'
-          }`}
+          className="font-display font-bold text-2xl sm:text-3xl tracking-tight text-neutral-900 dark:text-white"
         >
           Find Projects
         </h1>
-        <p className={`text-sm mt-1 ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
+        <p className="text-sm mt-1 text-neutral-600 dark:text-neutral-400">
           Explore all active benchmarking and evaluation opportunities open for application.
         </p>
       </div>
