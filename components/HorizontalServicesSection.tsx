@@ -226,7 +226,7 @@ export default function HorizontalServicesSection() {
   return (
     <section
       id="capabilities"
-      className="relative z-30 lg:-mt-[100vh] w-full min-h-[640px] lg:min-h-screen bg-neutral-950 text-white pt-16 sm:pt-20 pb-16 flex flex-col justify-between items-center overflow-hidden border-t border-neutral-800/80 shadow-[0_-30px_70px_rgba(0,0,0,0.95)]"
+      className="relative z-30 lg:-mt-[100vh] w-full bg-neutral-950 text-white pt-16 sm:pt-20 lg:pt-24 pb-16 sm:pb-20 flex flex-col justify-center items-center overflow-hidden border-t border-neutral-800/80 shadow-[0_-30px_70px_rgba(0,0,0,0.95)]"
     >
       {/* Section Header */}
       <div className="px-6 sm:px-12 lg:px-20 max-w-4xl text-center mx-auto mb-6 sm:mb-10 flex-shrink-0">
@@ -244,11 +244,11 @@ export default function HorizontalServicesSection() {
       {/* 3D Oval Carousel Stage */}
       <div
         ref={stageRef}
-        className="relative w-full overflow-hidden flex items-center justify-center select-none cursor-grab active:cursor-grabbing my-auto"
+        className="relative w-full overflow-hidden flex items-center justify-center select-none cursor-grab active:cursor-grabbing my-4 sm:my-6"
         style={{
           perspective: '1200px',
           perspectiveOrigin: '50% 50%',
-          height: `${cardHeight + 70}px`
+          height: `${cardHeight + 40}px`
         }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
@@ -284,8 +284,8 @@ export default function HorizontalServicesSection() {
                   willChange: 'transform, opacity, filter'
                 }}
               >
-                {/* Top Half: Photo with Large Translucent Number */}
-                <div className="relative w-full h-[52%] overflow-hidden bg-black flex-shrink-0">
+                {/* Top Half: Photo with Large Translucent Number (dot removed) */}
+                <div className="relative w-full h-[46%] overflow-hidden bg-black flex-shrink-0">
                   <img
                     src={item.image}
                     alt={item.title}
@@ -299,29 +299,24 @@ export default function HorizontalServicesSection() {
                   <span className="absolute top-3 left-3.5 font-mono text-xl sm:text-2xl font-light tracking-tight text-white/80 select-none drop-shadow-md">
                     {item.num}
                   </span>
-
-                  {/* Minimalist Indicator Dot in Top-Right Corner */}
-                  <span className="absolute top-3.5 right-3.5 w-1.5 h-1.5 rounded-full bg-white/40" />
                 </div>
 
-                {/* Bottom Half: Category, Title, and Description (NO bottom progress line) */}
-                <div className="p-4 sm:p-5 flex flex-col justify-between h-[48%] bg-black">
-                  <div>
-                    {/* Category Label */}
-                    <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-semibold mb-1 block">
-                      {item.category}
-                    </span>
+                {/* Bottom Half: Category, Full Title, and Complete Description */}
+                <div className="p-4 sm:p-5 flex flex-col justify-start gap-1 h-[54%] bg-black">
+                  {/* Category Label */}
+                  <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-semibold mb-0.5 block">
+                    {item.category}
+                  </span>
 
-                    {/* Service Title */}
-                    <h3 className="font-display font-bold text-sm sm:text-base text-white tracking-tight leading-snug line-clamp-1 mb-1.5 group-hover:text-neutral-200 transition-colors">
-                      {item.title}
-                    </h3>
+                  {/* Service Title (allows 2 lines so full heading is visible) */}
+                  <h3 className="font-display font-bold text-sm sm:text-base text-white tracking-tight leading-snug line-clamp-2 mb-1 group-hover:text-neutral-200 transition-colors">
+                    {item.title}
+                  </h3>
 
-                    {/* Short Description */}
-                    <p className="text-neutral-300 text-[11px] sm:text-xs leading-relaxed line-clamp-2 font-normal">
-                      {item.desc}
-                    </p>
-                  </div>
+                  {/* Description (allows full description to be read) */}
+                  <p className="text-neutral-300 text-[11px] sm:text-xs leading-relaxed line-clamp-3 font-normal">
+                    {item.desc}
+                  </p>
                 </div>
               </Link>
             );
