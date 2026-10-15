@@ -70,12 +70,12 @@ export default function HorizontalServicesSection() {
   const startXRef = useRef<number>(0);
   const hasMovedRef = useRef<boolean>(false);
 
-  // Compact card dimensions & balanced oval geometry
+  // Slightly increased card dimensions & balanced oval geometry
   const [dimensions, setDimensions] = useState({
-    radiusX: 350,
-    radiusZ: 145,
-    cardWidth: 245,
-    cardHeight: 345
+    radiusX: 380,
+    radiusZ: 155,
+    cardWidth: 275,
+    cardHeight: 385
   });
 
   const updateDimensions = useCallback(() => {
@@ -83,24 +83,24 @@ export default function HorizontalServicesSection() {
     const w = window.innerWidth;
     if (w < 640) {
       setDimensions({
-        radiusX: Math.min(Math.max(w * 0.38, 160), 200),
-        radiusZ: 85,
-        cardWidth: 190,
-        cardHeight: 285
+        radiusX: Math.min(Math.max(w * 0.4, 180), 220),
+        radiusZ: 90,
+        cardWidth: 210,
+        cardHeight: 305
       });
     } else if (w < 1024) {
       setDimensions({
-        radiusX: Math.min(w * 0.32, 280),
-        radiusZ: 115,
-        cardWidth: 220,
-        cardHeight: 315
+        radiusX: Math.min(w * 0.33, 310),
+        radiusZ: 125,
+        cardWidth: 245,
+        cardHeight: 345
       });
     } else {
       setDimensions({
-        radiusX: Math.min(w * 0.26, 350),
-        radiusZ: 145,
-        cardWidth: 245,
-        cardHeight: 345
+        radiusX: Math.min(w * 0.28, 380),
+        radiusZ: 155,
+        cardWidth: 275,
+        cardHeight: 385
       });
     }
   }, []);
