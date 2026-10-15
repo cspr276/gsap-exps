@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import PortalNavbar from '@/components/portal/dashboard/PortalNavbar';
+import PortalShell from '@/components/portal/PortalShell';
 import PortalApplicationsList from '@/components/portal/dashboard/PortalApplicationsList';
 import {
   getStoredProfile,
@@ -9,8 +9,6 @@ import {
   ContributorProfile,
   PortalApplication,
 } from '@/lib/portal-data';
-import Link from 'next/link';
-import { ArrowLeft, Clock, CheckCircle2, Shield } from 'lucide-react';
 
 export default function PortalApplicationsPage() {
   const [profile, setProfile] = useState<ContributorProfile>(getStoredProfile);
@@ -22,52 +20,44 @@ export default function PortalApplicationsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white selection:bg-neutral-800 selection:text-white flex flex-col font-sans">
-      <PortalNavbar profile={profile} />
+    <PortalShell profile={profile}>
+      <div className="mb-6">
+        <h1 className="font-display font-bold text-2xl sm:text-3xl text-neutral-900 tracking-tight">
+          Application Pipeline
+        </h1>
+        <p className="text-sm text-neutral-600 mt-1">
+          Review the status of your submitted applications and assigned verification tasks.
+        </p>
+      </div>
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-        <div className="mb-6">
-          <Link
-            href="/portal"
-            className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-neutral-400 hover:text-white mb-4 transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Dashboard</span>
-          </Link>
+      {/* Clean Status Tiles (Light Theme) */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="p-4 rounded-xl bg-white border border-neutral-200 shadow-xs">
+          <div className="text-xs font-mono uppercase tracking-wider text-neutral-500 font-medium mb-1">
+            Active Contracts
+          </div>
+          <div className="font-display font-bold text-2xl text-neutral-900">1 Module</div>
+          <p className="text-xs text-neutral-500 mt-1 font-sans">20 hrs/week allocated</p>
         </div>
 
-        {/* Status Pipeline Ribbon */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div className="p-4 rounded-xl bg-neutral-900/60 border border-neutral-800">
-            <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 uppercase tracking-wider mb-1">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>Active Contracts</span>
-            </div>
-            <div className="font-mono text-2xl font-bold text-white">1 Module</div>
-            <p className="text-xs text-neutral-400 mt-1">20 hrs/week allocated</p>
+        <div className="p-4 rounded-xl bg-white border border-neutral-200 shadow-xs">
+          <div className="text-xs font-mono uppercase tracking-wider text-neutral-500 font-medium mb-1">
+            Under Review
           </div>
-
-          <div className="p-4 rounded-xl bg-neutral-900/60 border border-neutral-800">
-            <div className="flex items-center gap-2 text-xs font-mono text-amber-300 uppercase tracking-wider mb-1">
-              <Clock className="w-4 h-4 text-amber-400" />
-              <span>Under Review</span>
-            </div>
-            <div className="font-mono text-2xl font-bold text-white">1 Submission</div>
-            <p className="text-xs text-neutral-400 mt-1">Response expected in 24h</p>
-          </div>
-
-          <div className="p-4 rounded-xl bg-neutral-900/60 border border-neutral-800">
-            <div className="flex items-center gap-2 text-xs font-mono text-sky-300 uppercase tracking-wider mb-1">
-              <Shield className="w-4 h-4 text-sky-400" />
-              <span>Verification Tasks</span>
-            </div>
-            <div className="font-mono text-2xl font-bold text-white">1 Assigned</div>
-            <p className="text-xs text-neutral-400 mt-1">Lead sign-off pending</p>
-          </div>
+          <div className="font-display font-bold text-2xl text-neutral-900">1 Submission</div>
+          <p className="text-xs text-neutral-500 mt-1 font-sans">Evaluation in progress</p>
         </div>
 
-        <PortalApplicationsList applications={applications} />
-      </main>
-    </div>
+        <div className="p-4 rounded-xl bg-white border border-neutral-200 shadow-xs">
+          <div className="text-xs font-mono uppercase tracking-wider text-neutral-500 font-medium mb-1">
+            Verification Tasks
+          </div>
+          <div className="font-display font-bold text-2xl text-neutral-900">1 Assigned</div>
+          <p className="text-xs text-neutral-500 mt-1 font-sans">Lead sign-off pending</p>
+        </div>
+      </div>
+
+      <PortalApplicationsList applications={applications} />
+    </PortalShell>
   );
 }

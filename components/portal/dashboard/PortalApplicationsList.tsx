@@ -1,15 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {
-  FileCheck2,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  ArrowUpRight,
-  Shield,
-  FileText,
-} from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { PortalApplication } from '@/lib/portal-data';
 
 interface PortalApplicationsListProps {
@@ -24,31 +16,27 @@ export default function PortalApplicationsList({
       {/* Section Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 mb-1 block">
-            VERIFICATION LEDGER
-          </span>
-          <h2 className="font-display font-bold text-xl sm:text-2xl uppercase tracking-tight text-white">
-            Application Pipeline
+          <h2 className="font-display font-bold text-xl sm:text-2xl text-neutral-900 tracking-tight">
+            Recent Applications
           </h2>
         </div>
 
         <Link
           href="/portal/applications"
-          className="text-xs font-mono tracking-wider uppercase text-neutral-400 hover:text-white transition-colors flex items-center gap-1"
+          className="text-xs font-mono uppercase tracking-wider text-neutral-600 hover:text-neutral-900 transition-colors flex items-center gap-1"
         >
-          <span>View all applications</span>
+          <span>See all</span>
           <ArrowUpRight className="w-3.5 h-3.5" />
         </Link>
       </div>
 
       {applications.length === 0 ? (
-        <div className="p-8 rounded-xl bg-neutral-900/40 border border-neutral-800 text-center">
-          <FileText className="w-6 h-6 text-neutral-600 mx-auto mb-2" />
-          <p className="text-sm text-neutral-400 font-mono">No active applications currently submitted.</p>
+        <div className="p-8 rounded-xl bg-white border border-neutral-200 text-center">
+          <p className="text-sm text-neutral-500 font-sans">No applications submitted yet.</p>
         </div>
       ) : (
-        <div className="rounded-xl border border-neutral-800/80 bg-neutral-900/60 backdrop-blur-sm overflow-hidden">
-          <div className="divide-y divide-neutral-800/80">
+        <div className="rounded-xl border border-neutral-200 bg-white overflow-hidden shadow-xs">
+          <div className="divide-y divide-neutral-100">
             {applications.map((app) => {
               const isApproved = app.status === 'approved';
               const isInReview = app.status === 'in_review';
@@ -57,23 +45,23 @@ export default function PortalApplicationsList({
               return (
                 <div
                   key={app.id}
-                  className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-neutral-800/30 transition-colors"
+                  className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-neutral-50/70 transition-colors"
                 >
                   {/* Left: Project title & metadata */}
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-neutral-800 text-neutral-400 border border-neutral-700/60">
+                      <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-500 font-medium">
                         {app.projectType}
                       </span>
-                      <span className="font-mono text-xs text-neutral-500">•</span>
-                      <span className="font-mono text-xs text-neutral-400">Submitted {app.submittedAt}</span>
+                      <span className="text-neutral-300">•</span>
+                      <span className="text-xs text-neutral-500 font-sans">{app.submittedAt}</span>
                     </div>
 
-                    <h3 className="font-display font-bold text-base text-white tracking-tight">
+                    <h3 className="font-display font-bold text-base text-neutral-900 tracking-tight">
                       {app.projectTitle}
                     </h3>
 
-                    <p className="text-xs text-neutral-400 line-clamp-1 max-w-2xl font-sans">
+                    <p className="text-xs text-neutral-600 line-clamp-1 max-w-2xl font-sans">
                       {app.notes}
                     </p>
                   </div>
@@ -81,41 +69,37 @@ export default function PortalApplicationsList({
                   {/* Right: Compensation & Status Badge */}
                   <div className="flex items-center justify-between md:justify-end gap-5 flex-shrink-0">
                     <div className="text-right">
-                      <div className="font-mono text-sm font-bold text-white">
+                      <div className="font-mono text-sm font-bold text-neutral-900">
                         {app.compensation}
                       </div>
-                      <div className="font-mono text-[10px] text-emerald-400">
-                        {app.matchScore}% Match Fit
+                      <div className="font-mono text-[11px] text-neutral-500">
+                        {app.matchScore}% fit
                       </div>
                     </div>
 
-                    {/* Status Badge */}
+                    {/* Subtle, Clean Status Badge (No glowing dots!) */}
                     <div>
                       {isApproved && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-mono uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-medium">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                          <span>{app.statusLabel}</span>
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-mono uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
+                          {app.statusLabel}
                         </span>
                       )}
 
                       {isInReview && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-mono uppercase tracking-wider bg-amber-500/10 text-amber-300 border border-amber-500/30 font-medium">
-                          <Clock className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-                          <span>{app.statusLabel}</span>
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-mono uppercase tracking-wider bg-amber-50 text-amber-800 border border-amber-200 font-medium">
+                          {app.statusLabel}
                         </span>
                       )}
 
                       {isAssessment && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-mono uppercase tracking-wider bg-sky-500/10 text-sky-300 border border-sky-500/30 font-medium">
-                          <Shield className="w-3.5 h-3.5 text-sky-400" />
-                          <span>{app.statusLabel}</span>
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-mono uppercase tracking-wider bg-sky-50 text-sky-800 border border-sky-200 font-medium">
+                          {app.statusLabel}
                         </span>
                       )}
 
                       {!isApproved && !isInReview && !isAssessment && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-mono uppercase tracking-wider bg-neutral-800 text-neutral-300 border border-neutral-700 font-medium">
-                          <FileCheck2 className="w-3.5 h-3.5 text-neutral-400" />
-                          <span>{app.statusLabel}</span>
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-mono uppercase tracking-wider bg-neutral-100 text-neutral-700 border border-neutral-200 font-medium">
+                          {app.statusLabel}
                         </span>
                       )}
                     </div>

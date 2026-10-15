@@ -1,15 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Search,
-  Filter,
-  CheckCircle,
-  Clock,
-  Sparkles,
-  ArrowUpRight,
-  Zap,
-} from 'lucide-react';
+import { Search } from 'lucide-react';
 import { PortalProject } from '@/lib/portal-data';
 import PortalApplyModal from './PortalApplyModal';
 
@@ -20,7 +12,7 @@ interface PortalProjectGridProps {
 }
 
 const CATEGORIES = [
-  { id: 'all', label: 'All Modules' },
+  { id: 'all', label: 'All Projects' },
   { id: 'coding_evaluation', label: 'Coding Evaluation' },
   { id: 'rlhf', label: 'RLHF & Safety' },
   { id: 'model_evaluation', label: 'Model Evaluation' },
@@ -63,14 +55,11 @@ export default function PortalProjectGrid({
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
         <div>
-          <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 mb-1 block">
-            AVAILABLE BENCHMARKS
-          </span>
-          <h2 className="font-display font-bold text-2xl uppercase tracking-tight text-white">
-            Matched Evaluation Modules
+          <h2 className="font-display font-bold text-xl sm:text-2xl text-neutral-900 tracking-tight">
+            Recommended Projects
           </h2>
-          <p className="text-neutral-400 text-xs sm:text-sm mt-1 max-w-xl">
-            Contract opportunities prioritized against your skill taxonomy, verified track record, and availability.
+          <p className="text-neutral-600 text-xs sm:text-sm mt-1 max-w-xl">
+            Open evaluation projects matched to your verified skills and availability.
           </p>
         </div>
 
@@ -81,15 +70,14 @@ export default function PortalProjectGrid({
             placeholder="Search skills, domains..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3.5 py-2 text-xs font-mono text-white bg-neutral-900/90 border border-neutral-800 rounded-lg placeholder:text-neutral-500 focus:outline-none focus:border-neutral-600"
+            className="w-full pl-9 pr-3.5 py-2 text-xs font-sans text-neutral-900 bg-white border border-neutral-300 rounded-lg placeholder:text-neutral-400 focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
           />
-          <Search className="w-3.5 h-3.5 text-neutral-500 absolute left-3 top-2.5 pointer-events-none" />
+          <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-2.5 pointer-events-none" />
         </div>
       </div>
 
-      {/* Category Filter Pills */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none mb-6">
-        <Filter className="w-3.5 h-3.5 text-neutral-500 flex-shrink-0 mr-1" />
+      {/* Category Filter Pills (clean segmented style) */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none mb-6">
         {CATEGORIES.map((cat) => {
           const isActive = activeCategory === cat.id;
           return (
@@ -97,10 +85,10 @@ export default function PortalProjectGrid({
               key={cat.id}
               type="button"
               onClick={() => setActiveCategory(cat.id)}
-              className={`whitespace-nowrap px-3.5 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider transition-all cursor-pointer ${
+              className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                 isActive
-                  ? 'bg-white text-black font-semibold shadow-xs'
-                  : 'bg-neutral-900/70 text-neutral-400 hover:text-white hover:bg-neutral-800/60 border border-neutral-800/80'
+                  ? 'bg-neutral-900 text-white font-semibold'
+                  : 'bg-white text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 border border-neutral-200'
               }`}
             >
               {cat.label}
@@ -111,17 +99,17 @@ export default function PortalProjectGrid({
 
       {/* Project Cards Grid */}
       {filteredProjects.length === 0 ? (
-        <div className="p-12 rounded-xl bg-neutral-900/30 border border-neutral-800/80 text-center">
-          <p className="font-mono text-sm text-neutral-400">No project modules match your current filter criteria.</p>
+        <div className="p-12 rounded-xl bg-white border border-neutral-200 text-center">
+          <p className="text-sm text-neutral-600">No projects match your current filter.</p>
           <button
             type="button"
             onClick={() => {
               setActiveCategory('all');
               setSearchQuery('');
             }}
-            className="mt-3 text-xs font-mono text-emerald-400 hover:underline"
+            className="mt-2 text-xs font-medium text-neutral-900 underline hover:text-black cursor-pointer"
           >
-            Clear all filters
+            Clear filters
           </button>
         </div>
       ) : (
@@ -132,42 +120,41 @@ export default function PortalProjectGrid({
             return (
               <div
                 key={project.id}
-                className="group relative flex flex-col justify-between rounded-xl bg-neutral-900/60 border border-neutral-800/80 hover:border-neutral-700 transition-all duration-200 p-5 backdrop-blur-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.5)]"
+                className="flex flex-col justify-between rounded-xl bg-white border border-neutral-200/90 hover:border-neutral-300 p-6 transition-all shadow-xs"
               >
                 {/* Top Strip: Type & Match Badge */}
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-neutral-800 text-neutral-300 font-semibold border border-neutral-700/60">
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-500 font-medium">
                       {project.projectTypeLabel}
                     </span>
 
-                    <div className="flex items-center gap-1.5 font-mono text-[11px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded font-medium">
-                      <Sparkles className="w-3 h-3 text-emerald-400" />
-                      <span>{project.matchScore}% Match</span>
-                    </div>
+                    <span className="font-mono text-xs text-emerald-700 font-semibold">
+                      {project.matchScore}% match
+                    </span>
                   </div>
 
                   {/* Title & Summary */}
-                  <h3 className="font-display font-bold text-base text-white tracking-tight leading-snug group-hover:text-neutral-100 transition-colors mb-2">
+                  <h3 className="font-display font-bold text-base text-neutral-900 tracking-tight leading-snug mb-2">
                     {project.title}
                   </h3>
 
-                  <p className="text-neutral-400 text-xs leading-relaxed line-clamp-3 mb-4">
+                  <p className="text-neutral-600 text-xs leading-relaxed line-clamp-3 mb-4">
                     {project.summary}
                   </p>
 
-                  {/* Skills / Taxonomy Tags */}
+                  {/* Skills Tags */}
                   <div className="flex flex-wrap gap-1.5 mb-5">
                     {project.requiredSkills.slice(0, 4).map((skill) => (
                       <span
                         key={skill}
-                        className="px-2 py-0.5 rounded text-[10px] font-mono bg-neutral-950/80 border border-neutral-800 text-neutral-400"
+                        className="px-2 py-0.5 rounded text-[11px] font-mono bg-neutral-100 border border-neutral-200/80 text-neutral-700"
                       >
                         {skill}
                       </span>
                     ))}
                     {project.requiredSkills.length > 4 && (
-                      <span className="px-1.5 py-0.5 text-[10px] font-mono text-neutral-500">
+                      <span className="px-1.5 py-0.5 text-[11px] font-mono text-neutral-500">
                         +{project.requiredSkills.length - 4}
                       </span>
                     )}
@@ -175,35 +162,32 @@ export default function PortalProjectGrid({
                 </div>
 
                 {/* Bottom Meta & Action */}
-                <div className="pt-4 border-t border-neutral-800/70 flex items-center justify-between gap-2">
+                <div className="pt-4 border-t border-neutral-100 flex items-center justify-between gap-2">
                   <div>
-                    <div className="font-mono text-sm font-bold text-white tracking-tight">
+                    <div className="font-mono text-sm font-bold text-neutral-900">
                       {project.compensation}
                     </div>
-                    <div className="font-mono text-[10px] text-neutral-500 flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{project.timeCommitment}</span>
+                    <div className="text-[11px] text-neutral-500">
+                      {project.timeCommitment}
                     </div>
                   </div>
 
                   {/* Apply CTA Button */}
                   {hasApplied ? (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-800/90 text-emerald-400 border border-emerald-500/30 text-xs font-mono uppercase tracking-wider font-semibold">
-                      <CheckCircle className="w-3.5 h-3.5" />
-                      <span>Applied</span>
+                    <span className="inline-flex items-center px-3 py-1.5 rounded-lg bg-neutral-100 text-neutral-600 text-xs font-mono font-medium border border-neutral-200">
+                      Applied
                     </span>
                   ) : project.status === 'open' ? (
                     <button
                       type="button"
                       onClick={() => handleOpenApply(project)}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white text-black hover:bg-neutral-200 text-xs font-mono uppercase tracking-wider font-semibold transition-all cursor-pointer shadow-xs active:scale-[0.98]"
+                      className="inline-flex items-center px-3.5 py-1.5 rounded-lg bg-neutral-900 hover:bg-black text-white text-xs font-mono uppercase tracking-wider font-semibold transition-colors cursor-pointer"
                     >
-                      <Zap className="w-3.5 h-3.5 text-black fill-black" />
-                      <span>Apply</span>
+                      Apply
                     </button>
                   ) : (
-                    <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-neutral-950 text-neutral-500 border border-neutral-800 text-xs font-mono uppercase tracking-wider">
-                      <span>Queueing</span>
+                    <span className="inline-flex items-center px-2.5 py-1 text-xs text-neutral-400 font-mono">
+                      Queueing
                     </span>
                   )}
                 </div>
