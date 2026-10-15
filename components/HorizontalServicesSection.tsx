@@ -70,9 +70,10 @@ export default function HorizontalServicesSection() {
   const startXRef = useRef<number>(0);
   const hasMovedRef = useRef<boolean>(false);
 
-  // Compact responsive card & carousel dimensions
+  // Oval geometry & compact card dimensions
   const [dimensions, setDimensions] = useState({
-    radius: 280,
+    radiusX: 460,
+    radiusZ: 160,
     cardWidth: 250,
     cardHeight: 350
   });
@@ -82,19 +83,22 @@ export default function HorizontalServicesSection() {
     const w = window.innerWidth;
     if (w < 640) {
       setDimensions({
-        radius: 190,
+        radiusX: Math.min(Math.max(w * 0.42, 190), 250),
+        radiusZ: 100,
         cardWidth: 195,
         cardHeight: 290
       });
     } else if (w < 1024) {
       setDimensions({
-        radius: 235,
+        radiusX: Math.min(w * 0.4, 380),
+        radiusZ: 130,
         cardWidth: 225,
         cardHeight: 320
       });
     } else {
       setDimensions({
-        radius: 280,
+        radiusX: Math.min(w * 0.36, 480),
+        radiusZ: 160,
         cardWidth: 250,
         cardHeight: 350
       });
@@ -107,49 +111,70 @@ export default function HorizontalServicesSection() {
     return () => window.removeEventListener('resize', updateDimensions);
   }, [updateDimensions]);
 
-  // Main 3D cylinder rotation animation loop
+  // Main 3D oval rotation animation loop
   useEffect(() => {
     let animId: number;
     let lastTime = performance.now();
     const count = REMAINING_SERVICES.length;
-    const angleStep = 360 / count;
+    const angleStepRad = (2 * Math.PI) / count;
 
     const frame = (now: number) => {
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
-      // Auto-rotate when not paused or dragging (~13 degrees per second)
+      // Reversed rotation direction: angle increases (+14 deg/s in radians)
+      const speedRad = (14 * Math.PI) / 180;
       if (!isPausedRef.current && !isDraggingRef.current) {
-        rotationRef.current = (rotationRef.current - 13 * dt) % 360;
+        rotationRef.current = (rotationRef.current + speedRad * dt) % (2 * Math.PI);
       }
 
       const currentRot = rotationRef.current;
-      if (ringRef.current) {
-        ringRef.current.style.transform = `rotateY(${currentRot}deg)`;
-      }
+      const { radiusX, radiusZ } = dimensions;
 
-      // Smooth opacity calculation: cards in front are full opacity (1.0),
-      // cards at the back are visible with slightly reduced opacity (~0.42),
-      // and hovered card is always full opacity (1.0).
+      // Position each card along the 3D oval trajectory
       cardsRef.current.forEach((card, idx) => {
         if (!card) return;
-        const baseAngle = idx * angleStep;
-        const apparentAngle = (baseAngle + currentRot) % 360;
-        const diff = ((apparentAngle + 180) % 360 + 360) % 360 - 180;
-        const cosVal = Math.cos((diff * Math.PI) / 180);
+        const cardAngle = currentRot + idx * angleStepRad;
 
-        if (hoveredIndexRef.current === idx) {
-          card.style.opacity = '1';
-          card.style.zIndex = '50';
-          card.style.pointerEvents = 'auto';
+        // Parametric Oval: wide X horizontal spread, shallow Z depth
+        const x = Math.sin(cardAngle) * radiusX;
+        const z = Math.cos(cardAngle) * radiusZ;
+
+        // Subtle inward tilt facing toward the center/camera (-18 deg to +18 deg)
+        const tiltY = -(x / radiusX) * 18;
+
+        // Normalized Z depth: 1 at front (z = +radiusZ), 0 at back (z = -radiusZ)
+        const normZ = Math.max(0, Math.min(1, (z + radiusZ) / (2 * radiusZ)));
+
+        const isHovered = hoveredIndexRef.current === idx;
+
+        // Depth-of-field blur & opacity calculation
+        // Back cards have blur (~3.5px) and reduced opacity (~0.38)
+        // Front cards have 0px blur and full opacity (1.0)
+        let blurPx = 0;
+        let opacity = 1;
+        let scale = 0.85 + 0.15 * normZ;
+
+        if (isHovered) {
+          blurPx = 0;
+          opacity = 1;
+          scale = 1.03;
         } else {
-          // Smoothly map from 1.0 (front center) to ~0.42 (back)
-          const norm = (cosVal + 1) / 2; // 0 (back) to 1 (front)
-          const opacity = 0.42 + 0.58 * norm;
-          card.style.opacity = opacity.toFixed(3);
-          card.style.zIndex = cosVal > 0 ? '20' : '10';
-          card.style.pointerEvents = 'auto';
+          // As card goes to the back (normZ < 0.6), blur increases smoothly
+          if (normZ < 0.6) {
+            blurPx = ((0.6 - normZ) / 0.6) * 3.5;
+          } else {
+            blurPx = 0;
+          }
+          opacity = 0.38 + 0.62 * normZ;
         }
+
+        // Apply 3D oval transform
+        card.style.transform = `translate3d(${x}px, 0px, ${z}px) rotateY(${tiltY}deg) scale(${scale})`;
+        card.style.opacity = opacity.toFixed(3);
+        card.style.filter = blurPx > 0.1 ? `blur(${blurPx.toFixed(1)}px)` : 'none';
+        card.style.zIndex = isHovered ? '100' : String(Math.round(normZ * 40 + 10));
+        card.style.pointerEvents = isHovered || normZ > 0.15 ? 'auto' : 'none';
       });
 
       animId = requestAnimationFrame(frame);
@@ -157,9 +182,9 @@ export default function HorizontalServicesSection() {
 
     animId = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(animId);
-  }, []);
+  }, [dimensions]);
 
-  // Hover handlers: pause rotation & highlight card
+  // Hover handlers: pause rotation & focus card
   const handleCardEnter = (idx: number) => {
     isPausedRef.current = true;
     hoveredIndexRef.current = idx;
@@ -170,7 +195,7 @@ export default function HorizontalServicesSection() {
     hoveredIndexRef.current = null;
   };
 
-  // Drag handlers
+  // Drag handlers for tactile touch & mouse control
   const handlePointerDown = (e: React.PointerEvent) => {
     isDraggingRef.current = true;
     startXRef.current = e.clientX;
@@ -183,7 +208,8 @@ export default function HorizontalServicesSection() {
     if (Math.abs(deltaX) > 4) {
       hasMovedRef.current = true;
     }
-    rotationRef.current = (rotationRef.current + deltaX * 0.25) % 360;
+    // Adjust rotation angle based on drag
+    rotationRef.current = (rotationRef.current - deltaX * 0.005) % (2 * Math.PI);
     startXRef.current = e.clientX;
   };
 
@@ -198,57 +224,7 @@ export default function HorizontalServicesSection() {
     }
   };
 
-  const { radius, cardWidth, cardHeight } = dimensions;
-  const angleStep = 360 / REMAINING_SERVICES.length;
-
-  const renderCardContent = (item: ExtendedServiceItem) => (
-    <>
-      {/* Top Half: Photo with Large Translucent Number */}
-      <div className="relative w-full h-[50%] overflow-hidden bg-black flex-shrink-0">
-        <img
-          src={item.image}
-          alt={item.title}
-          draggable={false}
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out select-none pointer-events-none"
-        />
-        {/* Gradient Overlay into Pure Black Card Body */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
-
-        {/* Large Translucent Number in Top-Left Corner */}
-        <span className="absolute top-3 left-3.5 font-mono text-xl sm:text-2xl font-light tracking-tight text-white/80 select-none drop-shadow-md">
-          {item.num}
-        </span>
-
-        {/* Minimalist Indicator Dot in Top-Right Corner */}
-        <span className="absolute top-3.5 right-3.5 w-1.5 h-1.5 rounded-full bg-white/40" />
-      </div>
-
-      {/* Bottom Half: Category, Title, Description, and Progress Line */}
-      <div className="p-4 sm:p-5 flex flex-col justify-between h-[50%] bg-black">
-        <div>
-          {/* Category Label */}
-          <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-semibold mb-1 block">
-            {item.category}
-          </span>
-
-          {/* Service Title */}
-          <h3 className="font-display font-bold text-sm sm:text-base text-white tracking-tight leading-snug line-clamp-1 mb-1.5 group-hover:text-neutral-200 transition-colors">
-            {item.title}
-          </h3>
-
-          {/* Short Description */}
-          <p className="text-neutral-300 text-[11px] sm:text-xs leading-relaxed line-clamp-2 font-normal">
-            {item.desc}
-          </p>
-        </div>
-
-        {/* Bottom Progress Line Indicator */}
-        <div className="w-full h-[2px] bg-neutral-800 rounded-full mt-3 overflow-hidden">
-          <div className="w-1/3 h-full bg-neutral-400 rounded-full" />
-        </div>
-      </div>
-    </>
-  );
+  const { cardWidth, cardHeight } = dimensions;
 
   return (
     <section
@@ -268,24 +244,24 @@ export default function HorizontalServicesSection() {
         </p>
       </div>
 
-      {/* 3D Cylindrical Rotating Carousel Stage */}
+      {/* 3D Oval Carousel Stage */}
       <div
         ref={stageRef}
         className="relative w-full overflow-hidden flex items-center justify-center select-none cursor-grab active:cursor-grabbing my-auto"
         style={{
           perspective: '1200px',
           perspectiveOrigin: '50% 50%',
-          height: `${cardHeight + 60}px`
+          height: `${cardHeight + 70}px`
         }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
       >
-        {/* 3D Rotating Ring */}
+        {/* 3D Oval Orbit Container */}
         <div
           ref={ringRef}
-          className="relative will-change-transform"
+          className="relative will-change-transform flex items-center justify-center"
           style={{
             width: `${cardWidth}px`,
             height: `${cardHeight}px`,
@@ -293,8 +269,6 @@ export default function HorizontalServicesSection() {
           }}
         >
           {REMAINING_SERVICES.map((item, idx) => {
-            const cardAngle = idx * angleStep;
-
             return (
               <Link
                 key={item.num}
@@ -305,34 +279,52 @@ export default function HorizontalServicesSection() {
                 onClick={handleCardClick}
                 onMouseEnter={() => handleCardEnter(idx)}
                 onMouseLeave={handleCardLeave}
-                className="group absolute top-0 left-0 w-full h-full cursor-pointer transition-[border-color,box-shadow] duration-300"
+                className="group absolute top-0 left-0 w-full h-full rounded-2xl overflow-hidden bg-black border border-neutral-800/80 flex flex-col justify-between shadow-2xl hover:border-neutral-500 transition-[border-color,box-shadow] duration-300"
                 style={{
-                  transform: `rotateY(${cardAngle}deg) translateZ(${radius}px)`,
+                  width: `${cardWidth}px`,
+                  height: `${cardHeight}px`,
                   transformStyle: 'preserve-3d',
-                  willChange: 'transform, opacity'
+                  willChange: 'transform, opacity, filter'
                 }}
               >
-                {/* Front Face (faces outward) */}
-                <div
-                  className="absolute inset-0 w-full h-full rounded-2xl overflow-hidden bg-black border border-neutral-800/80 flex flex-col justify-between shadow-2xl hover:border-neutral-500 transition-colors"
-                  style={{
-                    backfaceVisibility: 'hidden',
-                    WebkitBackfaceVisibility: 'hidden'
-                  }}
-                >
-                  {renderCardContent(item)}
+                {/* Top Half: Photo with Large Translucent Number */}
+                <div className="relative w-full h-[52%] overflow-hidden bg-black flex-shrink-0">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    draggable={false}
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out select-none pointer-events-none"
+                  />
+                  {/* Subtle Gradient into Pure Black Body */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
+
+                  {/* Large Translucent Number in Top-Left Corner */}
+                  <span className="absolute top-3 left-3.5 font-mono text-xl sm:text-2xl font-light tracking-tight text-white/80 select-none drop-shadow-md">
+                    {item.num}
+                  </span>
+
+                  {/* Minimalist Indicator Dot in Top-Right Corner */}
+                  <span className="absolute top-3.5 right-3.5 w-1.5 h-1.5 rounded-full bg-white/40" />
                 </div>
 
-                {/* Back Face (faces inward so it's readable when orbiting in the back) */}
-                <div
-                  className="absolute inset-0 w-full h-full rounded-2xl overflow-hidden bg-black border border-neutral-800/80 flex flex-col justify-between shadow-2xl hover:border-neutral-500 transition-colors"
-                  style={{
-                    transform: 'rotateY(180deg)',
-                    backfaceVisibility: 'hidden',
-                    WebkitBackfaceVisibility: 'hidden'
-                  }}
-                >
-                  {renderCardContent(item)}
+                {/* Bottom Half: Category, Title, and Description (NO bottom progress line) */}
+                <div className="p-4 sm:p-5 flex flex-col justify-between h-[48%] bg-black">
+                  <div>
+                    {/* Category Label */}
+                    <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-semibold mb-1 block">
+                      {item.category}
+                    </span>
+
+                    {/* Service Title */}
+                    <h3 className="font-display font-bold text-sm sm:text-base text-white tracking-tight leading-snug line-clamp-1 mb-1.5 group-hover:text-neutral-200 transition-colors">
+                      {item.title}
+                    </h3>
+
+                    {/* Short Description */}
+                    <p className="text-neutral-300 text-[11px] sm:text-xs leading-relaxed line-clamp-2 font-normal">
+                      {item.desc}
+                    </p>
+                  </div>
                 </div>
               </Link>
             );
