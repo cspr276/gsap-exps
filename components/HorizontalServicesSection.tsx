@@ -244,11 +244,11 @@ export default function HorizontalServicesSection() {
       {/* 3D Oval Carousel Stage */}
       <div
         ref={stageRef}
-        className="relative w-full overflow-hidden flex items-center justify-center select-none cursor-grab active:cursor-grabbing my-4 sm:my-6"
+        className="relative w-full overflow-visible flex items-center justify-center select-none cursor-grab active:cursor-grabbing my-4 sm:my-6"
         style={{
           perspective: '1200px',
           perspectiveOrigin: '50% 50%',
-          height: `${cardHeight + 40}px`
+          height: `${cardHeight + 110}px`
         }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
