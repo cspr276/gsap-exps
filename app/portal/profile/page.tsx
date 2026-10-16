@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import PortalShell from '@/components/portal/PortalShell';
-import { getStoredProfile, ContributorProfile } from '@/lib/portal-data';
+import { getStoredProfile, DEFAULT_CONTRIBUTOR, ContributorProfile } from '@/lib/portal-data';
 
 const cardClasses =
   'rounded-xl p-6 sm:p-8 mb-8 shadow-xs border bg-white dark:bg-neutral-900/60 border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-white';
@@ -14,7 +14,7 @@ const borderRowClasses =
   'flex justify-between py-2 border-b border-neutral-100 dark:border-neutral-800';
 
 function ProfileContent() {
-  const [profile, setProfile] = useState<ContributorProfile>(getStoredProfile);
+  const [profile, setProfile] = useState<ContributorProfile>(DEFAULT_CONTRIBUTOR);
 
   useEffect(() => {
     setProfile(getStoredProfile());
@@ -226,7 +226,11 @@ function ProfileContent() {
 }
 
 export default function PortalProfilePage() {
-  const [profile] = useState<ContributorProfile>(getStoredProfile);
+  const [profile, setProfile] = useState<ContributorProfile>(DEFAULT_CONTRIBUTOR);
+
+  useEffect(() => {
+    setProfile(getStoredProfile());
+  }, []);
 
   return (
     <PortalShell profile={profile}>

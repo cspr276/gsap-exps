@@ -10,6 +10,7 @@ import {
   User,
   LogOut,
   ArrowUpRight,
+  ShieldAlert,
 } from 'lucide-react';
 import { authApi } from '@/lib/portal-auth';
 import { ContributorProfile } from '@/lib/portal-data';
@@ -116,6 +117,7 @@ export default function PortalSidebar({ profile, onCloseMobile }: PortalSidebarP
           </span>
           <ModeToggle />
         </div>
+
 
         {/* Public Website Link */}
         <Link

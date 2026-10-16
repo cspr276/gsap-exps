@@ -10,15 +10,18 @@ import {
   getStoredProfile,
   getStoredProjects,
   getStoredApplications,
+  DEFAULT_CONTRIBUTOR,
+  INITIAL_PROJECTS,
+  INITIAL_APPLICATIONS,
   ContributorProfile,
   PortalProject,
   PortalApplication,
 } from '@/lib/portal-data';
 
 export default function PortalDashboardPage() {
-  const [profile, setProfile] = useState<ContributorProfile>(getStoredProfile);
-  const [projects, setProjects] = useState<PortalProject[]>(getStoredProjects);
-  const [applications, setApplications] = useState<PortalApplication[]>(getStoredApplications);
+  const [profile, setProfile] = useState<ContributorProfile>(DEFAULT_CONTRIBUTOR);
+  const [projects, setProjects] = useState<PortalProject[]>(INITIAL_PROJECTS);
+  const [applications, setApplications] = useState<PortalApplication[]>(INITIAL_APPLICATIONS);
 
   const refreshData = () => {
     setProfile(getStoredProfile());

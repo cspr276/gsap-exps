@@ -6,6 +6,8 @@ import PortalApplicationsList from '@/components/portal/dashboard/PortalApplicat
 import {
   getStoredProfile,
   getStoredApplications,
+  DEFAULT_CONTRIBUTOR,
+  INITIAL_APPLICATIONS,
   ContributorProfile,
   PortalApplication,
 } from '@/lib/portal-data';
@@ -14,7 +16,7 @@ const tileClasses =
   'p-4 rounded-xl border shadow-xs bg-white dark:bg-neutral-900/60 border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-white';
 
 function ApplicationsContent() {
-  const [applications, setApplications] = useState<PortalApplication[]>(getStoredApplications);
+  const [applications, setApplications] = useState<PortalApplication[]>(INITIAL_APPLICATIONS);
 
   useEffect(() => {
     setApplications(getStoredApplications());
@@ -78,7 +80,11 @@ function ApplicationsContent() {
 }
 
 export default function PortalApplicationsPage() {
-  const [profile] = useState<ContributorProfile>(getStoredProfile);
+  const [profile, setProfile] = useState<ContributorProfile>(DEFAULT_CONTRIBUTOR);
+
+  useEffect(() => {
+    setProfile(getStoredProfile());
+  }, []);
 
   return (
     <PortalShell profile={profile}>

@@ -73,9 +73,14 @@ export default function PortalLoginCard({ initialEmail = '', onSuccessRedirect =
         return;
       }
 
-      setSuccessMessage('Successfully signed in. Redirecting to portal...');
+      const targetRoute = result.user?.role === 'admin' ? '/portal/admin' : onSuccessRedirect;
+      setSuccessMessage(
+        result.user?.role === 'admin'
+          ? 'Admin security verified. Redirecting to operations console...'
+          : 'Successfully signed in. Redirecting to portal...'
+      );
       setTimeout(() => {
-        router.push(onSuccessRedirect);
+        router.push(targetRoute);
       }, 700);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Invalid email or password.');

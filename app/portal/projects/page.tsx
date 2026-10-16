@@ -7,14 +7,17 @@ import {
   getStoredProfile,
   getStoredProjects,
   getStoredApplications,
+  DEFAULT_CONTRIBUTOR,
+  INITIAL_PROJECTS,
+  INITIAL_APPLICATIONS,
   ContributorProfile,
   PortalProject,
   PortalApplication,
 } from '@/lib/portal-data';
 
 function ProjectsContent() {
-  const [projects, setProjects] = useState<PortalProject[]>(getStoredProjects);
-  const [applications, setApplications] = useState<PortalApplication[]>(getStoredApplications);
+  const [projects, setProjects] = useState<PortalProject[]>(INITIAL_PROJECTS);
+  const [applications, setApplications] = useState<PortalApplication[]>(INITIAL_APPLICATIONS);
 
   const refreshData = () => {
     setProjects(getStoredProjects());
@@ -50,7 +53,11 @@ function ProjectsContent() {
 }
 
 export default function PortalProjectsPage() {
-  const [profile] = useState<ContributorProfile>(getStoredProfile);
+  const [profile, setProfile] = useState<ContributorProfile>(DEFAULT_CONTRIBUTOR);
+
+  useEffect(() => {
+    setProfile(getStoredProfile());
+  }, []);
 
   return (
     <PortalShell profile={profile}>
